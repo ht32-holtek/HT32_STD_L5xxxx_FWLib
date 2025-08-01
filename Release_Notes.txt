@@ -1,0 +1,288 @@
+/*********************************************************************************************************//**
+ * @file    Release_Notes.txt
+ * @version V1.2.1
+ * @date    2025-07-30
+ * @brief   The Release notes of HT32L Firmware Library.
+ *************************************************************************************************************
+ * @attention
+ *
+ * Firmware Disclaimer Information
+ *
+ * 1. The customer hereby acknowledges and agrees that the program technical documentation, including the
+ *    code, which is supplied by Holtek Semiconductor Inc., (hereinafter referred to as "HOLTEK") is the
+ *    proprietary and confidential intellectual property of HOLTEK, and is protected by copyright law and
+ *    other intellectual property laws.
+ *
+ * 2. The customer hereby acknowledges and agrees that the program technical documentation, including the
+ *    code, is confidential information belonging to HOLTEK, and must not be disclosed to any third parties
+ *    other than HOLTEK and the customer.
+ *
+ * 3. The program technical documentation, including the code, is provided "as is" and for customer reference
+ *    only. After delivery by HOLTEK, the customer shall use the program technical documentation, including
+ *    the code, at their own risk. HOLTEK disclaims any expressed, implied or statutory warranties, including
+ *    the warranties of merchantability, satisfactory quality and fitness for a particular purpose.
+ *
+ * <h2><center>Copyright (C) Holtek Semiconductor Inc. All rights reserved</center></h2>
+ ************************************************************************************************************/
+
+// Supported Device
+// ========================================
+//   HT32L52231, HT32L52241
+//   HT32L62141
+//   HT50L3200U
+//   HT32L59046
+
+/*----------------------------------------------------------------------------------------------------------*/
+/* HT32_STD_L5xxxx_FWLib_V1.2.1_798                                                                         */
+/*----------------------------------------------------------------------------------------------------------*/
+  Release Date: 2025-07-30
+  Main Changes
+  + Add volatile qualifier on some variables to fix the GNU Compiler optimization issue.
+     - "FMC/FLASH_Program" (change "u32" to "vu32", in the if-condition usage)
+  + Add low-level _read() / _write() functions for standard I/O redirection via serial interface.
+  + Add "putchar()" function in "ht32_retarget.c" to fix the retarget not working when using "printf("%c")" in
+    some GNU compiler versions.
+  + Add and update the following files to show how to fix compiler errors in older GNU Compiler.
+    - Add: GNU_ARM/linker_oldversion.ld
+    - Add: GNU_ARM/linker_readme.txt
+    - Update: GNU_ARM/linker.ld
+  + Add new examples:
+    - "Tips/FlashParameter"
+    - "USART/Singlewire_Master"
+    - "USART/Singlewire_Slave"
+  + Add "PRINTF_USE_CLIB" and "SCANF_USE_CLIB" options in "ht32l5xxxx_conf.h" to switch between lite printf/scanf
+    and C library printf/scanf (default: lite printf/scanf).
+  + Add lite scanf() function in syscalls.c with support for %d and %x formats.
+  + Add "Stack On Top" feature.
+    - Add "USE_LIBCFG_RAM_SIZE" define in Keil project files for this feature.
+    - Update startup_CHIPNAME.s to support it when USB_LIBCFG_RAM_SIZE is undefined.
+  + Add the following files to use e-Link32 Pro with SEGGER Embedded Studio. Refer to the
+    "readme e-Link32 Pro.txt" for how to use it.
+    "emStudiov4/readme e-Link32 Pro.txt"
+    "emStudiov4/Project_xxxxx.bat"
+    "emStudiov4/_MassErase.bat"
+  + Fix printf() issue:
+    - Unsupported format specifiers (e.g., "%f") could cause a hard fault by modifying the behavior to
+      enter an infinite loop instead.
+    - Resize the buffer used for storing numbers to prevent memory overflow.
+  + Modify "BFTM/TimeMeasure" example to avoid using printf("%f") and use nS for time display.
+  + Modify the example below, add assert_error() to debug.
+    - "SRAM_Overwrite/Watchpoint_Heap"
+    - "SRAM_Overwrite/Watchpoint_Stack"
+  + Update "ht32l5xxxx_conf.h"
+    - Support HT32 Library Lite mode.
+    - Add "RETARGET_UxART_CLKSEL" and "RETARGET_UxART_CLK_MANUAL" for "RETARGET_Configuration()".
+  + Update "ht32l5xxxx_usart.c/h", add "USART_BaudRateReg" and modify the "USART_Init()" function to support
+    HT32 Library Lite mode (remove C division library to reduce code size).
+    - Update project templates and "ht32_cm0plus_misc.c/.h", add "StackUsageAnalysisInit()" function to
+      initialize stack.
+  + Updated the following examples with ADC's TSDIV set to 8 for TSCLK = 187.5 kHz for proper ADC conversion timing.
+    - "ADC/OneShot_TempSensor_Interrupt"
+    - "ADC/OneShot_TempSensor_Polling"
+  + Update ADC register structure by adding a reserved field before TSCALR to align register offsets correctly.
+  + Update startup_CHIPNAME.s to remove the BootProcess function.
+  + Update "spi_flash.h" to refine "QSPI SIO2/SIO3 config pin" check logic
+
+  Others
+  + Update comment, format, typing error, and coding style.
+  + Modify "_CreateProjectScript.bat":
+    - Disable DELAYEDEXPANSION before calling "_ProjectConfig.bat".
+    - Add script for creating non-standard HT32-IDE projects.
+  + Update and sync create project related files ("_ProjectConfig.bat", "_ProjectConfig.ini").
+  + Update Create Project script to support HT32-IDE.
+  + Update afterbuild.bat functions of the GNU_ARM project.
+  + Add third-party tool usage notice and Gsar license declaration.
+  + Add LICENSE.md license declaration.
+  + Add "README.txt" to introduce the empty Application and BestModule directories.
+
+/*----------------------------------------------------------------------------------------------------------*/
+/* HT32_STD_L5xxxx_FWLib_V1.2_468                                                                           */
+/*----------------------------------------------------------------------------------------------------------*/
+  Release Date: 2024-07-11
+
+  Main Changes
+  + Fix memory definitions error in "ht50l3200u_libcfg.h".
+    - "#define LIBCFG_FLASH_SIZE (LIBCFG_FLASH_PAGESIZE * 63)"
+    - "#define LIBCFG_RAM_SIZE (1024 * 8)"
+  + Modify "void StackUsageAnalysisInit(void)". Added parameter "u32 addr" and reimplemented as
+    "void StackUsageAnalysisInit(u32 addr);"
+  + Rename WDT parameters.
+    - Old Name                          | New Name
+    - --------------------------------- | ----------------------------
+    - "MODE0_WDTSHLT_BOTH"              | "WDT_SLEEP_HALT_NONE"
+    - "MODE0_WDTSHLT_SLEEP"             | "WDT_SLEEP_HALT_DEEPSLEEP"
+    - "MODE0_WDTSHLT_SLEEP"             | "WDT_SLEEP_HALT_ALL"
+  + Update "system_ht32l5xxxx_01.c", change the Cache configuration process.
+  + Add new FMC API "void FLASH_ExecuteAtCmd(ControlStatus NewState);"
+  + Update "FMC/OperationNoHalt" examples. Added "FLASH_ExecuteAtCmd(DISABLE)" setting for ISP functionality
+    to execute in SRAM.
+  + Update CRC API. Customized "CRC_32()" setting for "HT50L3200U".
+
+  Others
+  + Updated comments, formatting, typing errors, and coding style.
+  + Modify "void FLASH_SetRemappingMode(FLASH_Vector FLASH_BOOT_x);". Changed parameter name from
+    "RemapMode" to "FLASH_BOOT_x".
+  + Modified comments to remind users about “Stack Usage Analysis” notification.
+  + Update CKCU API. Enhanced program stability with robustness settings for parameter "PCLKPrescaler"
+    in "CKCU_SetPeripPrescaler(..., CKCU_APBCLKPRE_TypeDef PCLKPrescaler)".
+  + Add a new CKCU parameter "#define CKCU_LSITRIM_ACCURACY_0P0         (0)" for CKCU API
+    "CKCU_LSIManualTrimIsReady(u32 ErrorCount)".
+  + Update "CRC/CRC-32" examples. Added a reminder in "void test_fun2(void)" by printf regarding the
+    difference in "CRC_32()" for the HT50L3200U series.
+  + Update I2C Master middleware, improve setting way and fix minor errors.
+  + Update the following middleware to support the BMduino Keil Driver.
+    "utilities/middleware/i2c_master.c"
+    "utilities/middleware/spi_module.c"
+    "utilities/middleware/spi_module.h"
+    "utilities/middleware/uart_module.c"
+    "utilities/middleware/uart_module.h"
+
+/*----------------------------------------------------------------------------------------------------------*/
+/* HT32_STD_L5xxxx_FWLib_V1.1_432                                                                           */
+/*----------------------------------------------------------------------------------------------------------*/
+  Release Date: 2024-06-21
+  Main Changes
+  + Add new device support.
+    - HT32L59046
+  + Add "ADC_LowVoltageModeCmd()" API of ADC. Fix the ADC LVM bit unexpected reset of
+    "ADC_RegularGroupConfig()" function.
+  + Fix the setting missing of "CKCU_GetPLLFrequency()" which causes the wrong PLL frequency value returned
+    when the PLL Clock Source Divider is not 1.
+  + Update "FLASH_CacheCmd()" and "FLASH_WaitForOperationEnd()" functions, disable interrupts and move cache
+    off control instructions to SRAM to fit the FMC specification.
+
+  Others
+  + Update comment, format, typing error, and coding style.
+  + Add and update HT50L3200U related declaration to improve maintainability.
+  + Update ht32l5xxxx_01.h
+    - Modify the preprocessor define of "__ALIGN4", "__PACKED_H", "__PACKED_F" for old Arm Compiler V6.
+    - Remove unused "HSIRCR" register define of PWRCU.
+  + Update "system_ht32l5xxxx_01.c".
+    - Fix the comments error of PLL out speed and PLL Clock Source Divider.
+    - Remove unused Flash wait state items of Keil Configuration Wizard.
+    - Fix the comments missing of WDT Sleep Halt mode
+    - Add "LSE_WAIT_READY" on/off feature.
+  + Update PWRCU IP Driver
+    - Add missing define, PWRCU_FLAG_LDONRDY" of "PWRCU_GetFlagStatus()" function.
+    - Change "RTCEN" to "VDDREN" to fit the document.
+    - Remove redundant define.
+  + Update CKCU IP Driver.
+    - Add LSITCR register reset of "CKCU_DeInit()".
+    - Modify "CKCU_LSIManualTrimInit()" and "CKCU_LSIManualTrimIsReady()", to prevent control bit transient
+      state if the register write protection is disabled already before calling those functions.
+  + Update xxTM IP Driver
+    - Remove redundant "TM_ClearOREFConfig()" function.
+    - Modify "CHICFR_CHF_MASK" define from 0xFF to 0xF to exclude the reserved bit of xxTM ICFR register.
+
+/*----------------------------------------------------------------------------------------------------------*/
+/* HT32_STD_L5xxxx_FWLib_V1.0_400                                                                           */
+/*----------------------------------------------------------------------------------------------------------*/
+  Release Date: 2024-04-15
+  Main Changes
+  + Add ADC API as below:
+    - "ADC_SetVoltageReferenceValue(HT_ADC_TypeDef* HT_ADCn, u8 VREFVALR)"
+    - "ADC_GetVoltageReferenceValue(HT_ADC_TypeDef* HT_ADCn)"
+    - "ADC_TempSensorIntConfig(HT_ADC_TypeDef* HT_ADCn, u32 ADC_INT_TP_x, ControlStatus NewState)"
+    - "ADC_TempSensorCalcTemperature (HT_ADC_TypeDef* HT_ADCn, u16 advrefp_mv, u16 ts_data, s32* temprature_mC)"
+    - "ADC_VREFOutputADVREFPCmd(HT_ADC_TypeDef* HT_ADCn, ControlStatus NewState)"
+  + Add the new symbol "ADC_CH_BANDGAP" for the internal ADC channel VBG.
+  + Remove ADC symbol "ADC_CH_IVREF".
+  + Update ADC API ADC_Reset(HT_ADC_TypeDef* HT_ADCn) to enhance the robustness of the API.
+  + Update ADC_Cmd(HT_ADC_TypeDef* HT_ADCn, ControlStatus NewState) to enhance the robustness of the API.
+  + Add CKCU API as below:
+    - "CKCU_LSIManualTrimInit(void)"
+    - "CKCU_LSIManualTrimCmd(ControlStatus Cmd)"
+    - "CKCU_SetHSIReadyCounter(u32 ErrorCount)"
+  + Remove the API CKCU_LSIManualTrimByHSICmd(), replace it by two APIs: "CKCU_LSIManualTrimInit()" and
+    "CKCU_LSIManualTrimCmd()" 
+  + Update CKCU API CKCU_LSIManualTrimIsReady(u32 ErrorCount), optimize the process.
+  + Update CKCU API CKCU_HSIAutoTrimCmd() & CKCU_HSIAutoTrimClkConfig(), incorporating the setting process for
+    TMSEL (selecting
+    automatic / manual trimming).
+  + Rename "I2C_SetOwnAddress1()" to "I2C_SetOwnAddress()", and fix the process.
+  + Update the API as below. Before setting specific bits in the register, those specific bits first.
+    - "ADC_TempSensorSetClockDivider(HT_ADC_TypeDef* HT_ADCn, u8 TempSensorClockDiv)"
+    - "CKCU_SetHSEGainMode(u32 GanMode)"
+  + Add new examples: 
+    - "ADC/BandgapVoltage"
+    - "ADC/OneShot_TempSensor_Polling"
+    - "ADC/OneShot_TempSensor_Interrupt"
+    - "ADC/VREFP_Powered_by_Internal_VREF"
+    - "CKCU/LSI_ManualTrim_By_HSI"
+    - "PWRCU/DeepPowerDownMode"
+    - "PWRCU/DeepSleepMode3"
+    - "PWRCU/RunMode_ULDO_Off"
+
+  Others
+  + Update comment, format, typing error, and coding style.
+  + Modify the SPI master transmission end process to set the SEL inactivity before waiting for the Bus Busy
+    flag to cleared, prevent mode switching before data transmission is complete.
+    - Modify example as below:
+      "SPI/SEL_Software"
+    - Modify the following API:
+      "SPI_DUALCmd(HT_SPI_TypeDef* SPIx, ControlStatus NewState)"
+      "SPI_GUARDTCmd(HT_SPI_TypeDef* SPIx, ControlStatus NewState)"
+      "SPI_GUARDTConfig(HT_SPI_TypeDef* SPIx, u32 Guard_Time)"
+  + Update "utilities/common/ring_buffer.c/h" to improve thread-safe issue.
+  + Update "ht32_board_config.h" in the example, Fix the pin definition error.
+  + Update GNU Arm makefile in the project_template, fix the batch file cannot find fromelf.exe issue.
+  + Remove useless '_projectConfig.ini' in the example.
+
+/*----------------------------------------------------------------------------------------------------------*/
+/* HT32_STD_L5xxxx_FWLib_V0.2.1_324                                                                         */
+/*----------------------------------------------------------------------------------------------------------*/
+  Release Date: 2024-03-15
+  Main Changes
+  + Add API as below.
+    - ADC_TempSensorCmd(HT_ADC_TypeDef* HT_ADCn, ControlStatus NewState) 
+    - ADC_TempSensorSetClockDivider(HT_ADC_TypeDef* HT_ADCn, u8 TempSensorClockDiv) 
+    - ADC_TempSensorStartOperateCmd(HT_ADC_TypeDef* HT_ADCn, ControlStatus NewState) 
+    - ADC_TempSensorGetFlagStatus(HT_ADC_TypeDef* HT_ADCn, u32 TempSensorFlag) 
+    - ADC_TempSensorClearFlag(HT_ADC_TypeDef* HT_ADCn, u32 TempSensorFlag) 
+    - ADC_TempSensorGetCalValue(HT_ADC_TypeDef* HT_ADCn, ADC_TempSernsorCalValue *TempSensorCalValue) 
+    - CKCU_SetHSEGainMode(u32 GanMode) 
+    - CKCU_LSIManualTrimByHSICmd(ControlStatus Cmd)
+    - CKCU_LSIManualTrimIsReady(CKCU_LSITrimErrorMargin_TypeDef ErrorMargin) 
+    - CKCU_LSIStopCmd(ControlStatus Cmd) 
+    - CKCU_LSEStopCmd(ControlStatus Cmd) 
+    - FLASH_LowVolReadCmd(ControlStatus NewState)
+    - PWRCU_ForceTurnOffULDO(void) 
+  + Add new examples:
+    - "ADC/AnalogWatchdog", "ADC/Discontinuous_EXTITrigger", "ADC/InternalReferenceVoltage_PWMTrigger",
+      "ADC/InternalReferenceVoltage_SWTrigger", "ADC/OneShot_PWMTrigger", "ADC/OneShot_PWMTrigger_with_Delay",
+      "ADC/OneShot_SWTrigger", "ADC/OneShot_SWTrigger_ByTM, "ADC/OneShot_TMTrigger_PDMA", "ADC/Two_Group_MaxCH"
+    - "BFTM/OneShot", "BFTM/TimeMeasure"
+    - "CKCU/Clock_Configuration_LSI", "CKCU/HSI_AutoTrim_By_LSE"
+    - "EXTI/Key_LED", "EXTI/Software_Trigger", "EXTI/WakeUp_DeepSleepMode1", "EXTI/WakeUp_SleepMode"
+    - "GPIO/Input", "GPIO/Output", "GPIO/PinLock"
+    - "I2C/7_bit_mode_master", "I2C/7_bit_mode_slave", "I2C/10_bit_mode", "I2C/EEPROM", "I2C/EEPROM_Simulate",
+      "I2C/Interrupt", "I2C/PDMA", "I2C/TouchKey"
+    - "PWRCU/BackupData", "PWRCU/BOD_LVD", "PWRCU/DeepSleepMode2", "PWRCU/PowerDown_RTC",
+      "PWRCU/PowerDown_WAKEUPPin", "PWRCU/PowerDownMode"
+    - "RTC/Calendar_BackupDomain", "RTC/Time_BackupDomain"
+    - "SPI/Flash", "SPI/Interrupt", "SPI/Master", "SPI/PDMA", "SPI/SEL_Software", "SPI/Slave"
+    - "TM/InputCapture", "TM/InternalTrigger", "TM/MatchOutputActive", "TM/MatchOutputToggle", "TM/PWM_Buzzer",
+      "TM/PWMInput", "TM/PWMOut_PDMA", "TM/PWMOut_PDMA_4CH", "TM/SinglePulseMode", "TM/TriggerCounter",
+      "TM/TriggerCounter_FrequencyMeasure", "TM/UpdateEvent"
+    - "USART/Interrupt", "USART/Interrupt_FIFO", "USART/PDMA", "USART/Retarget", "USART/RS485_NMM_Slave",
+      "USART/LIN_Master", "USART/LIN_Slave"
+  + Remove examples:
+    - "ADC/InternalReferenceVoltage_PWMTrigger" This series of VREF serves as the reference voltage for the ADC,
+       rather than being an internal channel of the ADC.
+    - "ADC/InternalReferenceVoltage_SWTrigger" For the same reason as mentioned above.
+
+  Others
+  + Update comment, format, typing error, and coding style.
+
+/*----------------------------------------------------------------------------------------------------------*/
+/* HT32_STD_L5xxxx_FWLib_V0.1.0_255                                                                         */
+/*----------------------------------------------------------------------------------------------------------*/
+  Release Date: 2024-02-27
+  Main Changes
+  + Initial version. Support series:
+    - HT32L52231/41
+    - HT32L62141
+    - HT50L3200U
+
+  Others
+  +
