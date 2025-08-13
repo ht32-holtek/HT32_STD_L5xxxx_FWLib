@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_crc.c
- * @version $Rev:: 438          $
- * @date    $Date:: 2024-07-01 #$
+ * @version $Rev:: 812          $
+ * @date    $Date:: 2025-08-01 #$
  * @brief   This file provides all the CRC firmware functions.
  *************************************************************************************************************
  * @attention
@@ -167,7 +167,7 @@ u32 CRC_32(u32 seed, u8 *buffer, u32 length)
 {
   /* CRC-32 poly: 0x04C11DB7                                                                                */
   HT_CRC->SDR = seed;
-  #if defined(USE_HT50L3200U)
+  #if (LIBCFG_CRC32_USERDEFINE)
   HT_CRC->CR = CRC_32_POLY | CRC_BYTE_RVS_WR;
   #else
   HT_CRC->CR = CRC_32_POLY | CRC_BIT_RVS_WR | CRC_BIT_RVS_SUM | CRC_BYTE_RVS_SUM | CRC_CMPL_SUM;

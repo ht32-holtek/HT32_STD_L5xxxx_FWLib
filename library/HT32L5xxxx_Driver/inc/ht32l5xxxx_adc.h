@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_adc.h
- * @version $Rev:: 430          $
- * @date    $Date:: 2024-06-21 #$
+ * @version $Rev:: 816          $
+ * @date    $Date:: 2025-08-04 #$
  * @brief   The header file of the ADC library.
  *************************************************************************************************************
  * @attention
@@ -96,6 +96,28 @@
 #endif
 
 #if defined(USE_HT50L3200U)
+#define ADC_CH_VTS                              (12)
+#define ADC_CH_BANDGAP                          (15)
+#define ADC_CH_GND_VREF                         (16)
+#define ADC_CH_MVDDA                            (17)
+#define IS_ADC_CH_INTERNAL1(CH)                 (((CH) == ADC_CH_VTS) || \
+                                                 ((CH) == ADC_CH_BANDGAP) || \
+                                                 ((CH) == ADC_CH_GND_VREF) || \
+                                                 ((CH) == ADC_CH_MVDDA))
+#endif
+
+#if defined(USE_HT50L3200W)
+#define ADC_CH_VTS                              (12)
+#define ADC_CH_BANDGAP                          (15)
+#define ADC_CH_GND_VREF                         (16)
+#define ADC_CH_MVDDA                            (17)
+#define IS_ADC_CH_INTERNAL1(CH)                 (((CH) == ADC_CH_VTS) || \
+                                                 ((CH) == ADC_CH_BANDGAP) || \
+                                                 ((CH) == ADC_CH_GND_VREF) || \
+                                                 ((CH) == ADC_CH_MVDDA))
+#endif
+
+#if defined(USE_HT50L3200X)
 #define ADC_CH_VTS                              (12)
 #define ADC_CH_BANDGAP                          (15)
 #define ADC_CH_GND_VREF                         (16)

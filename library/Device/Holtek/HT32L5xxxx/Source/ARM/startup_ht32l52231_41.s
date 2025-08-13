@@ -6,8 +6,8 @@
 ;/*                                                                                                         */
 ;/*-----------------------------------------------------------------------------------------------------------
 ;  File Name        : startup_ht32l5xxxx_01.s
-;  Version          : $Rev:: 405          $
-;  Date             : $Date:: 2024-06-12 #$
+;  Version          : $Rev:: 804          $
+;  Date             : $Date:: 2025-08-01 #$
 ;  Description      : Startup code.
 ;-----------------------------------------------------------------------------------------------------------*/
 
@@ -17,6 +17,8 @@
 ;   HT32L62141
 ;   HT50L3200U
 ;   HT32L59046
+;   HT50L3200W
+;   HT50L3200X
 
 ;/* <<< Use Configuration Wizard in Context Menu >>>                                                        */
 
@@ -28,6 +30,8 @@
 ;//      <37=> HT32L62141
 ;//      <37=> HT50L3200U
 ;//      <37=> HT32L59046
+;//      <37=> HT50L3200W
+;//      <37=> HT50L3200X
 
 USE_HT32_CHIP_SET   EQU     37 ; Notice that the project's Asm Define has the higher priority.
 
@@ -42,6 +46,8 @@ HT32L52231_41       EQU     37
 HT32L62141          EQU     37
 HT50L3200U          EQU     37
 HT32L59046          EQU     37
+HT50L3200W          EQU     37
+HT50L3200X          EQU     37
 
   IF USE_HT32_CHIP_SET=0
   ; Use project's Asm Define setting (default)

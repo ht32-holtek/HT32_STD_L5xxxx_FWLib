@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht50l3200u_libcfg.h
- * @version $Rev:: 449          $
- * @date    $Date:: 2024-07-09 #$
+ * @version $Rev:: 812          $
+ * @date    $Date:: 2025-08-01 #$
  * @brief   The library configuration file.
  *************************************************************************************************************
 * @attention
@@ -92,4 +92,5 @@
 #define LIBCFG_CKCU_LSI_LSE_STOP          (1)
 #define LIBCFG_CKCU_LSI_TRIM              (1)
 #define LIBCFG_CKCU_REFCLK_EXT_PIN        (1)
+#define LIBCFG_CRC32_USERDEFINE           (1)
 #endif

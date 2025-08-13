@@ -2,8 +2,8 @@
  * @file    library/Device/Holtek/HT32L5xxxx/Source/system_ht32l5xxxx_01.c
  * @brief   CMSIS Cortex-M0+ Device Peripheral Access Layer Source File
  *          for the Holtek HT32L5xxxx Device Series
- * @version $Rev:: 465          $
- * @date    $Date:: 2024-07-11 #$
+ * @version $Rev:: 804          $
+ * @date    $Date:: 2025-08-01 #$
  *
  * @note
  * Copyright (C) Holtek Semiconductor Inc. All rights reserved.
@@ -28,11 +28,15 @@
 //   HT32L62141
 //   HT50L3200U
 //   HT32L59046
+//   HT50L3200W
+//   HT50L3200X
 
 //#define USE_HT32L52231_41
 //#define USE_HT32L62141
 //#define USE_HT50L3200U
 //#define USE_HT32L59046
+//#define USE_HT50L3200W
+//#define USE_HT50L3200X
 
 /** @addtogroup CMSIS
   * @{

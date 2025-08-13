@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l_config.h
- * @version $Rev:: 430          $
- * @date    $Date:: 2024-06-21 #$
+ * @version $Rev:: 812          $
+ * @date    $Date:: 2025-08-01 #$
  * @brief   Configuration file of HT32.
  *************************************************************************************************************
  * @attention
@@ -55,6 +55,14 @@
 #endif
 #ifdef USE_MEM_HT32L59046
   #define USE_MEM_HT32L52241
+#endif
+
+#ifdef USE_HT50L3200W_SK
+  #define USE_HT32L52241_SK
+#endif
+
+#ifdef USE_HT50L3200X_SK
+  #define USE_HT32L52241_SK
 #endif
 
 #ifdef __cplusplus

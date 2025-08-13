@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_lib.h
- * @version $Rev:: 430          $
- * @date    $Date:: 2024-06-21 #$
+ * @version $Rev:: 812          $
+ * @date    $Date:: 2025-08-01 #$
  * @brief   The header file includes all the header files of the libraries.
  *************************************************************************************************************
  * @attention
@@ -34,14 +34,20 @@
 #endif
 
 /* Settings ------------------------------------------------------------------------------------------------*/
-#define HT32_FWLIB_VER                  (0x01002001)
-#define HT32_FWLIB_SVN                  (0x798)
+#define HT32_FWLIB_VER                  (0x01002002)
+#define HT32_FWLIB_SVN                  (0x837)
 
 #if defined(USE_HT32L52231_41)
   #include "ht32l52231_41_libcfg.h"
 #endif
 #if defined(USE_HT50L3200U)
   #include "ht50l3200u_libcfg.h"
+#endif
+#if defined(USE_HT50L3200W)
+  #include "ht50l3200w_libcfg.h"
+#endif
+#if defined(USE_HT50L3200X)
+  #include "ht50l3200x_libcfg.h"
 #endif
 /* Includes ------------------------------------------------------------------------------------------------*/
 #include <stdio.h>

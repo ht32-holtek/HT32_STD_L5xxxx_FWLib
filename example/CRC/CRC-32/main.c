@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    CRC/CRC-32/main.c
- * @version $Rev:: 438          $
- * @date    $Date:: 2024-07-01 #$
+ * @version $Rev:: 836          $
+ * @date    $Date:: 2025-08-07 #$
  * @brief   Main program.
  *************************************************************************************************************
  * @attention
@@ -178,8 +178,8 @@ void test_fun2(void)
   HW_sum = CRC_32(seed, crc_dat, sizeof(crc_dat));
   printf("sum = 0x%08X", HW_sum);
 
-  #if defined(USE_HT50L3200U)
-  printf(" (HT50L3200U use different setting of CRC_32() function!)");
+  #if defined(LIBCFG_CRC32_USERDEFINE)
+  printf(" (HT50L3200* series use different setting of CRC_32() function!)");
   #endif
 }
 

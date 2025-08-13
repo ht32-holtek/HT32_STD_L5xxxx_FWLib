@@ -1,8 +1,8 @@
 /***************************************************************************//**
  * @file    ht32l5xxxx_01.h
  * @brief   CMSIS Cortex-M0+ Device Peripheral Access Layer Header File
- * @version $Rev:: 489          $
- * @date    $Date:: 2024-11-07 #$
+ * @version $Rev:: 815          $
+ * @date    $Date:: 2025-08-04 #$
  *
  * @note
  * Copyright (C) Holtek Semiconductor Inc. All rights reserved.
@@ -43,17 +43,23 @@
  extern "C" {
 #endif
 
-#if !defined(USE_HT32L52231_41)  && \
-    !defined(USE_HT50L3200U)
+#if !defined(USE_HT32L52231_41) && \
+    !defined(USE_HT50L3200U) && \
+    !defined(USE_HT50L3200W) && \
+    !defined(USE_HT50L3200X)
 
   //#define USE_HT32L52231_41
   //#define USE_HT50L3200U
+  //#define USE_HT50L3200W
+  //#define USE_HT50L3200X
 
 #endif
 
 #if !defined(USE_NOCHIP) && \
     !defined(USE_HT32L52231_41) && \
-    !defined(USE_HT50L3200U)
+    !defined(USE_HT50L3200U) && \
+    !defined(USE_HT50L3200W) && \
+    !defined(USE_HT50L3200X)
 
   #error Please add "USE_HT32Lxxxxx_xx" define into C Preprocessor Symbols of the Project configuration.
 
@@ -832,6 +838,32 @@ typedef struct
 #endif
 
 #if defined(USE_HT50L3200U)
+#define HT_CRC                   ((HT_CRC_TypeDef *) HT_CRC_BASE)
+#define HT_DIV                   ((HT_DIV_TypeDef *) HT_DIV_BASE)
+#define HT_PDMA                  ((HT_PDMA_TypeDef *) HT_PDMA_BASE)
+#define HT_GPIOC                 ((HT_GPIO_TypeDef *) HT_GPIOC_BASE)
+#define HT_UART1                 ((HT_USART_TypeDef *) HT_UART1_BASE)
+#define HT_SPI1                  ((HT_SPI_TypeDef *) HT_SPI1_BASE)
+#define HT_I2C1                  ((HT_I2C_TypeDef *) HT_I2C1_BASE)
+#define HT_RTC                   ((HT_RTC_TypeDef *) HT_RTC_BASE)
+#define HT_MCTM0                 ((HT_TM_TypeDef *) HT_MCTM0_BASE)
+#define HT_BFTM1                 ((HT_BFTM_TypeDef *) HT_BFTM1_BASE)
+#endif
+
+#if defined(USE_HT50L3200W)
+#define HT_CRC                   ((HT_CRC_TypeDef *) HT_CRC_BASE)
+#define HT_DIV                   ((HT_DIV_TypeDef *) HT_DIV_BASE)
+#define HT_PDMA                  ((HT_PDMA_TypeDef *) HT_PDMA_BASE)
+#define HT_GPIOC                 ((HT_GPIO_TypeDef *) HT_GPIOC_BASE)
+#define HT_UART1                 ((HT_USART_TypeDef *) HT_UART1_BASE)
+#define HT_SPI1                  ((HT_SPI_TypeDef *) HT_SPI1_BASE)
+#define HT_I2C1                  ((HT_I2C_TypeDef *) HT_I2C1_BASE)
+#define HT_RTC                   ((HT_RTC_TypeDef *) HT_RTC_BASE)
+#define HT_MCTM0                 ((HT_TM_TypeDef *) HT_MCTM0_BASE)
+#define HT_BFTM1                 ((HT_BFTM_TypeDef *) HT_BFTM1_BASE)
+#endif
+
+#if defined(USE_HT50L3200X)
 #define HT_CRC                   ((HT_CRC_TypeDef *) HT_CRC_BASE)
 #define HT_DIV                   ((HT_DIV_TypeDef *) HT_DIV_BASE)
 #define HT_PDMA                  ((HT_PDMA_TypeDef *) HT_PDMA_BASE)

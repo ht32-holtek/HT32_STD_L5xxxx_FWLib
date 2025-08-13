@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_pwrcu.h
- * @version $Rev:: 423          $
- * @date    $Date:: 2024-06-19 #$
+ * @version $Rev:: 832          $
+ * @date    $Date:: 2025-08-06 #$
  * @brief   The header file of the Power Control Unit library.
  *************************************************************************************************************
  * @attention
@@ -60,6 +60,7 @@ typedef enum
   PWRCU_WAKEUP_PIN_1
   #endif
 } PWRCU_WUP_Enum;
+
 /**
  * @brief Wakeup pin trigger type selection
  */
@@ -72,6 +73,7 @@ typedef enum
   PWRCU_WUP_LOW_LEVEL,              /*!< Wakeup pin low-level sensitive                                     */
 } PWRCU_WUPTYPE_Enum;
 #endif
+
 /**
  * @brief Status of Power control unit
  */
@@ -114,6 +116,7 @@ typedef enum
   PWRCU_BODRIS_RESET = 0,  /*!< Reset the whole chip                                                        */
   PWRCU_BODRIS_INT   = 1,  /*!< Assert interrupt                                                            */
 } PWRCU_BODRIS_Enum;
+
 /**
  * @brief Sleep entry instruction selection
  */
@@ -122,6 +125,7 @@ typedef enum
   PWRCU_SLEEP_ENTRY_WFE = 0,          /*!< Sleep then wait for event                                        */
   PWRCU_SLEEP_ENTRY_WFI               /*!< Sleep then wait for interrupt                                    */
 } PWRCU_SLEEP_ENTRY_Enum;
+
 #if (LIBCFG_BAKREG)
 /**
  * @brief Backup register selection
@@ -140,6 +144,7 @@ typedef enum
   PWRCU_BAKREG_9
 } PWRCU_BAKREG_Enum;
 #endif
+
 /**
  * @brief Vdd15 power good source selection
  */
@@ -148,6 +153,7 @@ typedef enum
   PWRCU_V15RDYSC_V33ISO = 0, /*!< Vdd15 power good source come from BK_ISO bit in CKCU unit                 */
   PWRCU_V15RDYSC_V15POR      /*!< Vdd15 power good source come from Vdd15 power on reset                    */
 } PWRCU_V15RDYSC_Enum;
+
 /**
  * @brief LDO operation mode selection
  */

@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ebi_lcd.c
- * @version $Rev:: 748          $
- * @date    $Date:: 2025-07-25 #$
+ * @version $Rev:: 833          $
+ * @date    $Date:: 2025-08-06 #$
  * @brief   This file provides a set of functions needed to manage the
  *          communication between EBI peripheral and LCD.
  *************************************************************************************************************
@@ -82,7 +82,7 @@ static u16 Color_Back = 0xFFFF;  // default: White
   */
 
 /* Private function prototypes -----------------------------------------------------------------------------*/
-static void _delay(vu32 nCount);
+static void _delay(u32 nCount);
 
 /* Global functions ----------------------------------------------------------------------------------------*/
 /** @defgroup EBI_LCD_Exported_Functions EBI LCD exported functions
@@ -724,7 +724,7 @@ void LCD_SetDisplayArea(u16 Column, u16 Page, u16 Height, u16 Width)
   * @param  nCount: specifies the delay time length.
   * @retval None
   ***********************************************************************************************************/
-static void _delay(vu32 nCount)
+static void _delay(u32 nCount)
 {
   vu32 i;
 

@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ADC/Two_Group_MaxCH/ht32_board_config.h
- * @version $Rev:: 430          $
- * @date    $Date:: 2024-06-21 #$
+ * @version $Rev:: 816          $
+ * @date    $Date:: 2025-08-04 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -43,6 +43,14 @@
 #endif
 
 #if defined(USE_HT50L3200U)
+  #define LIBCFG_ADC_CH_TYPE                     (0)
+#endif
+
+#if defined(USE_HT50L3200W)
+  #define LIBCFG_ADC_CH_TYPE                     (0)
+#endif
+
+#if defined(USE_HT50L3200X)
   #define LIBCFG_ADC_CH_TYPE                     (0)
 #endif
 

@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    PWRCU/BOD_LVD/ht32_board_config.h
- * @version $Rev:: 430          $
- * @date    $Date:: 2024-06-21 #$
+ * @version $Rev:: 816          $
+ * @date    $Date:: 2025-08-04 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -38,6 +38,14 @@
 #endif
 
 #if defined(USE_HT50L3200U)
+  #define HTCFG_PWRCU_LVDS    (PWRCU_LVDS_2V95)
+#endif
+
+#if defined(USE_HT50L3200W)
+  #define HTCFG_PWRCU_LVDS    (PWRCU_LVDS_2V95)
+#endif
+
+#if defined(USE_HT50L3200X)
   #define HTCFG_PWRCU_LVDS    (PWRCU_LVDS_2V95)
 #endif
 

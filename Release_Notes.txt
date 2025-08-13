@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    Release_Notes.txt
- * @version V1.2.1
- * @date    2025-07-30
+ * @version V1.2.2
+ * @date    2025-08-07
  * @brief   The Release notes of HT32L Firmware Library.
  *************************************************************************************************************
  * @attention
@@ -31,6 +31,23 @@
 //   HT32L62141
 //   HT50L3200U
 //   HT32L59046
+//   HT50L3200W
+//   HT50L3200X
+
+/*----------------------------------------------------------------------------------------------------------*/
+/* HT32_STD_L5xxxx_FWLib_V1.2.2_837                                                                         */
+/*----------------------------------------------------------------------------------------------------------*/
+  Release Date: 2025-08-07
+  Main Changes
+  + Add new device support:
+    - HT50L3200W
+    - HT50L3200X
+
+  Others
+  + Update comment, format, typing error, and coding style.
+  + Change define "USE_HT50L3200U" to "LIBCFG_CRC32_USERDEFINE" for "CRC_32()" and "test_fun2()" functions
+    in "ht32l5xxxx_crc.c" and "CRC/CRC-32/main.c".
+  + Changed "_delay()" function parameter type from vu32 to u32 in the "spi_lcd.c" and "ebi_lcd.c".
 
 /*----------------------------------------------------------------------------------------------------------*/
 /* HT32_STD_L5xxxx_FWLib_V1.2.1_798                                                                         */
