@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ADC/Two_Group_MaxCH/ht32_board_config.h
- * @version $Rev:: 816          $
- * @date    $Date:: 2025-08-04 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -42,6 +42,10 @@
   #define LIBCFG_ADC_CH_TYPE                     (0)
 #endif
 
+#if defined(USE_HT32L52343_53)
+  #define LIBCFG_ADC_CH_TYPE                     (1)
+#endif
+
 #if defined(USE_HT50L3200U)
   #define LIBCFG_ADC_CH_TYPE                     (0)
 #endif
@@ -80,6 +84,34 @@
   #define HTCFG_ADCCH9_AFION                      7
   #define HTCFG_ADCCH10_AFION                     4
   #define HTCFG_ADCCH11_AFION                     5
+
+#elif (LIBCFG_ADC_CH_TYPE==1)
+  #define HTCFG_ADCCH0_GPIOX                      A
+  #define HTCFG_ADCCH1_GPIOX                      A
+  #define HTCFG_ADCCH2_GPIOX                      A
+  #define HTCFG_ADCCH3_GPIOX                      A
+  #define HTCFG_ADCCH4_GPIOX                      A
+  #define HTCFG_ADCCH5_GPIOX                      A
+  #define HTCFG_ADCCH6_GPIOX                      A
+  #define HTCFG_ADCCH7_GPIOX                      A
+  #define HTCFG_ADCCH8_GPIOX                      D
+  #define HTCFG_ADCCH9_GPIOX                      D
+  #define HTCFG_ADCCH10_GPIOX                     C
+  #define HTCFG_ADCCH11_GPIOX                     C
+
+  #define HTCFG_ADCCH0_AFION                      0
+  #define HTCFG_ADCCH1_AFION                      1
+  #define HTCFG_ADCCH2_AFION                      2
+  #define HTCFG_ADCCH3_AFION                      3
+  #define HTCFG_ADCCH4_AFION                      4
+  #define HTCFG_ADCCH5_AFION                      5
+  #define HTCFG_ADCCH6_AFION                      6
+  #define HTCFG_ADCCH7_AFION                      7
+  #define HTCFG_ADCCH8_AFION                      4
+  #define HTCFG_ADCCH9_AFION                      5
+  #define HTCFG_ADCCH10_AFION                     4
+  #define HTCFG_ADCCH11_AFION                     5
+
 #endif
 
 #define HTCFG_ADCCH0_GPIO_ID                      STRCAT2(GPIO_P,   HTCFG_ADCCH0_GPIOX)

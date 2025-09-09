@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    USART/LIN_Slave/ht32_board_config.h
- * @version $Rev:: 297          $
- * @date    $Date:: 2024-03-01 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -38,6 +38,14 @@
   #define _HTCFG_UART_TX_GPION                    4
   #define _HTCFG_UART_RX_GPIOX                    C
   #define _HTCFG_UART_RX_GPION                    5
+  #define HTCFG_UART_IPN                          USART0
+#endif
+
+#if defined(USE_HT32L52353_SK)
+  #define _HTCFG_UART_TX_GPIOX                    A
+  #define _HTCFG_UART_TX_GPION                    2
+  #define _HTCFG_UART_RX_GPIOX                    A
+  #define _HTCFG_UART_RX_GPION                    3
   #define HTCFG_UART_IPN                          USART0
 #endif
 

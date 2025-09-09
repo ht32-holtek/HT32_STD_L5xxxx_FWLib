@@ -2,8 +2,8 @@
  * @file    library/Device/Holtek/HT32L5xxxx/Source/system_ht32l5xxxx_01.c
  * @brief   CMSIS Cortex-M0+ Device Peripheral Access Layer Source File
  *          for the Holtek HT32L5xxxx Device Series
- * @version $Rev:: 804          $
- * @date    $Date:: 2025-08-01 #$
+ * @version $Rev:: 1030         $
+ * @date    $Date:: 2025-09-02 #$
  *
  * @note
  * Copyright (C) Holtek Semiconductor Inc. All rights reserved.
@@ -30,6 +30,9 @@
 //   HT32L59046
 //   HT50L3200W
 //   HT50L3200X
+//   HT32L52343, HT32L52353
+//   HT32L64041
+//   HT32L64141
 
 //#define USE_HT32L52231_41
 //#define USE_HT32L62141
@@ -37,6 +40,9 @@
 //#define USE_HT32L59046
 //#define USE_HT50L3200W
 //#define USE_HT50L3200X
+//#define USE_HT32L52343_53
+//#define USE_HT32L64041
+//#define USE_HT32L64141
 
 /** @addtogroup CMSIS
   * @{
@@ -370,9 +376,17 @@ void SystemInit(void)
 
   /* LSE initiation                                                                                         */
 #if (LSE_ENABLE == 1)
+  #if defined(USE_HT32L52343_53)
+  do {
+    HT_ERTC->WPR = 0x5FA0;
+    SetBit_BB((u32)(&HT_ERTC->CR0), 3);                         /* enable LSE                               */
+    HT_ERTC->WPR = 0xFFFF;
+  } while (!GetBit_BB((u32)(&HT_ERTC->CR0), 3));
+  #else
   do {
     SetBit_BB((u32)(&HT_RTC->CR), 3);                           /* enable LSE                               */
   } while (!GetBit_BB((u32)(&HT_RTC->CR), 3));
+  #endif
   #if (LSE_WAIT_READY == 1)
   while (!GetBit_BB((u32)(&HT_CKCU->GCSR), 4));                 /* wait for LSE ready                       */
   #endif
@@ -426,9 +440,12 @@ void SystemInit(void)
 
 
   /* Cache configuration                                                                                    */
+#if !defined(USE_HT32L52231_41)
+  HT_FLASH->CCR |= 0x200;
+#endif
   HT_FLASH->CCR = (HT_FLASH->CCR & 0xFFFFFFBF) | 0x100;
 #if (CACHE_ENABLE == 1)
-  HT_FLASH->CCR |= 0x101;                                       /* cache enable                             */
+  HT_FLASH->CCR |= 0x001;                                       /* cache enable                             */
   while (HT_FLASH->SR != 0x00000012);
 #endif
 

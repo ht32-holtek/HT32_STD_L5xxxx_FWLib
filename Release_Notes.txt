@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    Release_Notes.txt
- * @version V1.2.2
- * @date    2025-08-07
+ * @version V1.3.1
+ * @date    2025-09-08
  * @brief   The Release notes of HT32L Firmware Library.
  *************************************************************************************************************
  * @attention
@@ -33,6 +33,69 @@
 //   HT32L59046
 //   HT50L3200W
 //   HT50L3200X
+//   HT32L52343, HT32L52353
+//   HT32L64041
+//   HT32L64141
+
+/*----------------------------------------------------------------------------------------------------------*/
+/* HT32_STD_L5xxxx_FWLib_V1.3.1_1078                                                                        */
+/*----------------------------------------------------------------------------------------------------------*/
+  Release Date: 2025-09-08
+  Main Changes
+  + Add new device support:
+    - HT32L52343, HT32L52353
+    - HT32L64041
+    - HT32L64141
+  + Add new IP drivers.
+    - Advanced Encryption Standard, "ht32l5xxxx_aes.c/h".
+    - Comparator, "ht32l5xxxx_cmp.c/h".
+    - Enhanced Real Time Clock, "ht32l5xxxx_ertc.c/h".
+    - Random Number Generator, "ht32l5xxxx_rng.c/h".
+    - Smart Card Interface, "ht32l5xxxx_sci.c/h".
+    - Universal Serial Bus, "ht32l5xxxx_usbd.c/h".
+  + Update I2C Driver.
+    - Support No-Stretch mode when "LIBCFG_I2C_NOSTRETCH" is defined.
+    - Update sequential filter debounce width from 3 PCLK to 7 PCLK when "LIBCFG_I2C_SEQ3_7" is defined.
+    - Add "I2C_TXDRReset()" API to clear TXDR (effective only when "LIBCFG_I2C_NOSTRETCH" is defined).
+  + Update PWRCU Driver.
+    - Add "PWRCU_WakeupPinEraseBakRegCmd()" API to enable/disable erase-backup-register function triggered by the external WAKEUP pin.
+    - Add "PWRCU_WakeupPinTimeStampCmd()" API to enable/disable timestamp function triggered by the external WAKEUP pin.
+    - Add "PWRCU_SetWakeupPinFilter()" API to configure external WAKEUP pin filter count.
+    - Add "PWRCU_SetWakeupPinFilterPrescaler()" API to configure external WAKEUP pin sampling frequency.
+  + Add new examples as below.
+    - "AES/CBC"
+    - "AES/CTR"
+    - "AES/ECB"
+    - "CMP/ComparatorInterrupt"
+    - "ERTC/Calendar"
+    - "ERTC/WakeUp_Timer"
+    - "I2C/I2C_NoStretch_Slave"
+    - "I2C/I2C_NoStretch_Tester"
+    - "I2C/I2C_Support_I3C_Slave"
+    - "PWRCU/EraseBackupData"
+    - "RNG/GenerateRandom_Interrupt"
+    - "RNG/GenerateRandom_Polling"
+    - "SCI/ATR"
+    - "Tips/Checksum_CRC16"
+    - "Tips/StackOnTop"
+    - "USBD/HID_Demo"
+    - "USBD/HID_DemoVendorReport"
+    - "USBD/HID_KeyBoard"
+    - "USBD/HID_KeyBoard_Joystick"
+    - "USBD/HID_KeyBoard_Virtual_COM"
+    - "USBD/HID_Mouse"
+    - "USBD/Mass_Storage"
+    - "USBD/USB_Video"
+    - "USBD/Virtual_COM"
+  + Update "syscalls.c" as below.
+    - Modify "_sbrk()" to add heap size checks and overflow protection for safer memory allocation.
+    - Modify "scanf()" integer limit macros by prefixing them with "HT_" for clearer naming and improved type safety.
+
+  Others
+  + Update comment, format, typing error, and coding style.
+  + Update LICENSE.md license declaration.
+  + Add "Template_USB" into "project_template/IP/Template_USB".
+  + Add "HT32_USBD_Library" into "library".
 
 /*----------------------------------------------------------------------------------------------------------*/
 /* HT32_STD_L5xxxx_FWLib_V1.2.2_837                                                                         */

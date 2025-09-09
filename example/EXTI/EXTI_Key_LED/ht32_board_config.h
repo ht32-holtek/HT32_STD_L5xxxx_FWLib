@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    EXTI/EXTI_Key_LED/ht32_board_config.h
- * @version $Rev:: 277          $
- * @date    $Date:: 2024-02-29 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -41,6 +41,16 @@
   #define _HTCFG_KEY1_GPIOX                       C
   #define  HTCFG_KEY1_GPION                       2
   #define  HTCFG_KEY1_EXTI_IRQn                   EXTI2_IRQn
+#endif
+
+#if defined(USE_HT32L52353_SK)
+  #define _HTCFG_WAKE_GPIOX                       B
+  #define  HTCFG_WAKE_GPION                       12
+  #define  HTCFG_WAKE_EXTI_IRQn                   EXTI12_IRQn
+
+  #define _HTCFG_KEY1_GPIOX                       B
+  #define  HTCFG_KEY1_GPION                       7
+  #define  HTCFG_KEY1_EXTI_IRQn                   EXTI7_IRQn
 #endif
 
 #define HTCFG_WAKE_GPIO_CK                        STRCAT2(P,              _HTCFG_WAKE_GPIOX)

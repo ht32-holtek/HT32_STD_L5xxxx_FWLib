@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    I2C/EEPROM_Simulate/ht32l5xxxx_01_it.c
- * @version $Rev:: 294          $
- * @date    $Date:: 2024-03-01 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   This file provides all interrupt service routine.
  *************************************************************************************************************
  * @attention
@@ -212,7 +212,11 @@ void I2C0_IRQHandler(void)
 
       case I2C_MASTER_TRANSMITTER_MODE:
         /* Send the register address to I2C                                                                 */
+        #if (!LIBCFG_I2C_NOSTRETCH)
         HTCFG_I2C_MASTER_PORT->DR = I2CM_Transfer.RegAddr;
+        #else
+        HTCFG_I2C_MASTER_PORT->TXDR = I2CM_Transfer.RegAddr;
+        #endif
         break;
 
       case I2C_MASTER_TX_EMPTY:
@@ -220,7 +224,11 @@ void I2C0_IRQHandler(void)
         {
           if (I2CM_Transfer.Counter < I2CM_Transfer.Length)
           {
+            #if (!LIBCFG_I2C_NOSTRETCH)
             HTCFG_I2C_MASTER_PORT->DR = I2CM_Transfer.Buffer[I2CM_Transfer.Counter++];
+            #else
+            HTCFG_I2C_MASTER_PORT->TXDR = I2CM_Transfer.Buffer[I2CM_Transfer.Counter++];
+            #endif
           }
           else
           {
@@ -248,8 +256,12 @@ void I2C0_IRQHandler(void)
 
       case I2C_MASTER_RX_NOT_EMPTY:
         /* Receive data sent from I2C                                                                       */
-        i = I2CM_Transfer.Counter; 
+        i = I2CM_Transfer.Counter;
+        #if (!LIBCFG_I2C_NOSTRETCH)
         I2CM_Transfer.Buffer[i] = HTCFG_I2C_MASTER_PORT->DR;
+        #else
+        I2CM_Transfer.Buffer[i] = HTCFG_I2C_MASTER_PORT->RXDR;
+        #endif
         I2CM_Transfer.Counter++;
         if (I2CM_Transfer.Counter == I2CM_Transfer.Length - 1)
         {

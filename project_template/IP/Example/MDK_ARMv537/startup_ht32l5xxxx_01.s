@@ -6,8 +6,8 @@
 ;/*                                                                                                         */
 ;/*-----------------------------------------------------------------------------------------------------------
 ;  File Name        : startup_ht32l5xxxx_01.s
-;  Version          : $Rev:: 804          $
-;  Date             : $Date:: 2025-08-01 #$
+;  Version          : $Rev:: 1030         $
+;  Date             : $Date:: 2025-09-02 #$
 ;  Description      : Startup code.
 ;-----------------------------------------------------------------------------------------------------------*/
 
@@ -19,6 +19,9 @@
 ;   HT32L59046
 ;   HT50L3200W
 ;   HT50L3200X
+;   HT32L52343, HT32L52353
+;   HT32L64041
+;   HT32L64141
 
 ;/* <<< Use Configuration Wizard in Context Menu >>>                                                        */
 
@@ -32,6 +35,9 @@
 ;//      <37=> HT32L59046
 ;//      <37=> HT50L3200W
 ;//      <37=> HT50L3200X
+;//      <42=> HT32L52343/53
+;//      <37=> HT32L64041
+;//      <37=> HT32L64141
 
 USE_HT32_CHIP_SET   EQU     0 ; Notice that the project's Asm Define has the higher priority.
 
@@ -41,6 +47,10 @@ _HT32FWID           EQU     0xFFFFFFFF
 ;_HT32FWID           EQU     0x00162141
 ;_HT32FWID           EQU     0x0013200F
 ;_HT32FWID           EQU     0x00159046
+;_HT32FWID           EQU     0x00152343
+;_HT32FWID           EQU     0x00152353
+;_HT32FWID           EQU     0x00164041
+;_HT32FWID           EQU     0x00164141
 
 HT32L52231_41       EQU     37
 HT32L62141          EQU     37
@@ -48,6 +58,9 @@ HT50L3200U          EQU     37
 HT32L59046          EQU     37
 HT50L3200W          EQU     37
 HT50L3200X          EQU     37
+HT32L52343_53       EQU     42
+HT32L64041          EQU     37
+HT32L64141          EQU     37
 
   IF USE_HT32_CHIP_SET=0
   ; Use project's Asm Define setting (default)
@@ -68,7 +81,7 @@ USE_HT32_CHIP       EQU     USE_HT32_CHIP_SET
 ;//       <1=> On the top of the SRAM (The end of the SRAM)
 USE_STACK_ON_TOP    EQU     0
 
-;//   <o> Stack Size (in Bytes, must 8 byte aligned) <0-16384:8>
+;//   <o> Stack Size (in Bytes, must 8 byte aligned) <0-24576:8>
 ;//       <i> Only meanful when the Stack Location = "After the RW/ZI/Heap" (USE_STACK_ON_TOP = 0).
 Stack_Size          EQU     512
 
@@ -81,7 +94,7 @@ __initial_sp        EQU 0x20000000 + USE_LIBCFG_RAM_SIZE
 __initial_sp
   ENDIF
 
-;//   <o>  Heap Size (in Bytes) <0-16384:8>
+;//   <o>  Heap Size (in Bytes) <0-24576:8>
 Heap_Size           EQU     0
 
                     AREA    HEAP, NOINIT, READWRITE, ALIGN = 3
@@ -119,17 +132,33 @@ __Vectors
 
                     ; External Interrupt Handler
                     DCD  LVD_BOD_IRQHandler                 ;  00, 16, 0x040,
+                  IF (USE_HT32_CHIP=HT32L52343_53)
+                    DCD  ERTC_IRQHandler                    ;  01, 17, 0x044,
+                  ELSE
                     DCD  RTC_IRQHandler                     ;  01, 17, 0x044,
+                  ENDIF
                     DCD  FLASH_IRQHandler                   ;  02, 18, 0x048,
                     DCD  EVWUP_IRQHandler                   ;  03, 19, 0x04C,
                     DCD  EXTI0_1_IRQHandler                 ;  04, 20, 0x050,
                     DCD  EXTI2_3_IRQHandler                 ;  05, 21, 0x054,
                     DCD  EXTI4_15_IRQHandler                ;  06, 22, 0x058,
+                  IF (USE_HT32_CHIP=HT32L52343_53)
+                    DCD  COMP_IRQHandler                    ;  07, 23, 0x05C,
+                  ELSE
                     DCD  _RESERVED                          ;  07, 23, 0x05C,
+                  ENDIF
                     DCD  ADC_IRQHandler                     ;  08, 24, 0x060,
+                  IF (USE_HT32_CHIP=HT32L52343_53)
+                    DCD  AES_RNG_IRQHandler                 ;  09, 25, 0x064,
+                  ELSE
                     DCD  _RESERVED                          ;  09, 25, 0x064,
+                  ENDIF
                     DCD  MCTM0_IRQHandler                   ;  10, 26, 0x068,
+                  IF (USE_HT32_CHIP=HT32L52343_53)
+                    DCD  GPTM1_IRQHandler                   ;  11, 27, 0x06C,
+                  ELSE
                     DCD  _RESERVED                          ;  11, 27, 0x06C,
+                  ENDIF
                     DCD  GPTM0_IRQHandler                   ;  12, 28, 0x070,
                     DCD  SCTM0_IRQHandler                   ;  13, 29, 0x074,
                     DCD  SCTM1_IRQHandler                   ;  14, 30, 0x078,
@@ -142,12 +171,24 @@ __Vectors
                     DCD  SPI0_IRQHandler                    ;  21, 37, 0x094,
                     DCD  SPI1_IRQHandler                    ;  22, 38, 0x098,
                     DCD  USART0_IRQHandler                  ;  23, 39, 0x09C,
+                  IF (USE_HT32_CHIP=HT32L52343_53)
+                    DCD  USART1_IRQHandler                  ;  24, 40, 0x0A0,
+                  ELSE
                     DCD  _RESERVED                          ;  24, 40, 0x0A0,
+                  ENDIF
                     DCD  UART0_IRQHandler                   ;  25, 41, 0x0A4,
                     DCD  UART1_IRQHandler                   ;  26, 42, 0x0A8,
+                  IF (USE_HT32_CHIP=HT32L52343_53)
+                    DCD  SCI_IRQHandler                     ;  27, 43, 0x0AC,
+                  ELSE
                     DCD  _RESERVED                          ;  27, 43, 0x0AC,
+                  ENDIF
                     DCD  _RESERVED                          ;  28, 44, 0x0B0,
+                  IF (USE_HT32_CHIP=HT32L52343_53)
+                    DCD  USB_IRQHandler                     ;  29, 45, 0x0B4,
+                  ELSE
                     DCD  _RESERVED                          ;  29, 45, 0x0B4,
+                  ENDIF
                     DCD  PDMA_CH0_1_IRQHandler              ;  30, 46, 0x0B8,
                     DCD  PDMA_CH2_5_IRQHandler              ;  31, 47, 0x0BC,
 
@@ -190,14 +231,21 @@ SysTick_Handler     PROC
 
 Default_Handler     PROC
                     EXPORT  LVD_BOD_IRQHandler              [WEAK]
+                  IF (USE_HT32_CHIP=HT32L52343_53)
+                    EXPORT  ERTC_IRQHandler                 [WEAK]
+                  ELSE
                     EXPORT  RTC_IRQHandler                  [WEAK]
+                  ENDIF
                     EXPORT  FLASH_IRQHandler                [WEAK]
                     EXPORT  EVWUP_IRQHandler                [WEAK]
                     EXPORT  EXTI0_1_IRQHandler              [WEAK]
                     EXPORT  EXTI2_3_IRQHandler              [WEAK]
                     EXPORT  EXTI4_15_IRQHandler             [WEAK]
+                    EXPORT  COMP_IRQHandler                 [WEAK]
                     EXPORT  ADC_IRQHandler                  [WEAK]
+                    EXPORT  AES_RNG_IRQHandler              [WEAK]
                     EXPORT  MCTM0_IRQHandler                [WEAK]
+                    EXPORT  GPTM1_IRQHandler                [WEAK]
                     EXPORT  GPTM0_IRQHandler                [WEAK]
                     EXPORT  SCTM0_IRQHandler                [WEAK]
                     EXPORT  SCTM1_IRQHandler                [WEAK]
@@ -208,20 +256,30 @@ Default_Handler     PROC
                     EXPORT  SPI0_IRQHandler                 [WEAK]
                     EXPORT  SPI1_IRQHandler                 [WEAK]
                     EXPORT  USART0_IRQHandler               [WEAK]
+                    EXPORT  USART1_IRQHandler               [WEAK]
                     EXPORT  UART0_IRQHandler                [WEAK]
                     EXPORT  UART1_IRQHandler                [WEAK]
+                    EXPORT  SCI_IRQHandler                  [WEAK]
+                    EXPORT  USB_IRQHandler                  [WEAK]
                     EXPORT  PDMA_CH0_1_IRQHandler           [WEAK]
                     EXPORT  PDMA_CH2_5_IRQHandler           [WEAK]
 
 LVD_BOD_IRQHandler
+  IF (USE_HT32_CHIP=HT32L52343_53)
+ERTC_IRQHandler
+  ELSE
 RTC_IRQHandler
+  ENDIF
 FLASH_IRQHandler
 EVWUP_IRQHandler
 EXTI0_1_IRQHandler
 EXTI2_3_IRQHandler
 EXTI4_15_IRQHandler
+COMP_IRQHandler
 ADC_IRQHandler
+AES_RNG_IRQHandler
 MCTM0_IRQHandler
+GPTM1_IRQHandler
 GPTM0_IRQHandler
 SCTM0_IRQHandler
 SCTM1_IRQHandler
@@ -232,8 +290,11 @@ I2C1_IRQHandler
 SPI0_IRQHandler
 SPI1_IRQHandler
 USART0_IRQHandler
+USART1_IRQHandler
 UART0_IRQHandler
 UART1_IRQHandler
+SCI_IRQHandler
+USB_IRQHandler
 PDMA_CH0_1_IRQHandler
 PDMA_CH2_5_IRQHandler
                     B       .

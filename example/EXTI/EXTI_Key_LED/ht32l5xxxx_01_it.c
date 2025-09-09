@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    EXTI/EXTI_Key_LED/ht32l5xxxx_01_it.c
- * @version $Rev:: 367          $
- * @date    $Date:: 2024-04-02 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   This file provides all interrupt service routine.
  *************************************************************************************************************
  * @attention
@@ -191,6 +191,10 @@ void EXTI2_3_IRQHandler(void)
 void EXTI4_15_IRQHandler(void)
 {
   WAKEUP_Button_Process();
+
+  #if defined(USE_HT32L52353_SK)
+  KEY1_Button_Process();
+  #endif
 }
 
 /**

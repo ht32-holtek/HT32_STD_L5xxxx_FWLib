@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    GPIO/InputOutput/ht32_board_config.h
- * @version $Rev:: 234          $
- * @date    $Date:: 2024-02-27#$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28#$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -58,6 +58,33 @@
   #define HTCFG_OUTPUT_LED2_GPIO_PIN                            (GPIO_PIN_7)
   #define HTCFG_INPUT_WAKE_GPIO_PIN                             (GPIO_PIN_12)
   #define HTCFG_INPUT_KEY1_GPIO_PIN                             (GPIO_PIN_2)
+#endif
+
+#if defined(USE_HT32L52353_SK)
+  #define HTCFG_OUTPUT_LED1_ID                                  (GPIO_PC)
+  #define HTCFG_OUTPUT_LED2_ID                                  (GPIO_PA)
+  #define HTCFG_INPUT_WAKE_ID                                   (GPIO_PB)
+  #define HTCFG_INPUT_KEY1_ID                                   (GPIO_PB)
+
+  #define HTCFG_OUTPUT_LED1_CLK(CK)                             (CK.Bit.PC)
+  #define HTCFG_OUTPUT_LED2_CLK(CK)                             (CK.Bit.PA)
+  #define HTCFG_INPUT_WAKE_CLK(CK)                              (CK.Bit.PB)
+  #define HTCFG_INPUT_KEY1_CLK(CK)                              (CK.Bit.PB)
+
+  #define HTCFG_LED1                                            (HT_GPIOC)
+  #define HTCFG_LED2                                            (HT_GPIOA)
+  #define HTCFG_WAKE                                            (HT_GPIOB)
+  #define HTCFG_KEY1                                            (HT_GPIOB)
+
+  #define HTCFG_OUTPUT_LED1_AFIO_PIN                            (AFIO_PIN_14)
+  #define HTCFG_OUTPUT_LED2_AFIO_PIN                            (AFIO_PIN_15)
+  #define HTCFG_INPUT_WAKE_AFIO_PIN                             (AFIO_PIN_12)
+  #define HTCFG_INPUT_KEY1_AFIO_PIN                             (AFIO_PIN_7)
+
+  #define HTCFG_OUTPUT_LED1_GPIO_PIN                            (GPIO_PIN_14)
+  #define HTCFG_OUTPUT_LED2_GPIO_PIN                            (GPIO_PIN_15)
+  #define HTCFG_INPUT_WAKE_GPIO_PIN                             (GPIO_PIN_12)
+  #define HTCFG_INPUT_KEY1_GPIO_PIN                             (GPIO_PIN_7)
 #endif
 
 #ifdef __cplusplus

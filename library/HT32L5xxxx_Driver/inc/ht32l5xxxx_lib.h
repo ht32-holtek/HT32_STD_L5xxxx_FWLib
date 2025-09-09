@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_lib.h
- * @version $Rev:: 812          $
- * @date    $Date:: 2025-08-01 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   The header file includes all the header files of the libraries.
  *************************************************************************************************************
  * @attention
@@ -34,11 +34,14 @@
 #endif
 
 /* Settings ------------------------------------------------------------------------------------------------*/
-#define HT32_FWLIB_VER                  (0x01002002)
-#define HT32_FWLIB_SVN                  (0x837)
+#define HT32_FWLIB_VER                  (0x01003001)
+#define HT32_FWLIB_SVN                  (0x1078)
 
 #if defined(USE_HT32L52231_41)
   #include "ht32l52231_41_libcfg.h"
+#endif
+#if defined(USE_HT32L52343_53)
+  #include "ht32l52343_53_libcfg.h"
 #endif
 #if defined(USE_HT50L3200U)
   #include "ht50l3200u_libcfg.h"
@@ -76,6 +79,10 @@ void assert_error(u8* file, u32 line);
   #include "ht32l5xxxx_adc.h"
 #endif
 
+#if _AES && LIBCFG_AES
+  #include "ht32l5xxxx_aes.h"
+#endif
+
 #if _BFTM
   #include "ht32l5xxxx_bftm.h"
 #endif
@@ -88,8 +95,16 @@ void assert_error(u8* file, u32 line);
   #include "ht32l5xxxx_crc.h"
 #endif
 
+#if _CMP && LIBCFG_CMP
+  #include "ht32l5xxxx_cmp.h"
+#endif
+
 #if _DIV && LIBCFG_DIV
   #include "ht32l5xxxx_div.h"
+#endif
+
+#if _ERTC && LIBCFG_ERTC
+  #include "ht32l5xxxx_ertc.h"
 #endif
 
 #if _EXTI
@@ -127,12 +142,20 @@ void assert_error(u8* file, u32 line);
   #include "ht32l5xxxx_pwrcu.h"
 #endif
 
+#if _RNG
+  #include "ht32l5xxxx_rng.h"
+#endif
+
 #if _RSTCU
   #include "ht32l5xxxx_rstcu.h"
 #endif
 
-#if _RTC
+#if _RTC && !LIBCFG_ERTC
   #include "ht32l5xxxx_rtc.h"
+#endif
+
+#if _SCI
+  #include "ht32l5xxxx_sci.h"
 #endif
 
 #if _SCTM
@@ -147,6 +170,11 @@ void assert_error(u8* file, u32 line);
 #if _USART
   #include "ht32l5xxxx_usart.h"
 #endif
+
+#if _USB && LIBCFG_USBD
+  #include "ht32l5xxxx_usbd.h"
+#endif
+
 #if _WDT
   #include "ht32l5xxxx_wdt.h"
 #endif

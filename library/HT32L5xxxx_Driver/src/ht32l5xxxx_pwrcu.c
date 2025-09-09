@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_pwrcu.c
- * @version $Rev:: 424          $
- * @date    $Date:: 2024-06-19 #$
+ * @version $Rev:: 1074         $
+ * @date    $Date:: 2025-09-08 #$
  * @brief   This file provides all the Power Control Unit firmware functions.
  *************************************************************************************************************
  * @attention
@@ -94,6 +94,20 @@
 #define Set_LVDEWEN       SetBit_BB((u32)&HT_PWRCU->LVDCSR, 21)
 #define Reset_LVDEWEN     ResetBit_BB((u32)&HT_PWRCU->LVDCSR, 21)
 
+#if (LIBCFG_PWRCU_WAKEUPBKUCLR)
+#define Set_ERBKR         SetBit_BB((u32)&HT_PWRCU->CR1, 12)
+#define Reset_ERBKR       ResetBit_BB((u32)&HT_PWRCU->CR1, 12)
+#define Set_ERBKR1        SetBit_BB((u32)&HT_PWRCU->CR1, 13)
+#define Reset_ERBKR1      ResetBit_BB((u32)&HT_PWRCU->CR1, 13)
+#endif
+
+#if (LIBCFG_PWRCU_WAKEUPTIMESTAMP)
+#define Set_TMSTP         SetBit_BB((u32)&HT_PWRCU->CR1, 8)
+#define Reset_TMSTP       ResetBit_BB((u32)&HT_PWRCU->CR1, 8)
+#define Set_TMSTP1        SetBit_BB((u32)&HT_PWRCU->CR1, 9)
+#define Reset_TMSTP1      ResetBit_BB((u32)&HT_PWRCU->CR1, 9)
+#endif
+
 #define SLEEPDEEP_SET     0x04      /*!< Cortex SLEEPDEEP bit                                               */
 
 #define PWRRST_SET        0x1
@@ -104,6 +118,14 @@
 #define LVDS_MASK         0xFFB9FFFF
 #define VREG_V_MASK       0xF3FFFFFF
 #define VREG_M_MASK       0xFCFFFFFF
+
+#if (LIBCFG_PWRCU_WAKEUPFILTER)
+#define WUP0FLT_Pos       4
+#define WUP0FLT_MASK      0xFFFFFFCF
+#define WUP1FLT_Pos       6
+#define WUP1FLT_MASK      0xFFFFFF3F
+#define WUPFREQ_MASK      0xFFFFFFFC
+#endif
 /**
   * @}
   */
@@ -153,10 +175,18 @@ PWRCU_Status PWRCU_CheckReadyAccessed(void)
  *   - 0x0010 (PWRCU_FLAG_POR)                  : Power-on reset flag has been set.
  *   - 0x0100 (PWRCU_FLAG_WUP0)                 : External WAKEUP0 pin flag has been set.
  *   - 0x0200 (PWRCU_FLAG_WUP1)                 : External WAKEUP1 pin flag has been set.
+ *   - 0x1000 (PWRCU_FLAG_ERBKR0)               : WAKEUP0 pin Erase Backup Registers Flag has been set.
+ *   - 0x2000 (PWRCU_FLAG_ERBKR1)               : WAKEUP1 pin Erase Backup Registers Flag has been set.
  ************************************************************************************************************/
 u16 PWRCU_GetFlagStatus(void)
 {
+  #if defined(LIBCFG_PWRCU_STATUSREGWRITECLR)
+  u16 uFlagStatus = HT_PWRCU->SR;
+  HT_PWRCU->SR = uFlagStatus;
+  return uFlagStatus;
+  #else
   return HT_PWRCU->SR;
+  #endif
 }
 
 #if (LIBCFG_BAKREG)
@@ -668,6 +698,124 @@ void PWRCU_ForceTurnOffULDO(void)
 {
   Set_ULDOOFF;
 }
+
+#if (LIBCFG_PWRCU_WAKEUPBKUCLR)
+/*********************************************************************************************************//**
+ * @brief Enable or Disable the external WAKEUP pin trigger the erase backup register function.
+ * @param Pin: specify the WAKEUP pin number.
+ *   This parameter can be one of the following values:
+ *     @arg PWRCU_WAKEUP_PIN_0 :
+ *     @arg PWRCU_WAKEUP_PIN_1 :
+ * @param NewState: This parameter can be ENABLE or DISABLE.
+ * @retval None
+ ************************************************************************************************************/
+void PWRCU_WakeupPinEraseBakRegCmd(PWRCU_WUP_Enum Pin, ControlStatus NewState)
+{
+  /* Check the parameters                                                                                   */
+  Assert_Param(IS_PWRCU_WAKEUPPIN(Pin));
+  Assert_Param(IS_CONTROL_STATUS(NewState));
+
+  if (NewState != DISABLE)
+  {
+    if (Pin == PWRCU_WAKEUP_PIN_0)
+      Set_ERBKR;
+    else
+      Set_ERBKR1;
+  }
+  else
+  {
+    if (Pin == PWRCU_WAKEUP_PIN_0)
+      Reset_ERBKR;
+    else
+      Reset_ERBKR1;
+  }
+}
+#endif
+
+#if (LIBCFG_PWRCU_WAKEUPTIMESTAMP)
+/*********************************************************************************************************//**
+ * @brief Enable or Disable the external WAKEUP pin trigger the timestamp function.
+ * @param Pin: specify the WAKEUP pin number.
+ *   This parameter can be one of the following values:
+ *     @arg PWRCU_WAKEUP_PIN_0 :
+ *     @arg PWRCU_WAKEUP_PIN_1 :
+ * @param NewState: This parameter can be ENABLE or DISABLE.
+ * @retval None
+ ************************************************************************************************************/
+void PWRCU_WakeupPinTimeStampCmd(PWRCU_WUP_Enum Pin, ControlStatus NewState)
+{
+  /* Check the parameters                                                                                   */
+  Assert_Param(IS_PWRCU_WAKEUPPIN(Pin));
+  Assert_Param(IS_CONTROL_STATUS(NewState));
+
+  if (NewState != DISABLE)
+  {
+    if (Pin == PWRCU_WAKEUP_PIN_0)
+      Set_TMSTP;
+    else
+    {
+      Set_TMSTP1;
+    }
+  }
+  else
+  {
+    if (Pin == PWRCU_WAKEUP_PIN_0)
+      Reset_TMSTP;
+    else
+      Reset_TMSTP1;
+  }
+}
+#endif
+
+#if (LIBCFG_PWRCU_WAKEUPFILTER)
+/*********************************************************************************************************//**
+ * @brief Set the external WAKEUP pin filter count.
+ * @param Pin: specify the WAKEUP pin number.
+ *   This parameter can be one of the following values:
+ *     @arg PWRCU_WAKEUP_PIN_0   :
+ *     @arg PWRCU_WAKEUP_PIN_1   :
+ * @param Count: specify the WAKEUP pin signal filter count.
+ *   This parameter can be one of the following values:
+ *     @arg PWRCU_WUPFLT_COUNT2  :
+ *     @arg PWRCU_WUPFLT_COUNT4  :
+ *     @arg PWRCU_WUPFLT_COUNT8  :
+ *     @arg PWRCU_WUPFLT_COUNT16 :
+ * @retval None
+ ************************************************************************************************************/
+void PWRCU_SetWakeupPinFilter(PWRCU_WUP_Enum Pin , PWRCU_WUPFLT_Enum Count)
+{
+  /* Check the parameters                                                                                   */
+  Assert_Param(IS_PWRCU_WAKEUPPIN(Pin));
+  Assert_Param(IS_PWRCU_WUPFLT(Count));
+
+  if (Pin == PWRCU_WAKEUP_PIN_0)
+  {
+    HT_PWRCU->CR = (HT_PWRCU->CR & WUP0FLT_MASK) | (Count << WUP0FLT_Pos);
+  }
+  else
+  {
+    HT_PWRCU->CR = (HT_PWRCU->CR & WUP1FLT_MASK) | (Count << WUP1FLT_Pos);
+  }
+}
+
+/*********************************************************************************************************//**
+ * @brief Set the external WAKEUP pin Sampling Frequency.
+ * @param WAKEPRE: specify the WAKEUP pin sampling frequency prescaler.
+ *   This parameter can be one of the following values:
+ *     @arg PWRCU_WUPFREQ_DIV1 :
+ *     @arg PWRCU_WUPFREQ_DIV2 :
+ *     @arg PWRCU_WUPFREQ_DIV4 :
+ *     @arg PWRCU_WUPFREQ_DIV8 :
+ * @retval None
+ ************************************************************************************************************/
+void PWRCU_SetWakeupPinFilterPrescaler(PWRCU_WUPFREQ_Enum WAKEPRE)
+{
+  /* Check the parameters                                                                                   */
+  Assert_Param(IS_PWRCU_WUPFREQ(WAKEPRE));
+
+  HT_PWRCU->CR = (HT_PWRCU->CR & WUPFREQ_MASK) | WAKEPRE;
+}
+#endif
 
 /**
   * @}

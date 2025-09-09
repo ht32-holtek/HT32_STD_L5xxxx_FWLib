@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ADC/OneShot_PWMTrigger_with_Delay/ht32_board_config.h
- * @version $Rev:: 316          $
- * @date    $Date:: 2024-03-14 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -51,6 +51,24 @@
 
   #define _HTCFG_PWM_GPIOX                        A
   #define _HTCFG_PWM_GPION                        2
+  #define  HTCFG_PWM_TM_CH                        (TM_CH_2)
+#endif
+
+#if defined(USE_HT32L52353_SK)
+  #define _HTCFG_VR_GPIOX                         A
+  #define _HTCFG_VR_GPION                         6
+  #define _HTCFG_VR_ADC_CHN                       6
+
+  #define _HTCFG_AD2_GPIOX                        A
+  #define _HTCFG_AD2_GPION                        0
+  #define _HTCFG_AD2_ADC_CHN                      0
+
+  #define _HTCFG_AD3_GPIOX                        A
+  #define _HTCFG_AD3_GPION                        1
+  #define _HTCFG_AD3_ADC_CHN                      1
+
+  #define _HTCFG_PWM_GPIOX                        C
+  #define _HTCFG_PWM_GPION                        8
   #define  HTCFG_PWM_TM_CH                        (TM_CH_2)
 #endif
 

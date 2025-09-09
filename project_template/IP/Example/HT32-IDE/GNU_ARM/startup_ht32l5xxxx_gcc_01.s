@@ -6,8 +6,8 @@
 /*                                                                                                         */
 /*-----------------------------------------------------------------------------------------------------------
 ;  File Name        : startup_ht32l5xxxx_gcc_01.s
-;  Version          : $Rev:: 804          $
-;  Date             : $Date:: 2025-08-01 #$
+;  Version          : $Rev:: 1030         $
+;  Date             : $Date:: 2025-09-02 #$
 ;  Description      : Startup code.
 ;-----------------------------------------------------------------------------------------------------------*/
 
@@ -20,6 +20,9 @@
 ;   HT32L59046
 ;   HT50L3200W
 ;   HT50L3200X
+;   HT32L52343, HT32L52353
+;   HT32L64041
+;   HT32L64141
 */
 
 ;/* <<< Use Configuration Wizard in Context Menu >>>                                                        */
@@ -32,6 +35,9 @@
 ;//      <37=> HT32L59046
 ;//      <37=> HT50L3200W
 ;//      <37=> HT50L3200X
+;//      <42=> HT32L52343/53
+;//      <37=> HT32L64041
+;//      <37=> HT32L64141
 */
     .equ    USE_HT32_CHIP_SET, 0
 
@@ -42,6 +48,10 @@
     .equ _HT32FWID, 0x00162141
     .equ _HT32FWID, 0x0013200F
     .equ _HT32FWID, 0x00159046
+    .equ _HT32FWID, 0x00152343
+    .equ _HT32FWID, 0x00152353
+    .equ _HT32FWID, 0x00164041
+    .equ _HT32FWID, 0x00164141
 */
 
     .equ HT32L52231_41, 37
@@ -50,6 +60,9 @@
     .equ HT32L59046, 37
     .equ HT50L3200W, 37
     .equ HT50L3200X, 37
+    .equ HT32L52343_53, 42
+    .equ HT32L64041, 37
+    .equ HT32L64141, 37
 
   .if USE_HT32_CHIP_SET == 0
   .else
@@ -145,17 +158,33 @@ __interrupt_vector_cortex_m:
 
                     /* External Interrupt Handler                                                           */
                     .long  LVD_BOD_IRQHandler                 /*  00, 16, 0x040,                            */
+                  .if (USE_HT32_CHIP==HT32L52343_53)
+                    .long  ERTC_IRQHandler                     /*  01, 17, 0x044,                            */
+                  .else
                     .long  RTC_IRQHandler                     /*  01, 17, 0x044,                            */
+                  .endif
                     .long  FLASH_IRQHandler                   /*  02, 18, 0x048,                            */
                     .long  EVWUP_IRQHandler                   /*  03, 19, 0x04C,                            */
                     .long  EXTI0_1_IRQHandler                 /*  04, 20, 0x050,                            */
                     .long  EXTI2_3_IRQHandler                 /*  05, 21, 0x054,                            */
                     .long  EXTI4_15_IRQHandler                /*  06, 22, 0x058,                            */
+                  .if (USE_HT32_CHIP==HT32L52343_53)
+                    .long  COMP_IRQHandler                    /*  07, 23, 0x05C,                            */
+                  .else
                     .long  _RESERVED                          /*  07, 23, 0x05C,                            */
+                  .endif
                     .long  ADC_IRQHandler                     /*  08, 24, 0x060,                            */
+                  .if (USE_HT32_CHIP==HT32L52343_53)
+                    .long  AES_RNG_IRQHandler                 /*  09, 25, 0x064,                            */
+                  .else
                     .long  _RESERVED                          /*  09, 25, 0x064,                            */
+                  .endif
                     .long  MCTM0_IRQHandler                   /*  10, 26, 0x068,                            */
+                  .if (USE_HT32_CHIP==HT32L52343_53)
+                    .long  GPTM1_IRQHandler                   /*  11, 27, 0x06C,                            */
+                  .else
                     .long  _RESERVED                          /*  11, 27, 0x06C,                            */
+                  .endif
                     .long  GPTM0_IRQHandler                   /*  12, 28, 0x070,                            */
                     .long  SCTM0_IRQHandler                   /*  13, 29, 0x074,                            */
                     .long  SCTM1_IRQHandler                   /*  14, 30, 0x078,                            */
@@ -168,12 +197,24 @@ __interrupt_vector_cortex_m:
                     .long  SPI0_IRQHandler                    /*  21, 37, 0x094,                            */
                     .long  SPI1_IRQHandler                    /*  22, 38, 0x098,                            */
                     .long  USART0_IRQHandler                  /*  23, 39, 0x09C,                            */
+                  .if (USE_HT32_CHIP==HT32L52343_53)
+                    .long  USART1_IRQHandler                  /*  24, 40, 0x0A0,                            */
+                  .else
                     .long  _RESERVED                          /*  24, 40, 0x0A0,                            */
+                  .endif
                     .long  UART0_IRQHandler                   /*  25, 41, 0x0A4,                            */
                     .long  UART1_IRQHandler                   /*  26, 42, 0x0A8,                            */
+                  .if (USE_HT32_CHIP==HT32L52343_53)
+                    .long  SCI_IRQHandler                     /*  27, 43, 0x0AC,                            */
+                  .else
                     .long  _RESERVED                          /*  27, 43, 0x0AC,                            */
+                  .endif
                     .long  _RESERVED                          /*  28, 44, 0x0B0,                            */
+                  .if (USE_HT32_CHIP==HT32L52343_53)
+                    .long  USB_IRQHandler                     /*  27, 43, 0x0AC,                            */
+                  .else
                     .long  _RESERVED                          /*  29, 45, 0x0B4,                            */
+                  .endif
                     .long  PDMA_CH0_1_IRQHandler              /*  30, 46, 0x0B8,                            */
                     .long  PDMA_CH2_5_IRQHandler              /*  31, 47, 0x0BC,                            */
     .size   __interrupt_vector_cortex_m, . - __interrupt_vector_cortex_m
@@ -284,14 +325,21 @@ Default_Handler:
     .endm
 
     IRQ     LVD_BOD_IRQHandler
+  .if (USE_HT32_CHIP==HT32L52343_53)
+    IRQ     ERTC_IRQHandler
+  .else
     IRQ     RTC_IRQHandler
+  .endif
     IRQ     FLASH_IRQHandler
     IRQ     EVWUP_IRQHandler
     IRQ     EXTI0_1_IRQHandler
     IRQ     EXTI2_3_IRQHandler
     IRQ     EXTI4_15_IRQHandler
+    IRQ     COMP_IRQHandler
     IRQ     ADC_IRQHandler
+    IRQ     AES_RNG_IRQHandler
     IRQ     MCTM0_IRQHandler
+    IRQ     GPTM1_IRQHandler
     IRQ     GPTM0_IRQHandler
     IRQ     SCTM0_IRQHandler
     IRQ     SCTM1_IRQHandler
@@ -302,8 +350,11 @@ Default_Handler:
     IRQ     SPI0_IRQHandler
     IRQ     SPI1_IRQHandler
     IRQ     USART0_IRQHandler
+    IRQ     USART1_IRQHandler
     IRQ     UART0_IRQHandler
     IRQ     UART1_IRQHandler
+    IRQ     SCI_IRQHandler
+    IRQ     USB_IRQHandler
     IRQ     PDMA_CH0_1_IRQHandler
     IRQ     PDMA_CH2_5_IRQHandler
 

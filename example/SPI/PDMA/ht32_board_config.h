@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    SPI/PDMA/ht32_board_config.h
- * @version $Rev:: 283          $
- * @date    $Date:: 2024-02-29 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -39,6 +39,32 @@
 #endif
 
 #if defined(USE_HT32L52241_SK)
+  #define HTCFG_SPIM_SEL_GPIOX                    B
+  #define HTCFG_SPIM_SEL_GPION                    2
+  #define HTCFG_SPIM_SCK_GPIOX                    B
+  #define HTCFG_SPIM_SCK_GPION                    3
+  #define HTCFG_SPIM_MOSI_GPIOX                   B
+  #define HTCFG_SPIM_MOSI_GPION                   4
+  #define HTCFG_SPIM_MISO_GPIOX                   B
+  #define HTCFG_SPIM_MISO_GPION                   5
+  #define HTCFG_SPIM_IPN                          SPI0
+  #define HTCFG_SPIM_PDMA_TX                      PDMA_SPI0_TX
+  #define HTCFG_SPIM_PDMA_RX                      PDMA_SPI0_RX
+
+  #define HTCFG_SPIS_SEL_GPIOX                    A
+  #define HTCFG_SPIS_SEL_GPION                    14
+  #define HTCFG_SPIS_SCK_GPIOX                    A
+  #define HTCFG_SPIS_SCK_GPION                    15
+  #define HTCFG_SPIS_MOSI_GPIOX                   B
+  #define HTCFG_SPIS_MOSI_GPION                   0
+  #define HTCFG_SPIS_MISO_GPIOX                   B
+  #define HTCFG_SPIS_MISO_GPION                   1
+  #define HTCFG_SPIS_IPN                          SPI1
+  #define HTCFG_SPIS_PDMA_TX                      PDMA_SPI1_TX
+  #define HTCFG_SPIS_PDMA_RX                      PDMA_SPI1_RX
+#endif
+
+#if defined(USE_HT32L52353_SK)
   #define HTCFG_SPIM_SEL_GPIOX                    B
   #define HTCFG_SPIM_SEL_GPION                    2
   #define HTCFG_SPIM_SCK_GPIOX                    B

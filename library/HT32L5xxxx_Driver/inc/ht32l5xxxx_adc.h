@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_adc.h
- * @version $Rev:: 816          $
- * @date    $Date:: 2025-08-04 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   The header file of the ADC library.
  *************************************************************************************************************
  * @attention
@@ -85,6 +85,17 @@
 #endif
 
 #if defined(USE_HT32L52231_41)
+#define ADC_CH_VTS                              (12)
+#define ADC_CH_BANDGAP                          (15)
+#define ADC_CH_GND_VREF                         (16)
+#define ADC_CH_MVDDA                            (17)
+#define IS_ADC_CH_INTERNAL1(CH)                 (((CH) == ADC_CH_VTS) || \
+                                                 ((CH) == ADC_CH_BANDGAP) || \
+                                                 ((CH) == ADC_CH_GND_VREF) || \
+                                                 ((CH) == ADC_CH_MVDDA))
+#endif
+
+#if defined(USE_HT32L52343_53)
 #define ADC_CH_VTS                              (12)
 #define ADC_CH_BANDGAP                          (15)
 #define ADC_CH_GND_VREF                         (16)

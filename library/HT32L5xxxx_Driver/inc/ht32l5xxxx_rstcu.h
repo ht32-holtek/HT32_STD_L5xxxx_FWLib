@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_rstcu.h
- * @version $Rev:: 67           $
- * @date    $Date:: 2024-01-31 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   The header file of the Reset Control Unit library.
  *************************************************************************************************************
  * @attention
@@ -129,7 +129,7 @@ typedef union
     unsigned long            :1;    // Bit 18
     unsigned long            :1;    // Bit 19
     unsigned long            :1;    // Bit 20
-    unsigned long            :1;    // Bit 21
+    unsigned long RNG        :1;    // Bit 21
     unsigned long SLED0      :1;    // Bit 22
     unsigned long SLED1      :1;    // Bit 23
 
@@ -144,7 +144,7 @@ typedef union
 
     /* Definitions of APB peripheral 1 reset                                                                */
     unsigned long MCTM0      :1;    // Bit 0
-    unsigned long            :1;    // Bit 1
+    unsigned long MCTM1      :1;    // Bit 1
     unsigned long            :1;    // Bit 2
     unsigned long            :1;    // Bit 3
     unsigned long WDT        :1;    // Bit 4

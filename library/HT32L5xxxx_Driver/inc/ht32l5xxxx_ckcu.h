@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_ckcu.h
- * @version $Rev:: 460          $
- * @date    $Date:: 2024-07-11 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   The header file of the Clock Control Unit library.
  *************************************************************************************************************
  * @attention
@@ -436,7 +436,7 @@ typedef union
 
     /* Definitions of APB1 clock control                                                                    */
     unsigned long MCTM0      :1;    // Bit 0
-    unsigned long            :1;    // Bit 1
+    unsigned long MCTM1      :1;    // Bit 1
     unsigned long            :1;    // Bit 2
     unsigned long            :1;    // Bit 3
     unsigned long WDT        :1;    // Bit 4
@@ -451,7 +451,7 @@ typedef union
     unsigned long PWM0       :1;    // Bit 12
     unsigned long PWM1       :1;    // Bit 13
     unsigned long PWM2       :1;    // Bit 14
-    unsigned long            :1;    // Bit 15
+    unsigned long RNG        :1;    // Bit 15
 
     unsigned long BFTM0      :1;    // Bit 16
     unsigned long BFTM1      :1;    // Bit 17

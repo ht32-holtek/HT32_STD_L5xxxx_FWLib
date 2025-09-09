@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    TM/MatchOutputActive/ht32_board_config.h
- * @version $Rev:: 283          $
- * @date    $Date:: 2024-02-29 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -35,6 +35,13 @@
 
 /* Settings ------------------------------------------------------------------------------------------------*/
 #if defined(USE_HT32L52241_SK)
+  #define _HTCFG_COMP_GPIOX                       C
+  #define _HTCFG_COMP_GPION                       4
+  #define  HTCFG_COMP_IPN                         SCTM0
+  #define _HTCFG_COMP_CHN                         0
+#endif
+
+#if defined(USE_HT32L52353_SK)
   #define _HTCFG_COMP_GPIOX                       C
   #define _HTCFG_COMP_GPION                       4
   #define  HTCFG_COMP_IPN                         SCTM0

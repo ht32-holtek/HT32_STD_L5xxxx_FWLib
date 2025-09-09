@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    USART/Singlewire_Master/ht32_board_config.h
- * @version $Rev:: 495          $
- * @date    $Date:: 2025-02-17 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -36,6 +36,12 @@
 #if defined(USE_HT32L52241_SK)
   #define _HTCFG_UART_RTX_GPIOX                   C
   #define _HTCFG_UART_RTX_GPION                   5
+  #define HTCFG_UART_IPN                          USART0
+#endif
+
+#if defined(USE_HT32L52353_SK)
+  #define _HTCFG_UART_RTX_GPIOX                   A
+  #define _HTCFG_UART_RTX_GPION                   3
   #define HTCFG_UART_IPN                          USART0
 #endif
 

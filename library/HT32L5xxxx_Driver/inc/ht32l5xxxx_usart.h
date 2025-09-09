@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_usart.h
- * @version $Rev:: 600          $
- * @date    $Date:: 2025-06-11 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   The header file of the USART library.
  *************************************************************************************************************
  * @attention
@@ -172,7 +172,6 @@ typedef struct
 /**
   * @}
   */
-
 
 /* USART Synchronous Clock ---------------------------------------------------------------------------------*/
 /** @defgroup USART_Synchronous_Clock Definitions of USART synchronous clock

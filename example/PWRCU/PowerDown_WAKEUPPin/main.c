@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    PWRCU/PowerDown_WAKEUPPin/main.c
- * @version $Rev:: 291          $
- * @date    $Date:: 2024-03-01 #$
+ * @version $Rev:: 1055         $
+ * @date    $Date:: 2025-09-04 #$
  * @brief   Main program.
  *************************************************************************************************************
  * @attention
@@ -139,6 +139,13 @@ void LowPower_WAKEUPPin_Configuration(void)
   AFIO_GPxConfig(WAKEUP_BUTTON_GPIO_ID, WAKEUP_BUTTON_GPIO_PIN, AFIO_FUN_SYSTEM);
   GPIO_PullResistorConfig(GPIO_PORT[WAKEUP_BUTTON_GPIO_ID], WAKEUP_BUTTON_GPIO_PIN, GPIO_PR_DOWN);
   GPIO_InputConfig(GPIO_PORT[WAKEUP_BUTTON_GPIO_ID], WAKEUP_BUTTON_GPIO_PIN, ENABLE);
+
+  /* Set wakeup pin filter counter and prescaler                                                            */
+  #if (LIBCFG_PWRCU_WAKEUPFILTER)
+  PWRCU_SetWakeupPinFilter(PWRCU_WAKEUP_PIN_0, PWRCU_WUPFLT_COUNT2);
+  PWRCU_SetWakeupPinFilterPrescaler(PWRCU_WUPFREQ_DIV1);
+  #endif
+  PWRCU_WakeupPinCmd(ENABLE);
 }
 
 /*********************************************************************************************************//**

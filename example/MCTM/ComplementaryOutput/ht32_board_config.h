@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    MCTM/ComplementaryOutput/ht32_board_config.h
- * @version $Rev:: 102          $
- * @date    $Date:: 2024-02-02 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -34,6 +34,27 @@
 
 /* Settings ------------------------------------------------------------------------------------------------*/
 #if defined(USE_HT32L52241_SK)
+  #define  HTCFG_MCTM_CH0_GPIO_ID                      (GPIO_PA)
+  #define  HTCFG_MCTM_CH0N_GPIO_ID                     (GPIO_PA)
+  #define  HTCFG_MCTM_CH1_GPIO_ID                      (GPIO_PB)
+  #define  HTCFG_MCTM_CH1N_GPIO_ID                     (GPIO_PB)
+  #define  HTCFG_MCTM_CH2_GPIO_ID                      (GPIO_PB)
+  #define  HTCFG_MCTM_CH2N_GPIO_ID                     (GPIO_PB)
+  #define _HTCFG_MCTM_BREAK_GPIOX                      B
+
+  #define  HTCFG_MCTM_CH0_AFIO_PIN                     (AFIO_PIN_14)
+  #define  HTCFG_MCTM_CH0N_AFIO_PIN                    (AFIO_PIN_15)
+  #define  HTCFG_MCTM_CH1_AFIO_PIN                     (AFIO_PIN_0)
+  #define  HTCFG_MCTM_CH1N_AFIO_PIN                    (AFIO_PIN_1)
+  #define  HTCFG_MCTM_CH2_AFIO_PIN                     (AFIO_PIN_2)
+  #define  HTCFG_MCTM_CH2N_AFIO_PIN                    (AFIO_PIN_3)
+  #define  HTCFG_MCTM_BREAK_AFIO_PIN                   (AFIO_PIN_4)
+
+  #define  HTCFG_MCTM_RELOAD                           (48000000/2000)
+  #define  HTCFG_MCTM_DEAD_TIME                        (72)
+#endif
+
+#if defined(USE_HT32L52353_SK)
   #define  HTCFG_MCTM_CH0_GPIO_ID                      (GPIO_PA)
   #define  HTCFG_MCTM_CH0N_GPIO_ID                     (GPIO_PA)
   #define  HTCFG_MCTM_CH1_GPIO_ID                      (GPIO_PB)

@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    TM/PWM_Buzzer/ht32_board_config.h
- * @version $Rev:: 364          $
- * @date    $Date:: 2024-04-01 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -45,6 +45,13 @@
   #define _HTCFG_BUZZER_GPION                     9
   #define  HTCFG_BUZZER_IPN                       MCTM0
   #define  HTCFG_BUZZER_CHN                       3
+#endif
+
+#if defined(USE_HT32L52353_SK)
+  #define _HTCFG_BUZZER_GPIOX                     A
+  #define _HTCFG_BUZZER_GPION                     10
+  #define  HTCFG_BUZZER_IPN                       MCTM0
+  #define  HTCFG_BUZZER_CHN                       1
 #endif
 
 #ifdef __cplusplus

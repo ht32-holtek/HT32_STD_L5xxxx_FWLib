@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    I2C/10_bit_mode/ht32_board_config.h
- * @version $Rev:: 294          $
- * @date    $Date:: 2024-03-01 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -35,6 +35,20 @@
 /* Settings ------------------------------------------------------------------------------------------------*/
 
 #if defined(USE_HT32L52241_SK)
+  #define I2C_MASTER_PORT            (HT_I2C1)
+  #define I2C_MASTER_SCL_GPIO_ID     (GPIO_PA)
+  #define I2C_MASTER_SCL_AFIO_PIN    (AFIO_PIN_0)
+  #define I2C_MASTER_SDA_GPIO_ID     (GPIO_PA)
+  #define I2C_MASTER_SDA_AFIO_PIN    (AFIO_PIN_1)
+
+  #define I2C_SLAVE_PORT             (HT_I2C0)
+  #define I2C_SLAVE_SCL_GPIO_ID      (GPIO_PB)
+  #define I2C_SLAVE_SCL_AFIO_PIN     (AFIO_PIN_0)
+  #define I2C_SLAVE_SDA_GPIO_ID      (GPIO_PB)
+  #define I2C_SLAVE_SDA_AFIO_PIN     (AFIO_PIN_1)
+#endif
+
+#if defined(USE_HT32L52353_SK)
   #define I2C_MASTER_PORT            (HT_I2C1)
   #define I2C_MASTER_SCL_GPIO_ID     (GPIO_PA)
   #define I2C_MASTER_SCL_AFIO_PIN    (AFIO_PIN_0)

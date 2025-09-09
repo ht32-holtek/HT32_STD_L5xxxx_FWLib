@@ -1,8 +1,8 @@
 /***************************************************************************//**
  * @file    ht32l5xxxx_01.h
  * @brief   CMSIS Cortex-M0+ Device Peripheral Access Layer Header File
- * @version $Rev:: 815          $
- * @date    $Date:: 2025-08-04 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  *
  * @note
  * Copyright (C) Holtek Semiconductor Inc. All rights reserved.
@@ -24,6 +24,7 @@
 // Supported Device
 // ========================================
 //   HT32L52231, HT32L52241
+//   HT32L52343, HT32L52353
 
 /** @addtogroup CMSIS
   * @{
@@ -46,12 +47,14 @@
 #if !defined(USE_HT32L52231_41) && \
     !defined(USE_HT50L3200U) && \
     !defined(USE_HT50L3200W) && \
-    !defined(USE_HT50L3200X)
+    !defined(USE_HT50L3200X) && \
+    !defined(USE_HT32L52343_53)
 
   //#define USE_HT32L52231_41
   //#define USE_HT50L3200U
   //#define USE_HT50L3200W
   //#define USE_HT50L3200X
+  //#define USE_HT32L52343_53
 
 #endif
 
@@ -59,7 +62,8 @@
     !defined(USE_HT32L52231_41) && \
     !defined(USE_HT50L3200U) && \
     !defined(USE_HT50L3200W) && \
-    !defined(USE_HT50L3200X)
+    !defined(USE_HT50L3200X) && \
+    !defined(USE_HT32L52343_53)
 
   #error Please add "USE_HT32Lxxxxx_xx" define into C Preprocessor Symbols of the Project configuration.
 
@@ -121,14 +125,27 @@ typedef enum IRQn
 
 /******  HT32 Specific Interrupt Numbers ***************************************                            */
   LVD_BOD_IRQn            = 0,      /*!< Low voltage & Brown-out detection interrupt                        */
+  #if defined(USE_HT32L52343_53)
+  ERTC_IRQn               = 1,      /*!< ERTC Wake-up Interrupt                                             */
+  #else
   RTC_IRQn                = 1,      /*!< RTC Wake-up Interrupt                                              */
+  #endif
   FLASH_IRQn              = 2,      /*!< FLASH global Interrupt                                             */
   EVWUP_IRQn              = 3,      /*!< EXTI Event Wake-up & WAKEUP pin Interrupt                          */
   EXTI0_1_IRQn            = 4,      /*!< EXTI0-1 Line detection Interrupt                                   */
   EXTI2_3_IRQn            = 5,      /*!< EXTI2-3 Line detection Interrupt                                   */
   EXTI4_15_IRQn           = 6,      /*!< EXTI4-15 Line detection Interrupt                                  */
+  #if defined(USE_HT32L52343_53)
+  COMP_IRQn               = 7,     /*!< Comparator global Interrupt                                         */
+  #endif
   ADC0_IRQn               = 8,      /*!< ADC Interrupt                                                      */
+  #if defined(USE_HT32L52343_53)
+  AES_RNG_IRQn            = 9,      /*!< AES & RNG global Interrupt                                          */
+  #endif
   MCTM0_IRQn              = 10,     /*!< Motor Control Timer interrupt                                      */
+  #if defined(USE_HT32L52343_53)
+  GPTM1_IRQn              = 11,     /*!< General-Purpose Timer1 Interrupt                                   */
+  #endif
   GPTM0_IRQn              = 12,     /*!< General-Purpose Timer Interrupt                                    */
   SCTM0_IRQn              = 13,     /*!< Single Channel Timer0 Interrupt                                    */
   SCTM1_IRQn              = 14,     /*!< Single Channel Timer1 Interrupt                                    */
@@ -139,8 +156,17 @@ typedef enum IRQn
   SPI0_IRQn               = 21,     /*!< SPI0 global Interrupt                                              */
   SPI1_IRQn               = 22,     /*!< SPI1 global Interrupt                                              */
   USART0_IRQn             = 23,     /*!< USART global Interrupt                                             */
+  #if defined(USE_HT32L52343_53)
+  USART1_IRQn             = 24,     /*!< USART1 global Interrupt                                            */
+  #endif
   UART0_IRQn              = 25,     /*!< UART0 global Interrupt                                             */
   UART1_IRQn              = 26,     /*!< UART1 global Interrupt                                             */
+  #if defined(USE_HT32L52343_53)
+  SCI_IRQn                = 27,     /*!< Smart Card interface interrupt                                     */
+  #endif
+  #if defined(USE_HT32L52343_53)
+  USB_IRQn                = 29,     /*!< USB interrupt                                                      */
+  #endif
   PDMACH0_1_IRQn          = 30,     /*!< PDMA channel 0-1 interrupt                                         */
   PDMACH2_5_IRQn          = 31,     /*!< PDMA channel 2-5 interrupt                                         */
 } IRQn_Type;
@@ -168,6 +194,13 @@ typedef enum IRQn
 #define PDMACH3_IRQn PDMACH2_5_IRQn
 #define PDMACH4_IRQn PDMACH2_5_IRQn
 #define PDMACH5_IRQn PDMACH2_5_IRQn
+
+#if defined(USE_HT32L52343_53)
+  #define AES_IRQn               AES_RNG_IRQn
+  #define AES_IRQHandler         AES_RNG_IRQHandler
+  #define RNG_IRQn               AES_RNG_IRQn
+  #define RNG_IRQHandler         AES_RNG_IRQHandler
+#endif
 
 /**
   * @}
@@ -406,6 +439,21 @@ typedef struct
 
 
 /**
+ * @brief Comparator
+ */
+typedef struct
+{
+                                 /* CMP0: 0x40058000                                                        */
+                                 /* CMP1: 0x40058100                                                        */
+                                 /* CMP2: 0x40058200                                                        */
+  __IO uint32_t CR;              /*!< 0x000          Comparator Control Register                            */
+  __IO uint32_t VALR;            /*!< 0x004          Comparator Voltage Reference Value Register            */
+  __IO uint32_t IER;             /*!< 0x008          Comparator Interrupt Enable Register                   */
+  __IO uint32_t TFR;             /*!< 0x00C          Comparator Transition Flag Register                    */
+} HT_CMP_TypeDef;
+
+
+/**
  * @brief General Purpose I/O
  */
 typedef struct
@@ -431,6 +479,27 @@ typedef struct
 
 
 /**
+ * @brief Random Number Generation
+ */
+typedef struct
+{
+                                 /* RNG: 0x40021000                                                         */
+  __IO uint32_t    CR;           /*!< 0x000          RNG Control Register                                   */
+  __IO uint32_t    SR;           /*!< 0x004          RNG Status Register                                    */
+  __IO uint32_t    IER;          /*!< 0x008          RNG Interrupt Enable Register                          */
+  __IO uint32_t    ISR;          /*!< 0x00C          RNG Interrupt Status Register                          */
+  __IO uint32_t    DR0;          /*!< 0x010          RNG Data Register0                                     */
+  __IO uint32_t    DR1;          /*!< 0x014          RNG Data Register1                                     */
+  __IO uint32_t    DR2;          /*!< 0x018          RNG Data Register2                                     */
+  __IO uint32_t    DR3;          /*!< 0x01C          RNG Data Register3                                     */
+  __IO uint32_t    DR4;          /*!< 0x020          RNG Data Register4                                     */
+  __IO uint32_t    DR5;          /*!< 0x024          RNG Data Register5                                     */
+  __IO uint32_t    OBIT;         /*!< 0x028          RNG Output Bit Interval Time Register                  */
+  __IO uint32_t    AUCO;         /*!< 0x02C          RNG Autocorrelation Register                           */
+} HT_RNG_TypeDef;
+
+
+/**
  * @brief AFIO
  */
 typedef struct
@@ -441,6 +510,9 @@ typedef struct
   __IO uint32_t GPACFGR[2];      /*!< 0x020         GPIO Port A Configuration Register 0 ~ 1                */
   __IO uint32_t GPBCFGR[2];      /*!< 0x028         GPIO Port B Configuration Register 0 ~ 1                */
   __IO uint32_t GPCCFGR[2];      /*!< 0x030         GPIO Port C Configuration Register 0 ~ 1                */
+  #if defined(USE_HT32L52343_53)
+  __IO uint32_t GPDCFGR[2];      /*!< 0x038         GPIO Port D Configuration Register 0 ~ 1                */
+  #endif
 } HT_AFIO_TypeDef;
 
 
@@ -490,11 +562,18 @@ typedef struct
   __IO uint32_t SR;              /*!< 0x00C         Status Register                                         */
   __IO uint32_t SHPGR;           /*!< 0x010         SCL High Period Generation Register                     */
   __IO uint32_t SLPGR;           /*!< 0x014         SCL Low Period Generation Register                      */
+  #if defined(USE_HT32L52343_53)
+  __IO uint32_t TXDR;            /*!< 0x018         TX Data Register                                        */
+  #else
   __IO uint32_t DR;              /*!< 0x018         Data Register                                           */
+  #endif
   __IO uint32_t TAR;             /*!< 0x01C         Target Register                                         */
   __IO uint32_t ADDMR;           /*!< 0x020         Address Mask Register                                   */
   __IO uint32_t ADDSR;           /*!< 0x024         Address Snoop Register                                  */
   __IO uint32_t TOUT;            /*!< 0x028         Timeout Register                                        */
+  #if defined(USE_HT32L52343_53)
+  __IO uint32_t RXDR;            /*!< 0x02C         RX Data Register                                        */
+  #endif
 } HT_I2C_TypeDef;
 
 
@@ -513,7 +592,36 @@ typedef struct
   __IO uint32_t CSR;             /*!< 0x018         Clock Selection Register                                */
 } HT_WDT_TypeDef;
 
-
+#if defined(USE_HT32L52343_53)
+/**
+ * @brief Enhanced Real-Time Clock
+ */
+typedef struct
+{
+                                 /* ERTC: 0x4006A000                                                        */
+  __IO uint32_t CAR0;            /*!< 0x000         ERTC Calendar Register 0                                */
+  __IO uint32_t CAR1;            /*!< 0x004         ERTC Calendar Register 1                                */
+  __IO uint32_t CAR2;            /*!< 0x008         ERTC Calendar Register 2                                */
+  __IO uint32_t SSR;             /*!< 0x00C         ERTC Sub Second Register                                */
+  __IO uint32_t CR0;             /*!< 0x010         ERTC Control Register 0                                 */
+  __IO uint32_t CR1;             /*!< 0x014         ERTC Control Register 1                                 */
+  __IO uint32_t SR;              /*!< 0x018         ERTC Status Register                                    */
+  __IO uint32_t APSC;            /*!< 0x01C         ERTC Asynchronous Prescaler Register                    */
+  __IO uint32_t SPSC;            /*!< 0x020         ERTC Synchronous Prescaler Register                     */
+  __IO uint32_t WPR;             /*!< 0x024         ERTC Write Protect Register                             */
+  __IO uint32_t WUTR;            /*!< 0x028         ERTC Wakeup Timer Register                              */
+  __IO uint32_t CALR;            /*!< 0x02C         ERTC Calibration Register                               */
+  __IO uint32_t ALMR0;           /*!< 0x030         ERTC Alarm Register 0                                   */
+  __IO uint32_t ALMR1;           /*!< 0x034         ERTC Alarm Register 1                                   */
+  __IO uint32_t ALMSSMR;         /*!< 0x038         ERTC Alarm Sub Second Mask Register                     */
+  __IO uint32_t ALMSSR;          /*!< 0x03C         ERTC Alarm Sub Second Register                          */
+  __IO uint32_t SHIFTCR;         /*!< 0x040         ERTC Shift Control Register                             */
+  __IO uint32_t TSR0;            /*!< 0x044         ERTC Timestamp Register 0                               */
+  __IO uint32_t TSR1;            /*!< 0x048         ERTC Timestamp Register 1                               */
+  __IO uint32_t TSR2;            /*!< 0x04C         ERTC Timestamp Register 2                               */
+  __IO uint32_t TSSSR;           /*!< 0x050         ERTC Timestamp Sub Second Register                      */
+} HT_ERTC_TypeDef;
+#else
 /**
  * @brief Real-Time Clock
  */
@@ -526,7 +634,7 @@ typedef struct
   __IO uint32_t SR;              /*!< 0x00C         RTC Status Register                                     */
   __IO uint32_t IWEN;            /*!< 0x010         RTC Interrupt/Wake-up Enable Register                   */
 } HT_RTC_TypeDef;
-
+#endif
 
 /**
  * @brief Power Control Unit
@@ -537,7 +645,7 @@ typedef struct
   __IO uint32_t SR;              /*!< 0x000         Status Register                                         */
   __IO uint32_t CR;              /*!< 0x004         Control Register                                        */
   __IO uint32_t TEST;            /*!< 0x008         Test Register                                           */
-  __IO uint32_t RESERVE0[1];     /*!< 0x00C         Reserved                                                */
+  __IO uint32_t CR1;             /*!< 0x00C         Power Control Register 1                                */
   __IO uint32_t LVDCSR;          /*!< 0x010         Low Voltage/Brown Out Detect Control and Status Register*/
        uint32_t RESERVE1[59];    /*!< 0x014 - 0x0FC Reserved                                                */
   __IO uint32_t BAKREG[10];      /*!< 0x100 - 0x124 VDD Power Domain Backup Register 0-9                    */
@@ -626,6 +734,27 @@ typedef struct
   __IO uint32_t APBPRST0;        /*!< 0x008         APB Peripheral Reset Register 0                         */
   __IO uint32_t APBPRST1;        /*!< 0x00C         APB Peripheral Reset Register 1                         */
 } HT_RSTCU_TypeDef;
+
+
+/**
+ * @brief Smart Card Interface
+ */
+typedef struct
+{
+                                 /* SCI0: 0x40043000                                                        */
+                                 /* SCI1: 0x4003A000                                                        */
+  __IO uint32_t CR;              /*!< 0x000         Control Register                                        */
+  __IO uint32_t SR;              /*!< 0x004         Status Register                                         */
+  __IO uint32_t CCR;             /*!< 0x008         Contact Control Register                                */
+  __IO uint32_t ETU;             /*!< 0x00C         Elementary Time Unit Register                           */
+  __IO uint32_t GT;              /*!< 0x010         Guardtime Register                                      */
+  __IO uint32_t WT;              /*!< 0x014         Waiting Time Register                                   */
+  __IO uint32_t IER;             /*!< 0x018         Interrupt Enable Register                               */
+  __IO uint32_t IPR;             /*!< 0x01C         Interrupt Pending Register                              */
+  __IO uint32_t TXB;             /*!< 0x020         Transmit Buffer Register                                */
+  __IO uint32_t RXB;             /*!< 0x024         Receive Buffer Register                                 */
+  __IO uint32_t PSC;             /*!< 0x028         Prescaler Register                                      */
+} HT_SCI_TypeDef;
 
 
 /**
@@ -719,6 +848,84 @@ typedef struct
   __IO uint32_t     IER;          /*!< 0x130          PDMA Interrupt Enable Register                        */
 } HT_PDMA_TypeDef;
 
+
+/**
+ * @brief Universal Serial Bus Global
+ */
+typedef struct
+{
+                                 /* USB: 0x400A8000                                                         */
+  __IO uint32_t CSR;             /*!< 0x000 USB Control and Status Register                                 */
+  __IO uint32_t IER;             /*!< 0x004 USB Interrupt Enable Register                                   */
+  __IO uint32_t ISR;             /*!< 0x008 USB Interrupt Status Register                                   */
+  __IO uint32_t FCR;             /*!< 0x00C USB Frame Count Register                                        */
+  __IO uint32_t DEVAR;           /*!< 0x010 USB Device Address Register                                     */
+  __IO uint32_t EP0CSR;          /*!< 0x014 USB Endpoint 0 Control and Status Register                      */
+  __IO uint32_t EP0IER;          /*!< 0x018 USB Endpoint 0 Interrupt Enable Register                        */
+  __IO uint32_t EP0ISR;          /*!< 0x01C USB Endpoint 0 Interrupt Status Register                        */
+  __IO uint32_t EP0TCR;          /*!< 0x020 USB Endpoint 0 Transfer Count Register                          */
+  __IO uint32_t EP0CFGR;         /*!< 0x024 USB Endpoint 0 Configuration Register                           */
+  __IO uint32_t EP1CSR;          /*!< 0x028 USB Endpoint 1 Control and Status Register                      */
+  __IO uint32_t EP1IER;          /*!< 0x02C USB Endpoint 1 Interrupt Enable Register                        */
+  __IO uint32_t EP1ISR;          /*!< 0x030 USB Endpoint 1 Interrupt Status Register                        */
+  __IO uint32_t EP1TCR;          /*!< 0x034 USB Endpoint 1 Transfer Count Register                          */
+  __IO uint32_t EP1CFGR;         /*!< 0x038 USB Endpoint 1 Configuration Register                           */
+  __IO uint32_t EP2CSR;          /*!< 0x03C USB Endpoint 2 Control and Status Register                      */
+  __IO uint32_t EP2IER;          /*!< 0x040 USB Endpoint 2 Interrupt Enable Register                        */
+  __IO uint32_t EP2ISR;          /*!< 0x044 USB Endpoint 2 Interrupt Status Register                        */
+  __IO uint32_t EP2TCR;          /*!< 0x048 USB Endpoint 2 Transfer Count Register                          */
+  __IO uint32_t EP2CFGR;         /*!< 0x04C USB Endpoint 2 Configuration Register                           */
+  __IO uint32_t EP3CSR;          /*!< 0x050 USB Endpoint 3 Control and Status Register                      */
+  __IO uint32_t EP3IER;          /*!< 0x054 USB Endpoint 3 Interrupt Enable Register                        */
+  __IO uint32_t EP3ISR;          /*!< 0x058 USB Endpoint 3 Interrupt Status Register                        */
+  __IO uint32_t EP3TCR;          /*!< 0x05C USB Endpoint 3 Transfer Count Register                          */
+  __IO uint32_t EP3CFGR;         /*!< 0x060 USB Endpoint 3 Configuration Register                           */
+  __IO uint32_t EP4CSR;          /*!< 0x064 USB Endpoint 4 Control and Status Register                      */
+  __IO uint32_t EP4IER;          /*!< 0x068 USB Endpoint 4 Interrupt Enable Register                        */
+  __IO uint32_t EP4ISR;          /*!< 0x06C USB Endpoint 4 Interrupt Status Register                        */
+  __IO uint32_t EP4TCR;          /*!< 0x070 USB Endpoint 4 Transfer Count Register                          */
+  __IO uint32_t EP4CFGR;         /*!< 0x074 USB Endpoint 4 Configuration Register                           */
+  __IO uint32_t EP5CSR;          /*!< 0x078 USB Endpoint 5 Control and Status Register                      */
+  __IO uint32_t EP5IER;          /*!< 0x07C USB Endpoint 5 Interrupt Enable Register                        */
+  __IO uint32_t EP5ISR;          /*!< 0x080 USB Endpoint 5 Interrupt Status Register                        */
+  __IO uint32_t EP5TCR;          /*!< 0x084 USB Endpoint 5 Transfer Count Register                          */
+  __IO uint32_t EP5CFGR;         /*!< 0x088 USB Endpoint 5 Configuration Register                           */
+  __IO uint32_t EP6CSR;          /*!< 0x08C USB Endpoint 6 Control and Status Register                      */
+  __IO uint32_t EP6IER;          /*!< 0x090 USB Endpoint 6 Interrupt Enable Register                        */
+  __IO uint32_t EP6ISR;          /*!< 0x094 USB Endpoint 6 Interrupt Status Register                        */
+  __IO uint32_t EP6TCR;          /*!< 0x098 USB Endpoint 6 Transfer Count Register                          */
+  __IO uint32_t EP6CFGR;         /*!< 0x09C USB Endpoint 6 Configuration Register                           */
+  __IO uint32_t EP7CSR;          /*!< 0x0A0 USB Endpoint 7 Control and Status Register                      */
+  __IO uint32_t EP7IER;          /*!< 0x0A4 USB Endpoint 7 Interrupt Enable Register                        */
+  __IO uint32_t EP7ISR;          /*!< 0x0A8 USB Endpoint 7 Interrupt Status Register                        */
+  __IO uint32_t EP7TCR;          /*!< 0x0AC USB Endpoint 7 Transfer Count Register                          */
+  __IO uint32_t EP7CFGR;         /*!< 0x0B0 USB Endpoint 7 Configuration Register                           */
+} HT_USB_TypeDef;
+
+
+/**
+ * @brief Universal Serial Bus Endpoint
+ */
+typedef struct
+{
+                                 /* USB Endpoint0: 0x400A8014                                               */
+                                 /* USB Endpoint1: 0x400A8028                                               */
+                                 /* USB Endpoint2: 0x400A803C                                               */
+                                 /* USB Endpoint3: 0x400A8050                                               */
+                                 /* USB Endpoint4: 0x400A8064                                               */
+                                 /* USB Endpoint5: 0x400A8078                                               */
+                                 /* USB Endpoint6: 0x400A808C                                               */
+                                 /* USB Endpoint7: 0x400A80A0                                               */
+                                 /* USB Endpoint8: 0x400A80B4                                               */
+                                 /* USB Endpoint9: 0x400A80C8                                               */
+  __IO uint32_t CSR;             /*!< 0x000 USB Endpoint n Control and Status Register                      */
+  __IO uint32_t IER;             /*!< 0x004 USB Endpoint n Interrupt Enable Register                        */
+  __IO uint32_t ISR;             /*!< 0x008 USB Endpoint n Interrupt Status Register                        */
+  __IO uint32_t TCR;             /*!< 0x00C USB Endpoint n Transfer Count Register                          */
+  __IO uint32_t CFGR;            /*!< 0x010 USB Endpoint n Configuration Register                           */
+} HT_USBEP_TypeDef;
+
+
 /**
  * @brief Cyclic Redundancy Check
  */
@@ -746,6 +953,23 @@ typedef struct
 } HT_DIV_TypeDef;
 
 
+/**
+ * @brief Advanced Encryption Standard
+ */
+typedef struct
+{
+                                 /* AES: 0x400C8000                                                         */
+  __IO uint32_t CR;              /*!< 0x000         Control Register                                        */
+  __IO uint32_t SR;              /*!< 0x004         Status Register                                         */
+  __IO uint32_t PDMAR;           /*!< 0x008         PDMA Register                                           */
+  __IO uint32_t ISR;             /*!< 0x00C         Interrupt Status Register                               */
+  __IO uint32_t IER;             /*!< 0x010         Interrupt Enable Register                               */
+  __IO uint32_t DINR;            /*!< 0x014         Data Input Register                                     */
+  __IO uint32_t DOUTR;           /*!< 0x018         Data Output Register                                    */
+  __IO uint32_t KEYR[4];         /*!< 0x01C - 0x028 Key Register 0~3                                        */
+       uint32_t RESERVED0[4];    /*!< 0x02C - 0x038 Reserved                                                */
+  __IO uint32_t IVR[4];          /*!< 0x03C - 0x048 Initial Vector Register 0~3                             */
+} HT_AES_TypeDef;
 /** @addtogroup Peripheral_Memory_Map
   * @{
   */
@@ -764,20 +988,29 @@ typedef struct
 #define HT_SPI0_BASE             (HT_APBPERIPH_BASE + 0x4000)     /* 0x40004000                             */
 #define HT_I2C2_BASE             (HT_APBPERIPH_BASE + 0x8000)     /* 0x40008000                             */
 #define HT_ADC0_BASE             (HT_APBPERIPH_BASE + 0x10000)    /* 0x40010000                             */
+#define HT_RNG_BASE              (HT_APBPERIPH_BASE + 0x21000)    /* 0x40021000                             */
 #define HT_AFIO_BASE             (HT_APBPERIPH_BASE + 0x22000)    /* 0x40022000                             */
 #define HT_EXTI_BASE             (HT_APBPERIPH_BASE + 0x24000)    /* 0x40024000                             */
 #define HT_MCTM0_BASE            (HT_APBPERIPH_BASE + 0x2C000)    /* 0x4002C000                             */
 #define HT_SCTM0_BASE            (HT_APBPERIPH_BASE + 0x34000)    /* 0x40034000                             */
 #define HT_SCTM2_BASE            (HT_APBPERIPH_BASE + 0x35000)    /* 0x40035000                             */
+#define HT_SCI1_BASE             (HT_APBPERIPH_BASE + 0x3A000)    /* 0x4003A000                             */
 #define HT_USART1_BASE           (HT_APBPERIPH_BASE + 0x40000)    /* 0x40040000                             */
 #define HT_UART1_BASE            (HT_APBPERIPH_BASE + 0x41000)    /* 0x40041000                             */
 #define HT_UART3_BASE            (HT_APBPERIPH_BASE + 0x42000)    /* 0x40042000                             */
+#define HT_SCI0_BASE             (HT_APBPERIPH_BASE + 0x43000)    /* 0x40043000                             */
 #define HT_SPI1_BASE             (HT_APBPERIPH_BASE + 0x44000)    /* 0x40044000                             */
 #define HT_I2C0_BASE             (HT_APBPERIPH_BASE + 0x48000)    /* 0x40048000                             */
 #define HT_I2C1_BASE             (HT_APBPERIPH_BASE + 0x49000)    /* 0x40049000                             */
 #define HT_ADC1_BASE             (HT_APBPERIPH_BASE + 0x50000)    /* 0x40050000                             */
+#define HT_CMP0_BASE             (HT_APBPERIPH_BASE + 0x58000)    /* 0x40058000                             */
+#define HT_CMP1_BASE             (HT_APBPERIPH_BASE + 0x58100)    /* 0x40058100                             */
 #define HT_WDT_BASE              (HT_APBPERIPH_BASE + 0x68000)    /* 0x40068000                             */
+#if defined(USE_HT32L52343_53)
+#define HT_ERTC_BASE             (HT_APBPERIPH_BASE + 0x6A000)    /* 0x4006A000                             */
+#else
 #define HT_RTC_BASE              (HT_APBPERIPH_BASE + 0x6A000)    /* 0x4006A000                             */
+#endif
 #define HT_PWRCU_BASE            (HT_APBPERIPH_BASE + 0x6A100)    /* 0x4006A100                             */
 #define HT_GPTM0_BASE            (HT_APBPERIPH_BASE + 0x6E000)    /* 0x4006E000                             */
 #define HT_GPTM1_BASE            (HT_APBPERIPH_BASE + 0x6F000)    /* 0x4006F000                             */
@@ -792,12 +1025,25 @@ typedef struct
 #define HT_RSTCU_BASE            (HT_AHBPERIPH_BASE + 0x8100)     /* 0x40088100                             */
 #define HT_CRC_BASE              (HT_AHBPERIPH_BASE + 0xA000)     /* 0x4008A000                             */
 #define HT_PDMA_BASE             (HT_AHBPERIPH_BASE + 0x10000)    /* 0x40090000                             */
+#define HT_USB_BASE              (HT_AHBPERIPH_BASE + 0x28000)    /* 0x400A8000                             */
+#define HT_USB_EP0_BASE          (HT_USB_BASE       + 0x0014)     /* 0x400A8014                             */
+#define HT_USB_EP1_BASE          (HT_USB_BASE       + 0x0028)     /* 0x400A8028                             */
+#define HT_USB_EP2_BASE          (HT_USB_BASE       + 0x003C)     /* 0x400A803C                             */
+#define HT_USB_EP3_BASE          (HT_USB_BASE       + 0x0050)     /* 0x400A8050                             */
+#define HT_USB_EP4_BASE          (HT_USB_BASE       + 0x0064)     /* 0x400A8064                             */
+#define HT_USB_EP5_BASE          (HT_USB_BASE       + 0x0078)     /* 0x400A8078                             */
+#define HT_USB_EP6_BASE          (HT_USB_BASE       + 0x008C)     /* 0x400A808C                             */
+#define HT_USB_EP7_BASE          (HT_USB_BASE       + 0x00A0)     /* 0x400A80A0                             */
+#define HT_USB_EP8_BASE          (HT_USB_BASE       + 0x00B4)     /* 0x400A80B4                             */
+#define HT_USB_EP9_BASE          (HT_USB_BASE       + 0x00C8)     /* 0x400A80C8                             */
+#define HT_USB_SRAM_BASE         (HT_AHBPERIPH_BASE + 0x2A000)    /* 0x400AA000                             */
 #define HT_GPIOA_BASE            (HT_AHBPERIPH_BASE + 0x30000)    /* 0x400B0000                             */
 #define HT_GPIOB_BASE            (HT_AHBPERIPH_BASE + 0x32000)    /* 0x400B2000                             */
 #define HT_GPIOC_BASE            (HT_AHBPERIPH_BASE + 0x34000)    /* 0x400B4000                             */
 #define HT_GPIOD_BASE            (HT_AHBPERIPH_BASE + 0x36000)    /* 0x400B6000                             */
 #define HT_GPIOE_BASE            (HT_AHBPERIPH_BASE + 0x38000)    /* 0x400B8000                             */
 #define HT_GPIOF_BASE            (HT_AHBPERIPH_BASE + 0x3A000)    /* 0x400BA000                             */
+#define HT_AES_BASE              (HT_AHBPERIPH_BASE + 0x48000)    /* 0x400C8000                             */
 #define HT_DIV_BASE              (HT_AHBPERIPH_BASE + 0x4A000)    /* 0x400CA000                             */
 
 /**
@@ -823,6 +1069,18 @@ typedef struct
 #define HT_SCTM0                 ((HT_TM_TypeDef *) HT_SCTM0_BASE)
 #define HT_SCTM1                 ((HT_TM_TypeDef *) HT_SCTM1_BASE)
 #define HT_GPTM0                 ((HT_TM_TypeDef *) HT_GPTM0_BASE)
+
+#if defined(USE_HT32L52343_53)
+#define HT_USB                   ((HT_USB_TypeDef *) HT_USB_BASE)
+#define HT_USBEP0                ((HT_USBEP_TypeDef *) HT_USB_EP0_BASE)
+#define HT_USBEP1                ((HT_USBEP_TypeDef *) HT_USB_EP1_BASE)
+#define HT_USBEP2                ((HT_USBEP_TypeDef *) HT_USB_EP2_BASE)
+#define HT_USBEP3                ((HT_USBEP_TypeDef *) HT_USB_EP3_BASE)
+#define HT_USBEP4                ((HT_USBEP_TypeDef *) HT_USB_EP4_BASE)
+#define HT_USBEP5                ((HT_USBEP_TypeDef *) HT_USB_EP5_BASE)
+#define HT_USBEP6                ((HT_USBEP_TypeDef *) HT_USB_EP6_BASE)
+#define HT_USBEP7                ((HT_USBEP_TypeDef *) HT_USB_EP7_BASE)
+#endif
 
 #if defined(USE_HT32L52231_41)
 #define HT_CRC                   ((HT_CRC_TypeDef *) HT_CRC_BASE)
@@ -876,6 +1134,29 @@ typedef struct
 #define HT_BFTM1                 ((HT_BFTM_TypeDef *) HT_BFTM1_BASE)
 #endif
 
+#if defined(USE_HT32L52343_53)
+#define HT_CRC                   ((HT_CRC_TypeDef *) HT_CRC_BASE)
+#define HT_DIV                   ((HT_DIV_TypeDef *) HT_DIV_BASE)
+#define HT_PDMA                  ((HT_PDMA_TypeDef *) HT_PDMA_BASE)
+#define HT_GPIOC                 ((HT_GPIO_TypeDef *) HT_GPIOC_BASE)
+#define HT_GPIOD                 ((HT_GPIO_TypeDef *) HT_GPIOD_BASE)
+#define HT_UART1                 ((HT_USART_TypeDef *) HT_UART1_BASE)
+#define HT_SPI1                  ((HT_SPI_TypeDef *) HT_SPI1_BASE)
+#define HT_I2C1                  ((HT_I2C_TypeDef *) HT_I2C1_BASE)
+#define HT_MCTM0                 ((HT_TM_TypeDef *) HT_MCTM0_BASE)
+#define HT_BFTM1                 ((HT_BFTM_TypeDef *) HT_BFTM1_BASE)
+#define HT_USART1                ((HT_USART_TypeDef *) HT_USART1_BASE)
+#define HT_CMP0                  ((HT_CMP_TypeDef *) HT_CMP0_BASE)
+#define HT_CMP1                  ((HT_CMP_TypeDef *) HT_CMP1_BASE)
+#define HT_ERTC                  ((HT_ERTC_TypeDef *) HT_ERTC_BASE)
+#define HT_GPTM1                 ((HT_TM_TypeDef *) HT_GPTM1_BASE)
+#define HT_SCI0                  ((HT_SCI_TypeDef *) HT_SCI0_BASE)
+#define HT_SCI1                  ((HT_SCI_TypeDef *) HT_SCI1_BASE)
+#define HT_RNG                   ((HT_RNG_TypeDef *) HT_RNG_BASE)
+#define HT_DIV                   ((HT_DIV_TypeDef *) HT_DIV_BASE)
+#define HT_AES                   ((HT_AES_TypeDef *) HT_AES_BASE)
+#endif
+
 #if defined USE_HT32_DRIVER
   #include "ht32l5xxxx_lib.h"
 #endif
@@ -902,9 +1183,17 @@ typedef struct
 #define AFIO_FUN_DAC             AFIO_FUN_DAC0
 #define CKCU_PCLK_DAC            CKCU_PCLK_DAC0
 
+#if defined(USE_HT32L52343_53)
+  #define AES_IRQn               AES_RNG_IRQn
+  #define AES_IRQHandler         AES_RNG_IRQHandler
+#endif
+
 #define AFIO_ESS_Enum            u32
 
 // ht32l5xxxx_board_01.c
+#define HT32F_DVB_USBConnect                HT32_DVB_USBConnect
+#define HT32F_DVB_USBDisConnect             HT32_DVB_USBDisConnect
+
 #define HT32F_DVB_GPxConfig                 HT32_DVB_GPxConfig
 
 #define HT32F_DVB_BuzzerInit                HT32_DVB_BuzzerInit

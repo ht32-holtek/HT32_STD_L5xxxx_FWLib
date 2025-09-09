@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32_board.c
- * @version $Rev:: 171          $
- * @date    $Date:: 2024-02-16 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   HT32 target board related file.
  *************************************************************************************************************
  * @attention
@@ -28,6 +28,8 @@
 /* Includes ------------------------------------------------------------------------------------------------*/
 #include "ht32l_config.h"
 #ifdef USE_HT32L52241_SK
+  #include "HT32_Board/ht32l5xxxx_board_01.c"
+#elif defined USE_HT32L52353_SK
   #include "HT32_Board/ht32l5xxxx_board_01.c"
 #else
  #error "Please select board by define USE_HT32LXXXX_XXX in project."

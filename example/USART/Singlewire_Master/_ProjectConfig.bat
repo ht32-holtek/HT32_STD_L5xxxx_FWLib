@@ -104,6 +104,4 @@ rem gsar.exe -s"SEARCH_STRING:x0a" -r"REPLACE_STRING:x0a" SourceryG++Lite\*_FILE
 REM ============================================================================
 rem Edit your code here....
 REM ============================================================================
-gsar.exe -s"#if (0) // Enable HT32 Time Function" -r"#if (1) // Enable HT32 Time Function" ht32f*xxxx_conf.h -o
-gsar.exe -s"#define LSE_ENABLE        (0)" -r"#define LSE_ENABLE        (1)" system_ht32f5xxxx_18.c -o
-gsar.exe -s"#define LSE_WAIT_READY    (1)" -r"#define LSE_WAIT_READY    (0)" system_ht32f5xxxx_18.c -o
+gsar.exe -s"#if (0) // Enable HT32 Time Function" -r"#if (1) // Enable HT32 Time Function" ht32l*xxxx_conf.h -o

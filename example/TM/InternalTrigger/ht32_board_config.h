@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    TM/InternalTrigger/ht32_board_config.h
- * @version $Rev:: 283          $
- * @date    $Date:: 2024-02-29 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -40,6 +40,19 @@
   #define _HTCFG_TM_SLAVE_GPIOX                   A
   #define _HTCFG_TM_SLAVE_GPION                   1
   #define  HTCFG_TM_SLAVE_IPN                     GPTM0
+  #define _HTCFG_TM_SLAVE_CHN                     1
+  #define  HTCFG_TM_SLAVE_TRSEL_ITI               TM_TRSEL_ITI1
+
+  #define _HTCFG_TM_MASTER_GPIOX                  A
+  #define _HTCFG_TM_MASTER_GPION                  10
+  #define  HTCFG_TM_MASTER_IPN                    MCTM0
+  #define _HTCFG_TM_MASTER_CHN                    1
+#endif
+
+#if defined(USE_HT32L52353_SK)
+  #define _HTCFG_TM_SLAVE_GPIOX                   A
+  #define _HTCFG_TM_SLAVE_GPION                   1
+  #define  HTCFG_TM_SLAVE_IPN                     GPTM1
   #define _HTCFG_TM_SLAVE_CHN                     1
   #define  HTCFG_TM_SLAVE_TRSEL_ITI               TM_TRSEL_ITI1
 

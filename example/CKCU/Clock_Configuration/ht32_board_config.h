@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    CKCU/Clock_Configuration/ht32_board_config.h
- * @version $Rev:: 234          $
- * @date    $Date:: 2024-02-27 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -40,6 +40,12 @@
   //#define HTCFG_SYSCLK_48MHz
 #endif
 
+#if defined(USE_HT32L52353_SK)
+  //#define HTCFG_SYSCLK_8MHz
+  #define HTCFG_SYSCLK_24MHz
+  //#define HTCFG_SYSCLK_40MHz
+  //#define HTCFG_SYSCLK_48MHz
+#endif
 
 #ifdef __cplusplus
 }

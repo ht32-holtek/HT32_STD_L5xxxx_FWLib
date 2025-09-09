@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    I2C/TouchKey/ht32_board_config.h
- * @version $Rev:: 294          $
- * @date    $Date:: 2024-03-01 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -53,6 +53,18 @@
   #define TOUCHKEY_I2C_SDA_AFIO_MODE    (AFIO_FUN_I2C)
 #endif
 
+#if defined(USE_HT32L52353_SK)
+  #define TOUCHKEY_I2C_CLK(CK)          (CK.Bit.I2C1)
+  #define TOUCHKEY_I2C                  (HT_I2C1)
+
+  #define TOUCHKEY_I2C_SCL_GPIO_ID      (GPIO_PA)
+  #define TOUCHKEY_I2C_SCL_AFIO_PIN     (AFIO_PIN_0)
+  #define TOUCHKEY_I2C_SCL_AFIO_MODE    (AFIO_FUN_I2C)
+
+  #define TOUCHKEY_I2C_SDA_GPIO_ID      (GPIO_PA)
+  #define TOUCHKEY_I2C_SDA_AFIO_PIN     (AFIO_PIN_1)
+  #define TOUCHKEY_I2C_SDA_AFIO_MODE    (AFIO_FUN_I2C)
+#endif
 
 
 #ifdef __cplusplus

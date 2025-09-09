@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    TM/SinglePulseMode/ht32_board_config.h
- * @version $Rev:: 283          $
- * @date    $Date:: 2024-02-29 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -38,6 +38,13 @@
   #define _HTCFG_PULSE_GPIOX                      A
   #define _HTCFG_PULSE_GPION                      0
   #define  HTCFG_PULSE_IPN                        GPTM0
+  #define _HTCFG_PULSE_CHN                        0
+#endif
+
+#if defined(USE_HT32L52353_SK)
+  #define _HTCFG_PULSE_GPIOX                      A
+  #define _HTCFG_PULSE_GPION                      0
+  #define  HTCFG_PULSE_IPN                        GPTM1
   #define _HTCFG_PULSE_CHN                        0
 #endif
 

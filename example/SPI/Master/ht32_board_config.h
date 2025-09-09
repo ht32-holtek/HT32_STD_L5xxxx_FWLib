@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    SPI/Master/ht32_board_config.h
- * @version $Rev:: 283          $
- * @date    $Date:: 2024-02-29 #$
+ * @version $Rev:: 1008         $
+ * @date    $Date:: 2025-08-28 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -34,6 +34,25 @@
 
 /* Settings ------------------------------------------------------------------------------------------------*/
 #if defined(USE_HT32L52241_SK)
+  #define _HTCFG_INT_GPIOX                     B
+  #define HTCFG_INT_GPION                      0
+
+  #define HTCFG_SPI_IPN                        SPI0
+
+  #define HTCFG_MASTER_SPI_SCK_GPIO_ID         (GPIO_PB)
+  #define HTCFG_MASTER_SPI_SCK_AFIO_PIN        (AFIO_PIN_3)
+
+  #define HTCFG_MASTER_SPI_MOSI_GPIO_ID        (GPIO_PB)
+  #define HTCFG_MASTER_SPI_MOSI_AFIO_PIN       (AFIO_PIN_4)
+
+  #define HTCFG_MASTER_SPI_MISO_GPIO_ID        (GPIO_PB)
+  #define HTCFG_MASTER_SPI_MISO_AFIO_PIN       (AFIO_PIN_5)
+
+  #define HTCFG_MASTER_SPI_SEL_GPIO_ID         (GPIO_PB)
+  #define HTCFG_MASTER_SPI_SEL_AFIO_PIN        (GPIO_PIN_2)
+#endif
+
+#if defined(USE_HT32L52353_SK)
   #define _HTCFG_INT_GPIOX                     B
   #define HTCFG_INT_GPION                      0
 

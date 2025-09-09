@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_pwrcu.h
- * @version $Rev:: 832          $
- * @date    $Date:: 2025-08-06 #$
+ * @version $Rev:: 1074         $
+ * @date    $Date:: 2025-09-08 #$
  * @brief   The header file of the Power Control Unit library.
  *************************************************************************************************************
  * @attention
@@ -162,6 +162,28 @@ typedef enum
   PWRCU_LDO_NORMAL = 0,     /*!< The LDO is operated in normal current mode                                 */
   PWRCU_LDO_LOWCURRENT      /*!< The LDO is operated in low current mode                                    */
 } PWRCU_LDOMODE_Enum;
+#if (LIBCFG_PWRCU_WAKEUPFILTER)
+/**
+ * @brief Wakeup filter counter selection
+ */
+typedef enum
+{
+  PWRCU_WUPFLT_COUNT2=0,
+  PWRCU_WUPFLT_COUNT4,
+  PWRCU_WUPFLT_COUNT8,
+  PWRCU_WUPFLT_COUNT16
+} PWRCU_WUPFLT_Enum;
+/**
+ * @brief Wakeup filter prescaler selection
+ */
+typedef enum
+{
+  PWRCU_WUPFREQ_DIV1=0,
+  PWRCU_WUPFREQ_DIV2,
+  PWRCU_WUPFREQ_DIV4,
+  PWRCU_WUPFREQ_DIV8
+} PWRCU_WUPFREQ_Enum;
+#endif
 
 /**
   * @}
@@ -187,6 +209,10 @@ typedef enum
 #define PWRCU_FLAG_WUP0         0x0100  /*!< External WAKEUP0 pin flag                                      */
 #if (LIBCFG_PWRCU_WAKEUP1)
 #define PWRCU_FLAG_WUP1         0x0200  /*!< External WAKEUP1 pin flag                                      */
+#endif
+#if (LIBCFG_PWRCU_WAKEUPBKUCLR)
+#define PWRCU_FLAG_ERBKR0       0x1000  /*!< WAKEUP0 pin Erase Backup Registers Flag                        */
+#define PWRCU_FLAG_ERBKR1       0x2000  /*!< WAKEUP1 pin Erase Backup Registers Flag                        */
 #endif
 
 /* check PWRCU_LVDS parameter                                                                               */
@@ -229,6 +255,14 @@ typedef enum
                                   (x == PWRCU_WUP_NEGATIVE_EDGE) || \
                                   (x == PWRCU_WUP_HIGH_LEVEL)    || \
                                   (x == PWRCU_WUP_LOW_LEVEL))
+
+/* check PWRCU_WUPFLT parameter                                                                            */
+#define IS_PWRCU_WUPFLT(x)       (((x) == PWRCU_WUPFLT_COUNT2) || ((x) == PWRCU_WUPFLT_COUNT4) || \
+                                  ((x) == PWRCU_WUPFLT_COUNT8) || ((x) == PWRCU_WUPFLT_COUNT16) )
+
+/* check PWRCU_WUPFREQ parameter                                                                            */
+#define IS_PWRCU_WUPFREQ(x)      (((x) == PWRCU_WUPFREQ_DIV1) || ((x) == PWRCU_WUPFREQ_DIV2) || \
+                                  ((x) == PWRCU_WUPFREQ_DIV4) || ((x) == PWRCU_WUPFREQ_DIV8) )
 
 /**
   * @}
@@ -273,6 +307,17 @@ void PWRCU_WakeupPinCmd(ControlStatus NewState);
 void PWRCU_WakeupMultiPinCmd(PWRCU_WUP_Enum Pin, PWRCU_WUPTYPE_Enum Type, ControlStatus NewState);
 #endif
 void PWRCU_ForceTurnOffULDO(void);
+#if (LIBCFG_PWRCU_WAKEUPBKUCLR)
+void PWRCU_WakeupPinEraseBakRegCmd(PWRCU_WUP_Enum Pin, ControlStatus NewState);
+#endif
+#if (LIBCFG_PWRCU_WAKEUPTIMESTAMP)
+void PWRCU_WakeupPinTimeStampCmd(PWRCU_WUP_Enum Pin, ControlStatus NewState);
+#endif
+#if (LIBCFG_PWRCU_WAKEUPFILTER)
+void PWRCU_SetWakeupPinFilter(PWRCU_WUP_Enum Pin , PWRCU_WUPFLT_Enum Count);
+void PWRCU_SetWakeupPinFilterPrescaler(PWRCU_WUPFREQ_Enum WAKEPRE);
+#endif
+
 /**
   * @}
   */

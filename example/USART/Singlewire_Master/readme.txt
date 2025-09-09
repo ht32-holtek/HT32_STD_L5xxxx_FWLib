@@ -23,7 +23,7 @@ repeated.
 @par Directory Contents:
 
 - USART/Singlewire_Master/main.c                          Main program
-- USART/Singlewire_Master/ht32fxxxxx_nn_it.c              Interrupt handlers
+- USART/Singlewire_Master/ht32lxxxxx_nn_it.c              Interrupt handlers
 - USART/Singlewire_Master/ht32_board_config.h             Board configuration file
 
 @par Hardware and Software Environment:
