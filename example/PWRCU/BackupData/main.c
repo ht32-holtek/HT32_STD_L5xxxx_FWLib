@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    PWRCU/BackupData/main.c
- * @version $Rev:: 304          $
- * @date    $Date:: 2024-03-06 #$
+ * @version $Rev:: 1116         $
+ * @date    $Date:: 2025-09-23 #$
  * @brief   Main program.
  *************************************************************************************************************
  * @attention
@@ -132,7 +132,7 @@ int main(void)
     {
       printf("(Wrong! It should be 0   x%x)\r\n", (unsigned int)BackupData[i]);
 
-       /* Turn on LED3                                                                                      */
+      /* Turn on LED3                                                                                       */
       HT32_DVB_LEDOn(HT_LED3);
     }
   }

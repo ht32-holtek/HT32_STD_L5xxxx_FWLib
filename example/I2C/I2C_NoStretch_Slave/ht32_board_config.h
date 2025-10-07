@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    I2C/I2C_NoStretch_Slave/ht32_board_config.h
- * @version $Rev:: 868          $
- * @date    $Date:: 2025-08-11 #$
+ * @version $Rev:: 1097         $
+ * @date    $Date:: 2025-09-12 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -34,12 +34,14 @@
 
 /* Settings ------------------------------------------------------------------------------------------------*/
 #if defined(USE_HT32L52353_SK)
+  #define HTCFG_I2C_SLAVE_CLK(ck)          (ck.Bit.I2C1)
   #define HTCFG_I2C_SLAVE_PORT             (HT_I2C1)
   #define HTCFG_I2C_SLAVE_SCL_GPIO_ID      (GPIO_PA)
   #define HTCFG_I2C_SLAVE_SCL_AFIO_PIN     (AFIO_PIN_0)
   #define HTCFG_I2C_SLAVE_SDA_GPIO_ID      (GPIO_PA)
   #define HTCFG_I2C_SLAVE_SDA_AFIO_PIN     (AFIO_PIN_1)
 
+  #define HTCFG_I2C_Slave_IRQn             I2C1_IRQn
   #define HTCFG_I2C_Slave_IRQHandler       I2C1_IRQHandler
 #endif
 

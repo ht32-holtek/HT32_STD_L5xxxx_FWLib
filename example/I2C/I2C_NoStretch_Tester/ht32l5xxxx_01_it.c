@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    I2C/I2C_NoStretch_Tester/ht32l5xxxx_01_it.c
- * @version $Rev:: 868          $
- * @date    $Date:: 2025-08-11 #$
+ * @version $Rev:: 1106         $
+ * @date    $Date:: 2025-09-22 #$
  * @brief   This file provides all interrupt service routine.
  *************************************************************************************************************
  * @attention
@@ -46,22 +46,9 @@
  * @brief   This function handles NMI exception.
  * @retval  None
  ************************************************************************************************************/
-/* !!! NOTICE !!!
-   The handler function is located in system_ht32fXxxxx_nn.c.
-   To override it, please enable the override option in system_ht32fXxxxx_nn.c.
-*/
-#if 0
 void NMI_Handler(void)
 {
-  /* Double Error Bit Handling Routine                                                                      */
-  if(RAMECC_GET_DOUBLE_INT_STATUS())
-  {
-    while(1)
-    {
-    }
-  }
 }
-#endif
 
 /*********************************************************************************************************//**
  * @brief   This function handles Hard Fault exception.

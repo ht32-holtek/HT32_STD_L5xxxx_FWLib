@@ -53,11 +53,11 @@
   */
 typedef struct
 {
-  u8 Hours;    /*!< Specifies the ERTC Time Hour.                 */
-  u8 Minutes;  /*!< Specifies the ERTC Time Minutes.              */
-  u8 Seconds;  /*!< Specifies the ERTC Time Seconds.              */
-  u8 AMPM;     /*!< Specifies the ERTC AM/PM Time.                */
-  u8 FMT;      /*!< Specifies the ERTC 12-hour or 24-hour Format. */
+  u8 Hours;    /*!< Specifies the ERTC Time Hour.                                                           */
+  u8 Minutes;  /*!< Specifies the ERTC Time Minutes.                                                        */
+  u8 Seconds;  /*!< Specifies the ERTC Time Seconds.                                                        */
+  u8 AMPM;     /*!< Specifies the ERTC AM/PM Time.                                                          */
+  u8 FMT;      /*!< Specifies the ERTC 12-hour or 24-hour Format.                                           */
 }ERTC_TimeTypeDef;
 
 /**
@@ -65,10 +65,10 @@ typedef struct
   */
 typedef struct
 {
-  u8 WeekDay; /*!< Specifies the ERTC Date WeekDay. */
-  u8 Month;   /*!< Specifies the ERTC Date Month.   */
-  u8 Day;     /*!< Specifies the ERTC Date Day.     */
-  u8 Year;    /*!< Specifies the ERTC Date Year.    */
+  u8 WeekDay; /*!< Specifies the ERTC Date WeekDay.                                                         */
+  u8 Month;   /*!< Specifies the ERTC Date Month.                                                           */
+  u8 Day;     /*!< Specifies the ERTC Date Day.                                                             */
+  u8 Year;    /*!< Specifies the ERTC Date Year.                                                            */
 }ERTC_DateTypeDef;
 
 /**
@@ -76,8 +76,8 @@ typedef struct
   */
 typedef struct
 {
-  u8  AsynchPrediv;      /*!< Specifies the ERTC Asynchronous Predivider value. */
-  u16 SynchPrediv;       /*!< Specifies the ERTC Synchronous Predivider value.  */
+  u8  AsynchPrediv;      /*!< Specifies the ERTC Asynchronous Predivider value.                             */
+  u16 SynchPrediv;       /*!< Specifies the ERTC Synchronous Predivider value.                              */
   ERTC_DateTypeDef Date;
   ERTC_TimeTypeDef Time;
 }ERTC_InitTypeDef;
@@ -98,10 +98,10 @@ typedef struct
   */
 typedef struct
 {
-  ERTC_TimeTypeDef AlarmTime;      /*!< Specifies the ERTC Alarm Time members.          */
-  ERTC_AlarmMaskTypeDef AlarmMask; /*!< Specifies the ERTC Alarm Masks.                 */
-  u16 AlarmDateWeekDaySel;         /*!< Specifies the ERTC Alarm is on Date or WeekDay. */
-  u8  AlarmDateWeekDay;            /*!< Specifies the ERTC Alarm Date/WeekDay.          */
+  ERTC_TimeTypeDef AlarmTime;      /*!< Specifies the ERTC Alarm Time members.                              */
+  ERTC_AlarmMaskTypeDef AlarmMask; /*!< Specifies the ERTC Alarm Masks.                                     */
+  u16 AlarmDateWeekDaySel;         /*!< Specifies the ERTC Alarm is on Date or WeekDay.                     */
+  u8  AlarmDateWeekDay;            /*!< Specifies the ERTC Alarm Date/WeekDay.                              */
 }ERTC_AlarmTypeDef;
 
 /**
@@ -389,6 +389,100 @@ typedef enum
   * @}
   */
 
+/** @defgroup RTC_Compatibility_Define RTC compatibility definitions
+  * @{
+  */
+#define RTC_SRC_LSI                               ERTC_SRC_LSI
+#define RTC_SRC_LSE                               ERTC_SRC_LSE
+
+#define RTC_LSESM_NORMAL                          ERTC_LSESM_SLOW
+#define RTC_LSESM_FAST                            ERTC_LSESM_MEDIUM_FAST
+#define RTC_LSESM_SLOW                            ERTC_LSESM_SLOW
+#define RTC_LSESM_MEDIUM_SLOW                     ERTC_LSESM_MEDIUM_SLOW
+#define RTC_LSESM_MEDIUM_FAST                     ERTC_LSESM_MEDIUM_FAST
+#define RTC_LSESM_SUPPER_FAST                     ERTC_LSESM_SUPPER_FAST
+
+#define RTC_RPRE_1                                0x00, 0x00
+#define RTC_RPRE_2                                0x01, 0x00
+#define RTC_RPRE_4                                0x03, 0x00
+#define RTC_RPRE_8                                0x07, 0x00
+#define RTC_RPRE_16                               0x0F, 0x00
+#define RTC_RPRE_32                               0x1F, 0x00
+#define RTC_RPRE_64                               0x3F, 0x00
+#define RTC_RPRE_128                              0x7F, 0x00
+#define RTC_RPRE_256                              0x7F, 0x01
+#define RTC_RPRE_512                              0x7F, 0x03
+#define RTC_RPRE_1024                             0x7F, 0x07
+#define RTC_RPRE_2048                             0x7F, 0x0F
+#define RTC_RPRE_4096                             0x7F, 0x1F
+#define RTC_RPRE_8192                             0x7F, 0x3F
+#define RTC_RPRE_16384                            0x7F, 0x7F
+#define RTC_RPRE_32768                            0x7F, 0xFF
+
+#define RTC_WAKEUP_CM                             1
+#define RTC_WAKEUP_CSEC                           2
+
+#define RTC_INT_CM                                1
+#define RTC_INT_CSEC                              2
+
+#define RTC_FLAG_CM                               ERTC_FLAG_WUTF
+#define RTC_FLAG_CSEC                             ERTC_FLAG_WUTF
+
+#define RTC_ROAP_HIGH                             ERTC_ROAP_HIGH
+#define RTC_ROAP_LOW                              ERTC_ROAP_LOW
+
+#define RTC_ROWM_PULSE                            ERTC_ROWM_PULSE
+#define RTC_ROWM_LEVEL                            ERTC_ROWM_LEVEL
+
+#define RTC_ROES_MATCH                            1
+#define RTC_ROES_SECOND                           2
+
+#define RTC_FLAG_MASK                             0x1000
+
+#define GET_COMPARE                               0
+#define GET_COUNTER                               1
+
+#define UNPROTECT(FUN)                            ERTC_SetUnProtectKey(ERTC_UNPROTECT_KEY); \
+                                                  FUN; \
+                                                  ERTC_SetUnProtectKey(0); \
+
+#define RTC_IRQn                                  ERTC_IRQn
+#define RTC_IRQHandler                            ERTC_IRQHandler
+
+#define RTC_DeInit()                              UNPROTECT(ERTC_DeInit())
+#define RTC_ClockSourceConfig(Source)             UNPROTECT(ERTC_ClockSourceConfig(Source))
+#define RTC_LSESMConfig(Mode)                     UNPROTECT(ERTC_LSESMConfig(Mode))
+#define RTC_LSECmd(NewState)                      UNPROTECT(ERTC_LSECmd(NewState))
+#define RTC_SetPrescaler(Psc)                     UNPROTECT(ERTC_SetPrescaler(Psc))
+#define RTC_GetPrescaler()                        (ERTC_GetSynchronousPrescaler() + 1) * (ERTC_GetAsynchronousPrescaler() + 1)
+#define RTC_Cmd(NewState)                         ERTC_SetUnProtectKey(ERTC_UNPROTECT_KEY); \
+                                                  ERTC_WakeupTimerClockConfig(ERTC_WUP_TM_SPRE); \
+                                                  ERTC_WakeupTimerCmd(NewState); \
+                                                  ERTC_Cmd(NewState); \
+                                                  ERTC_SetUnProtectKey(0)
+#define RTC_SetCompare(Compare)                   UNPROTECT(ERTC_SetWakeupTimerCompare(Compare);)
+#define RTC_WakeupConfig(RTC_WAKEUP, NewState)    UNPROTECT(\
+                                                  RTC_CheckWakeupTimerSetting(RTC_WAKEUP); \
+                                                  if ((RTC_WAKEUP) == 2 && RTC_GetCompare() != 1) \
+                                                    ERTC_SetWakeupTimerCompare(1); \
+                                                  ERTC_WakeupConfig(ERTC_WAKEUP_WUT, NewState))
+#define RTC_IntConfig(RTC_INT, NewState)          UNPROTECT(\
+                                                  RTC_CheckWakeupTimerSetting(RTC_INT); \
+                                                  if ((RTC_INT) == 2 && RTC_GetCompare() != 1) \
+                                                    ERTC_SetWakeupTimerCompare(1); \
+                                                  ERTC_IntConfig(ERTC_INT_WUT, NewState))
+#define RTC_OutConfig(WMode, EventSel, Pol)       UNPROTECT(\
+                                                  ERTC_CheckWakeupTimerSetting(EventSel); \
+                                                  gWakeupTimerLastSetting = EventSel; \
+                                                  if ((EventSel) == 2 && RTC_GetCompare() != 1) \
+                                                    ERTC_SetWakeupTimerCompare(1); \
+                                                  ERTC_OutConfig(WMode, ERTC_ROES_WAKEUP, Pol))
+#define RTC_OutCmd(NewState)                      UNPROTECT(ERTC_OutCmd(NewState))
+
+/**
+  * @}
+  */
+
 /* Exported functions --------------------------------------------------------------------------------------*/
 /** @defgroup ERTC_Exported_Functions ERTC exported functions
   * @{
@@ -400,6 +494,9 @@ void ERTC_StructInit(ERTC_InitTypeDef* ERTC_InitStruct);
 void ERTC_Cmd(ControlStatus NewState);
 void ERTC_SetUnProtectKey(u16 uUnProtectKey);
 void ERTC_WriteProtectionCmd(ControlStatus NewState);
+void ERTC_SetPrescaler(u8 AsynchPrediv, u16 SynchPrediv);
+u8 ERTC_GetAsynchronousPrescaler(void);
+u16 ERTC_GetSynchronousPrescaler(void);
 
 void ERTC_ClockSourceConfig(ERTC_SRC_Enum Source);
 void ERTC_LSESMConfig(ERTC_LSESM_Enum Mode);
@@ -423,6 +520,7 @@ void ERTC_GetDateTime(ERTC_DateTypeDef* ERTC_DateStruct, ERTC_TimeTypeDef* ERTC_
 u32 ERTC_GetSubSecond(void);
 u32 ERTC_GetSubSecondms(void);
 u32 ERTC_GetSubSecondus(void);
+u32 ERTC_EpochTime(void);
 
 void ERTC_WakeupTimerClockConfig(u8 ERTC_WakeupClock);
 void ERTC_SetWakeupTimerCompare(u32 Compare);
@@ -450,6 +548,12 @@ u32 ERTC_GetTimeStampSubSecondus(void);
 FlagStatus ERTC_GetTimestampEventSourceStatus(u32 ERTC_TS_EVT);
 
 void ERTC_SynchroShiftConfig(u8 ERTC_ShiftSign, u16 ERTC_ShiftSubFS);
+
+void RTC_CheckWakeupTimerSetting(u8 WakeupTimerSetting);
+u32 RTC_GetCompare(void);
+u32 RTC_GetCounter(void);
+void RTC_CMPCLRCmd(ControlStatus NewState);
+u32 RTC_GetFlagStatus(void);
 
 /**
   * @}

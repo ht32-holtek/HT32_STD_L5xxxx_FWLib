@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    PWRCU/DeepSleepMode3/main.c
- * @version $Rev:: 749          $
- * @date    $Date:: 2025-07-25 #$
+ * @version $Rev:: 1116         $
+ * @date    $Date:: 2025-09-23 #$
  * @brief   Main program.
  *************************************************************************************************************
  * @attention
@@ -104,6 +104,11 @@ int main(void)
   /* Configure WAKEUP pin used to wakeup Deep Sleep mode 3                                                  */
   AFIO_GPxConfig(WAKEUP_BUTTON_GPIO_ID, WAKEUP_BUTTON_GPIO_PIN, AFIO_FUN_SYSTEM);
 
+  /* Set wakeup pin filter counter and prescaler                                                            */
+  #if (LIBCFG_PWRCU_WAKEUPFILTER)
+  PWRCU_SetWakeupPinFilter(PWRCU_WAKEUP_PIN_0, PWRCU_WUPFLT_COUNT2);
+  PWRCU_SetWakeupPinFilterPrescaler(PWRCU_WUPFREQ_DIV1);
+  #endif
   PWRCU_WakeupPinCmd(ENABLE);
 
   /* Enable and set EXTI Event Wakeup interrupt to the lowest priority                                      */
@@ -146,9 +151,15 @@ int main(void)
     #if (EXAMPLE_RTC_LSE == 1)
     {
       u32 wRtcCounterTmp = 0;
+      #if !LIBCFG_ERTC
       /* Wait till RTC count occurs                                                                         */
       wRtcCounterTmp = RTC_GetCounter();
       while (RTC_GetCounter() == wRtcCounterTmp);
+      #else
+      /* Wait till SPRE count occurs                                                                        */
+      wRtcCounterTmp = ERTC_EpochTime();
+      while (ERTC_EpochTime() == wRtcCounterTmp);
+      #endif
 
       /* Compare Match in 3 second                                                                          */
       RTC_SetCompare(RTC_GetCounter()+ 3);

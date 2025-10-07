@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    PWRCU/DeepPowerDownMode/main.c
- * @version $Rev:: 342          $
- * @date    $Date:: 2024-03-20 #$
+ * @version $Rev:: 1116         $
+ * @date    $Date:: 2025-09-23 #$
  * @brief   Main program.
  *************************************************************************************************************
  * @attention
@@ -100,9 +100,9 @@ int main(void)
 
   /* Check the backup domain(RTC & PWRCU) is ready for access                                               */
   {
-  CKCU_PeripClockConfig_TypeDef CKCUClock = {{0}};
-  CKCUClock.Bit.BKP = 1;
-  CKCU_PeripClockConfig(CKCUClock, ENABLE);
+    CKCU_PeripClockConfig_TypeDef CKCUClock = {{0}};
+    CKCUClock.Bit.BKP = 1;
+    CKCU_PeripClockConfig(CKCUClock, ENABLE);
   }
   if (PWRCU_CheckReadyAccessed() != PWRCU_OK)
   {
@@ -111,9 +111,9 @@ int main(void)
 
   /* Enable and set EXTI Event Wakeup interrupt to the lowest priority                                      */
   {
-  CKCU_PeripClockConfig_TypeDef CKCUClock = {{0}};
-  CKCUClock.Bit.EXTI = 1;
-  CKCU_PeripClockConfig(CKCUClock, ENABLE);
+    CKCU_PeripClockConfig_TypeDef CKCUClock = {{0}};
+    CKCUClock.Bit.EXTI = 1;
+    CKCU_PeripClockConfig(CKCUClock, ENABLE);
   }
 
   NVIC_SetPriority(EVWUP_IRQn, 0xF);

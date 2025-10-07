@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    I2C/I2C_NoStretch_Tester/main.c
- * @version $Rev:: 898          $
- * @date    $Date:: 2025-08-18 #$
+ * @version $Rev:: 1097         $
+ * @date    $Date:: 2025-09-12 #$
  * @brief   Main program.
  *************************************************************************************************************
  * @attention
@@ -104,7 +104,7 @@ void I2C_Master_Configuration(void)
 {
   { /* Enable peripheral clock                                                                              */
     CKCU_PeripClockConfig_TypeDef CKCUClock = {{0}};
-    CKCUClock.Bit.I2C1              = 1;
+    HTCFG_I2C_MASTER_CLK(CKCUClock) = 1;
     CKCUClock.Bit.AFIO              = 1;
     CKCU_PeripClockConfig(CKCUClock, ENABLE);
   }

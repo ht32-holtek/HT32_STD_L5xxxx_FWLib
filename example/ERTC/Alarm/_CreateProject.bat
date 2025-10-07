@@ -1,8 +1,9 @@
+@ECHO OFF
 REM /*********************************************************************************************************//**
-REM * @file    _ProjectConfig.ini
-REM * @version $Rev:: 9070         $
-REM * @date    $Date:: 2025-06-16 #$
-REM * @brief   Supported device list of specific example/application.
+REM * @file    _CreateProject.bat
+REM * @version $Rev:: 5229         $
+REM * @date    $Date:: 2021-02-01 #$
+REM * @brief   Create Project Script user API.
 REM *************************************************************************************************************
 REM * @attention
 REM *
@@ -24,12 +25,32 @@ REM *    the warranties of merchantability, satisfactory quality and fitness for
 REM *
 REM * <h2><center>Copyright (C) Holtek Semiconductor Inc. All rights reserved</center></h2>
 REM ************************************************************************************************************/
+TITLE Create Project
 
-REM FORMAT
-REM ============================================================================
-REM DEVICE_NAME
-REM   + DEVICE_NAME: The Device supported the example/application.
+SET PRJ_TYPE=Template
+IF EXIST "ht32_usbd_descriptor.c" SET PRJ_TYPE=Template_USB
 
-REM DEVICE_NAME
-REM ============================================================================
-52241
+IF EXIST "_CreateProjectScript.bat" GOTO PROJECT_ALREADY_EXIST
+IF NOT EXIST "..\..\..\project_template\Script\_CreateProjectScript.bat" GOTO CREATE_PROJECT_ERR
+IF EXIST "_ProjectSource.ini" IF NOT EXIST "..\..\..\project_template\Script\_ProjectSource.bat" GOTO CREATE_PROJECT_ERR
+
+COPY /Y "..\..\..\project_template\Script\_CreateProjectScript.bat"  "." 1> nul 2>&1
+
+CALL _CreateProjectScript.bat %PRJ_TYPE%
+IF EXIST "..\..\..\project_template\Script\_CreateProjectConfScript.bat" PAUSE
+GOTO :EOF
+
+:CREATE_PROJECT_ERR
+ECHO.
+ECHO "_CreateProjectScript.bat" or "_ProjectSource.bat" is not exist or has incompatible version.
+ECHO Please update to the latest Firmware Library.
+ECHO.
+PAUSE
+GOTO :EOF
+
+:PROJECT_ALREADY_EXIST
+ECHO.
+ECHO The project related files are already exist. Please remove them first.....
+ECHO.
+PAUSE
+GOTO :EOF

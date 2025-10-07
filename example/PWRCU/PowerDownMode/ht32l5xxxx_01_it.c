@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    PWRCU/PowerDownMode/ht32l5xxxx_01_it.c
- * @version $Rev:: 318          $
- * @date    $Date:: 2024-03-15 #$
+ * @version $Rev:: 1116         $
+ * @date    $Date:: 2025-09-23 #$
  * @brief   This file provides all interrupt service routine.
  *************************************************************************************************************
  * @attention
@@ -170,14 +170,25 @@ __STATIC_INLINE void KEY1_Button_Process(void)
     }
     AFIO_GPxConfig(WAKEUP_BUTTON_GPIO_ID, WAKEUP_BUTTON_GPIO_PIN, AFIO_FUN_SYSTEM);
     while (HT32_DVB_PBGetState(BUTTON_WAKEUP));
+    /* Set wakeup pin filter counter and prescaler                                                            */
+    #if (LIBCFG_PWRCU_WAKEUPFILTER)
+    PWRCU_SetWakeupPinFilter(PWRCU_WAKEUP_PIN_0, PWRCU_WUPFLT_COUNT2);
+    PWRCU_SetWakeupPinFilterPrescaler(PWRCU_WUPFREQ_DIV1);
+    #endif
     PWRCU_WakeupPinCmd(ENABLE);
 
     #if 1
     {
       u32 wRtcCounterTmp = 0;
+      #if !LIBCFG_ERTC
       /* Wait till RTC count occurs                                                                         */
       wRtcCounterTmp = RTC_GetCounter();
       while (RTC_GetCounter() == wRtcCounterTmp);
+      #else
+      /* Wait till SPRE count occurs                                                                        */
+      wRtcCounterTmp = ERTC_EpochTime();
+      while (ERTC_EpochTime() == wRtcCounterTmp);
+      #endif
 
       /* Compare Match in 5 second                                                                          */
       RTC_SetCompare(RTC_GetCounter()+ 5);
@@ -219,7 +230,9 @@ void EXTI2_3_IRQHandler(void)
  ************************************************************************************************************/
 void EXTI4_15_IRQHandler(void)
 {
-
+  #if defined(USE_HT32L52353_SK)
+  KEY1_Button_Process();
+  #endif
 }
 
 

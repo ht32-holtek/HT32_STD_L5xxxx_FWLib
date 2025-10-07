@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    Release_Notes.txt
- * @version V1.3.1
- * @date    2025-09-08
+ * @version V1.4.1
+ * @date    2025-10-07
  * @brief   The Release notes of HT32L Firmware Library.
  *************************************************************************************************************
  * @attention
@@ -36,6 +36,42 @@
 //   HT32L52343, HT32L52353
 //   HT32L64041
 //   HT32L64141
+
+/*----------------------------------------------------------------------------------------------------------*/
+/* HT32_STD_L5xxxx_FWLib_V1.4.1_1136                                                                        */
+/*----------------------------------------------------------------------------------------------------------*/
+  Release Date: 2025-10-07
+  Main Changes
+  + Update ERTC Driver.
+    - Add "u32 ERTC_EpochTime(void)" API to get the total seconds elapsed since year 0, Jan 1, 12:00AM.
+    - Add compatibility macros to map RTC API to ERTC API.
+    - Fix "ERTC_OutConfig()" bug by correcting CRO config from ROEN | WMode to ROEN | EventSel.
+    - Fix "ERTC_DeInit()" init sequence by using INIT bit and waiting for INITF flag before reset.
+    - Remove redundant "ERTC_Cmd()".
+    - Modify ERTC_Cmd() to unlock write protection before accessing INIT bit and re-lock it afterward.
+  + Update I2C Driver.
+    - Modify "I2C_Init()" to return "ErrStatus" for parameter validation.
+    - Add two I2C preprocessor options, "LIBCFG_I2C_SHLPGR_OVF_FIX" and "LIBCFG_I2C_SHLPGR_8BIT", to fix timing calculation overflow and negative value errors, respectively.
+  + Add new examples as below.
+    - "ERTC/Alarm"
+    - "ERTC/Calibration"
+    - "ERTC/Calibration_Demo"
+    - "ERTC/ERTC_Out"
+    - "ERTC/TimeStamp"
+    - "PWRCU/PowerDown_ERTC"
+  + Modify RAND/Random_Number
+    - Add "GET_COUNT()" macro to support both RTC and ERTC counter source.
+    - Use "ERTC_EpochTime()" for time acquisition when "LIBCFG_ERTC" is defined, otherwise fall back to "RTC_GetCounter()".
+  + Modify Example: "ht32l5xxxx_01_it.c" Replace "#if 0" stub of "NMI_Handler()" with an empty handler function.
+    - "I2C/I2C_NoStretch_Tester"
+    - "I2C/I2C_NoStretch_Slave"
+    - "I2C/I2C_Support_I3C_Slave"
+    - "RNG/GenerateRandom_Interrup"
+    - "RNG/GenerateRandom_Polling"
+
+  Others
+  + Update comment, format, typing error, and coding style.
+  + Add HT32L64041 and HT32L64141 project file into "project_template/IP/Template".
 
 /*----------------------------------------------------------------------------------------------------------*/
 /* HT32_STD_L5xxxx_FWLib_V1.3.1_1078                                                                        */

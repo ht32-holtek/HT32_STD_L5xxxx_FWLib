@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    I2C/I2C_Support_I3C_Slave/main.c
- * @version $Rev:: 868          $
- * @date    $Date:: 2025-08-11 #$
+ * @version $Rev:: 1097         $
+ * @date    $Date:: 2025-09-12 #$
  * @brief   Main program.
  *************************************************************************************************************
  * @attention
@@ -146,8 +146,8 @@ void I2C_Slave_Configuration(void)
 {
   { /* Enable peripheral clock                                                                              */
     CKCU_PeripClockConfig_TypeDef CKCUClock = {{0}};
-    CKCUClock.Bit.I2C1 = 1;
-    CKCUClock.Bit.AFIO = 1;
+    HTCFG_I2C_SLAVE_CLK(CKCUClock) = 1;
+    CKCUClock.Bit.AFIO             = 1;
     CKCU_PeripClockConfig(CKCUClock, ENABLE);
   }
 
@@ -191,7 +191,7 @@ void I2C_Slave_Configuration(void)
   }
   /* Enable I2C Slave interrupts                                                                            */
   I2C_IntConfig(HTCFG_I2C_SLAVE_PORT, I2C_INT_ADRS | I2C_INT_RXDNE | I2C_INT_RXNACK | I2C_INT_STO, ENABLE);
-  NVIC_EnableIRQ(I2C1_IRQn);
+  NVIC_EnableIRQ(HTCFG_I2C_Slave_IRQn);
 
   I2C_Cmd(HTCFG_I2C_SLAVE_PORT, ENABLE);
 }

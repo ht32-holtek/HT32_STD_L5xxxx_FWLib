@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    RAND/Random_Number/main.c
- * @version $Rev:: 103          $
- * @date    $Date:: 2024-02-02 #$
+ * @version $Rev:: 1116         $
+ * @date    $Date:: 2025-09-23 #$
  * @brief   Main program.
  *************************************************************************************************************
  * @attention
@@ -50,6 +50,13 @@ void Rand_GenerateTest(void);
 u32 uRandSeed;
 u32 uRand[4];
 
+/* Global variables ----------------------------------------------------------------------------------------*/
+#if LIBCFG_ERTC
+  #define GET_COUNT() ERTC_EpochTime()
+#else
+  #define GET_COUNT() RTC_GetCounter()
+#endif
+
 /* Global functions ----------------------------------------------------------------------------------------*/
 /*********************************************************************************************************//**
   * @brief  Main program.
@@ -91,11 +98,11 @@ void Rand_GenerateTest(void)
 {
   u32 i = 0;
 
-  Rand_Init(&uRandSeed, HT_RTC->CNT, 10, 11);
+  Rand_Init(&uRandSeed, GET_COUNT(), 10, 11);
 
   for (i = 0 ; i < 4; i++)
   {
-    uRand[i] = Rand_Get(&uRandSeed, HT_RTC->CNT);
+    uRand[i] = Rand_Get(&uRandSeed, GET_COUNT());
   }
 
   printf("%08X", uRand[0]);

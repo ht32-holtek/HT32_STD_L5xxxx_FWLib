@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    PWRCU/DeepSleepMode1/main.c
- * @version $Rev:: 749          $
- * @date    $Date:: 2025-07-25 #$
+ * @version $Rev:: 1116         $
+ * @date    $Date:: 2025-09-23 #$
  * @brief   Main program.
  *************************************************************************************************************
  * @attention
@@ -134,9 +134,15 @@ int main(void)
     #if (EXAMPLE_RTC_LSE == 1)
     {
       u32 wRtcCounterTmp = 0;
+      #if !LIBCFG_ERTC
       /* Wait till RTC count occurs                                                                         */
       wRtcCounterTmp = RTC_GetCounter();
       while (RTC_GetCounter() == wRtcCounterTmp);
+      #else
+      /* Wait till SPRE count occurs                                                                        */
+      wRtcCounterTmp = ERTC_EpochTime();
+      while (ERTC_EpochTime() == wRtcCounterTmp);
+      #endif
 
       /* Compare Match in 3 second                                                                          */
       RTC_SetCompare(RTC_GetCounter()+ 3);

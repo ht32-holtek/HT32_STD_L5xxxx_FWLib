@@ -46,22 +46,9 @@
  * @brief   This function handles NMI exception.
  * @retval  None
  ************************************************************************************************************/
-/* !!! NOTICE !!!
-   The handler function is located in system_ht32lXxxxx_nn.c.
-   To override it, please enable the override option in system_ht32lXxxxx_nn.c.
-*/
-#if 0
 void NMI_Handler(void)
 {
-  /* Double Error Bit Handling Routine                                                                      */
-  if(RAMECC_GET_DOUBLE_INT_STATUS())
-  {
-    while(1)
-    {
-    }
-  }
 }
-#endif
 
 /*********************************************************************************************************//**
  * @brief   This function handles Hard Fault exception.

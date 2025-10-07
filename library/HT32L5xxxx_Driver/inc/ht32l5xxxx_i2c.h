@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_i2c.h
- * @version $Rev:: 1008         $
- * @date    $Date:: 2025-08-28 #$
+ * @version $Rev:: 1098         $
+ * @date    $Date:: 2025-09-12 #$
  * @brief   The header file of the I2C library.
  *************************************************************************************************************
  * @attention
@@ -346,7 +346,7 @@ typedef struct
   * @{
   */
 void I2C_DeInit(HT_I2C_TypeDef* I2Cx);
-void I2C_Init(HT_I2C_TypeDef* I2Cx, I2C_InitTypeDef* I2C_InitStructure);
+ErrStatus I2C_Init(HT_I2C_TypeDef* I2Cx, I2C_InitTypeDef* I2C_InitStructure);
 void I2C_StructInit(I2C_InitTypeDef* I2C_InitStructure);
 void I2C_Cmd(HT_I2C_TypeDef* I2Cx, ControlStatus NewState);
 void I2C_GenerateSTOP(HT_I2C_TypeDef* I2Cx);

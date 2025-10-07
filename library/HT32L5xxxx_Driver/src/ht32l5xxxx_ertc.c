@@ -111,6 +111,11 @@
 static u32 gERTCUnProtectKey       = 0;
 static u32 gERTCSubSecondms        = 0;
 static u32 gERTCSubSecondus        = 0;
+static u8  gWakeupTimerLastSetting = 0;
+static u8  gRTCAutoReload          = 0;
+static u8  gCompareMode            = 0;
+
+static const u16 gDayBefireMonth[13] = { 0, 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
 
 /* Private functions ---------------------------------------------------------------------------------------*/
 /*********************************************************************************************************//**
@@ -151,7 +156,7 @@ static void _ERTC_HourInputFormat_24_to_12(ERTC_TimeTypeDef* ERTC_TimeStruct)
 {
   vu32 tmpreg;
   tmpreg = _ERTC_BcdToByte(ERTC_TimeStruct->Hours);
-  if(ERTC_TimeStruct->FMT == ERTC_HOURFORMAT_12)
+  if (ERTC_TimeStruct->FMT == ERTC_HOURFORMAT_12)
   {
     Assert_Param(IS_ERTC_HOUR12(tmpreg));
     Assert_Param(IS_ERTC_AMPM(ERTC_TimeStruct->AMPM));
@@ -193,10 +198,10 @@ void ERTC_DeInit(void)
 
   /* Switch clock source to LSI                                                                             */
   HT_ERTC->CR0 = (HT_ERTC->CR0 & ~ERTC_ERTCSRC_MASK) | ERTC_SRC_LSI;
-  while((HT_ERTC->CR0 & ERTC_ERTCSRC_MASK) != ERTC_SRC_LSI); // Wait until clock switches to LSI 
+  while ((HT_ERTC->CR0 & ERTC_ERTCSRC_MASK) != ERTC_SRC_LSI){}; // Wait until clock switches to LSI
 
-  ERTC_Cmd(DISABLE);
-
+  Set_INIT;
+  while ((HT_ERTC->SR & ERTC_FLAG_INITF) == 0);
   /* Clear CR0 except INIT and LSI                                                                          */
   HT_ERTC->CR0 &= 0x3;
 
@@ -216,10 +221,8 @@ void ERTC_DeInit(void)
   HT_ERTC->ALMSSMR = 0x00000000;
   HT_ERTC->ALMSSR  = 0x00000000;
 
-  ERTC_Cmd(ENABLE);
-
   HT_ERTC->CR0 = 0;
-  while((HT_ERTC->CR0 & ERTC_ERTCSRC_MASK) != RESET);
+  while ((HT_ERTC->CR0 & ERTC_ERTCSRC_MASK) != RESET){};
 
   /* Enable the write protection for ERTC registers                                                         */
   HT_ERTC->WPR = 0xFFFF;
@@ -250,10 +253,11 @@ void ERTC_InitBCD(ERTC_InitTypeDef* ERTC_InitStruct)
 
   _ERTC_HourInputFormat_24_to_12(&ERTC_InitStruct->Time);
 
+  ERTC_Cmd(DISABLE);
+
   /* Disable the write protection for ERTC registers                                                        */
   HT_ERTC->WPR = gERTCUnProtectKey;
 
-  ERTC_Cmd(DISABLE);
   /* Configure the hour format                                                                              */
   HT_ERTC->CR0 = (HT_ERTC->CR0 & ~ERTC_FMT_MASK) | ERTC_InitStruct->Time.FMT;
 
@@ -272,10 +276,11 @@ void ERTC_InitBCD(ERTC_InitTypeDef* ERTC_InitStruct)
   HT_ERTC->CAR2 = (ERTC_InitStruct->Date.Year    << ERTC_YEAR_MASK_SHIFT)  | \
                   (ERTC_InitStruct->Date.Month   << ERTC_MONTH_MASK_SHIFT) | \
                   (ERTC_InitStruct->Date.WeekDay << ERTC_WEEKDAY_MASK_SHIFT);
-  ERTC_Cmd(ENABLE);
 
   /* Enable the write protection for ERTC registers                                                         */
   HT_ERTC->WPR = 0xFFFF;
+
+  ERTC_Cmd(ENABLE);
 }
 
 /*********************************************************************************************************//**
@@ -289,7 +294,7 @@ void ERTC_Init(ERTC_InitTypeDef* ERTC_InitStruct)
 {
   ERTC_InitTypeDef tmpStruct = *ERTC_InitStruct;
 
-  /* Convert to BCD before calling BCD init */
+  /* Convert to BCD before calling BCD init                                                                 */
   tmpStruct.Date.Year  = _ERTC_ByteToBcd(ERTC_InitStruct->Date.Year);
   tmpStruct.Date.Month = _ERTC_ByteToBcd(ERTC_InitStruct->Date.Month);
   tmpStruct.Date.Day   = _ERTC_ByteToBcd(ERTC_InitStruct->Date.Day);
@@ -313,6 +318,9 @@ void ERTC_Cmd(ControlStatus NewState)
 
   if ((HT_ERTC->SR & ERTC_FLAG_INITF) == NewState)
   {
+    /* Disable the write protection for ERTC registers                                                      */
+    HT_ERTC->WPR = gERTCUnProtectKey;
+
     if (NewState)
     {
       Reset_INIT;
@@ -321,7 +329,9 @@ void ERTC_Cmd(ControlStatus NewState)
     {
       Set_INIT;
     }
-    while ((HT_ERTC->SR & ERTC_FLAG_INITF) == NewState);
+    /* Enable the write protection for ERTC registers                                                       */
+    HT_ERTC->WPR = 0xFFFF;
+    while ((HT_ERTC->SR & ERTC_FLAG_INITF) == NewState){};
   }
 }
 
@@ -373,6 +383,47 @@ void ERTC_WriteProtectionCmd(ControlStatus NewState)
 }
 
 /*********************************************************************************************************//**
+ * @brief Configure the ERTC prescaler.
+ * @param AsynchPrediv: Value of ERTC Asynchronous Prescaler.
+ * @param SynchPrediv: Value of ERTC Synchronous Prescaler.
+ * @retval None
+ ************************************************************************************************************/
+void ERTC_SetPrescaler(u8 AsynchPrediv, u16 SynchPrediv)
+{
+  ERTC_Cmd(DISABLE);
+
+  /* Disable the write protection for ERTC registers                                                        */
+  HT_ERTC->WPR = gERTCUnProtectKey;
+
+  /* Configure the prescalers                                                                               */
+  HT_ERTC->APSC = AsynchPrediv;
+  HT_ERTC->SPSC = ERTC_PSCRST_POS | SynchPrediv;
+
+  /* Enable the write protection for ERTC registers                                                         */
+  HT_ERTC->WPR = 0xFFFF;
+
+  ERTC_Cmd(ENABLE);
+}
+
+/*********************************************************************************************************//**
+ * @brief Return the ERTC Asynchronous prescaler setting.
+ * @retval The prescaler value.
+ ************************************************************************************************************/
+u8 ERTC_GetAsynchronousPrescaler(void)
+{
+  return HT_ERTC->APSC & 0x7F;
+}
+
+/*********************************************************************************************************//**
+ * @brief Return the ERTC Synchronous prescaler setting.
+ * @retval The prescaler value.
+ ************************************************************************************************************/
+u16 ERTC_GetSynchronousPrescaler(void)
+{
+  return HT_ERTC->SPSC & 0x7FFF;
+}
+
+/*********************************************************************************************************//**
  * @brief  Select the ERTC timer clock source.
  * @param  Source: Specifies the clock source of ERTC and VDD power domain.
  *   @arg  ERTC_SRC_NOCLOCK   : No clock.
@@ -390,7 +441,7 @@ void ERTC_ClockSourceConfig(ERTC_SRC_Enum Source)
   HT_ERTC->WPR = gERTCUnProtectKey;
 
   HT_ERTC->CR0 = (HT_ERTC->CR0 & ~ERTC_ERTCSRC_MASK) | Source;
-  while((HT_ERTC->CR0 & ERTC_ERTCSRC_MASK) != Source);
+  while ((HT_ERTC->CR0 & ERTC_ERTCSRC_MASK) != Source){};
 
   /* Enable the write protection for ERTC registers                                                         */
   HT_ERTC->WPR = 0xFFFF;
@@ -415,7 +466,7 @@ void ERTC_LSEDIVConfig(ERTC_HSEDIV_Enum Div)
   HT_ERTC->WPR = gERTCUnProtectKey;
 
   HT_ERTC->CR1 = (HT_ERTC->CR1 & ~ERTC_HSEPRESEL_MASK) | Div;
-  while((HT_ERTC->CR1 & ERTC_HSEPRESEL_MASK) != Div);
+  while ((HT_ERTC->CR1 & ERTC_HSEPRESEL_MASK) != Div){};
 
   /* Enable the write protection for ERTC registers                                                         */
   HT_ERTC->WPR = 0xFFFF;
@@ -481,16 +532,16 @@ void ERTC_LSECmd(ControlStatus NewState)
  ************************************************************************************************************/
 void ERTC_SetDateBCD(ERTC_DateTypeDef* ERTC_DateStruct)
 {
-    /* Check the parameters                                                                                   */
+  /* Check the parameters                                                                                   */
   Assert_Param(IS_ERTC_YEAR(_ERTC_BcdToByte(ERTC_DateStruct->Year)));
   Assert_Param(IS_ERTC_MONTH(_ERTC_BcdToByte(ERTC_DateStruct->Month)));
   Assert_Param(IS_ERTC_DATE(_ERTC_BcdToByte(ERTC_DateStruct->Day)));
   Assert_Param(IS_ERTC_WEEKDAY(ERTC_DateStruct->WeekDay));
 
+  ERTC_Cmd(DISABLE);
+
   /* Disable the write protection for ERTC registers                                                        */
   HT_ERTC->WPR = gERTCUnProtectKey;
-
-  ERTC_Cmd(DISABLE);
 
   HT_ERTC->CAR1 = (HT_ERTC->CAR1 & ERTC_HOUR_MASK & ERTC_AMPM_MASK)    | \
                   ((ERTC_DateStruct->Day) << ERTC_DAY_MASK_SHIFT);
@@ -498,10 +549,10 @@ void ERTC_SetDateBCD(ERTC_DateTypeDef* ERTC_DateStruct)
                   (ERTC_DateStruct->Month   << ERTC_MONTH_MASK_SHIFT)   | \
                   (ERTC_DateStruct->WeekDay << ERTC_WEEKDAY_MASK_SHIFT);
 
-  ERTC_Cmd(ENABLE);
-
   /* Enable the write protection for ERTC registers                                                         */
   HT_ERTC->WPR = 0xFFFF;
+
+  ERTC_Cmd(ENABLE);
 }
 
 /*********************************************************************************************************//**
@@ -529,27 +580,29 @@ void ERTC_SetDate(ERTC_DateTypeDef* ERTC_DateStruct)
  ************************************************************************************************************/
 void ERTC_SetTimeBCD(ERTC_TimeTypeDef* ERTC_TimeStruct)
 {
-    /* Check the parameters                                                                                   */
+  /* Check the parameters                                                                                   */
   Assert_Param(IS_ERTC_HOUR_FORMAT(ERTC_TimeStruct->FMT));
   Assert_Param(IS_ERTC_MINUTES(_ERTC_BcdToByte(ERTC_TimeStruct->Minutes)));
   Assert_Param(IS_ERTC_SECONDS(_ERTC_BcdToByte(ERTC_TimeStruct->Seconds)));
 
   _ERTC_HourInputFormat_24_to_12(ERTC_TimeStruct);
 
+  ERTC_Cmd(DISABLE);
+
   /* Disable the write protection for ERTC registers                                                        */
   HT_ERTC->WPR = gERTCUnProtectKey;
 
-  ERTC_Cmd(DISABLE);
   /* Set the ERTC Date & Time                                                                               */
   HT_ERTC->CAR0 = (ERTC_TimeStruct->Minutes << ERTC_MINUTE_MASK_SHIFT) | \
                   (ERTC_TimeStruct->Seconds << ERTC_SECOND_MASK_SHIFT);
   HT_ERTC->CAR1 = (HT_ERTC->CAR1 & ERTC_YEAR_MASK)                         | \
                   (ERTC_TimeStruct->Hours << ERTC_HOUR_MASK_SHIFT)    | \
                   (ERTC_TimeStruct->AMPM << ERTC_AMPM_MASK_SHIFT);
-  ERTC_Cmd(ENABLE);
 
   /* Enable the write protection for ERTC registers                                                         */
   HT_ERTC->WPR = 0xFFFF;
+
+  ERTC_Cmd(ENABLE);
 }
 
 /*********************************************************************************************************//**
@@ -582,7 +635,7 @@ void ERTC_GetDateBCD(ERTC_DateTypeDef* ERTC_DateStruct)
     CAR1 = HT_ERTC->CAR1;
     CAR2 = HT_ERTC->CAR2;
     SSR2 = HT_ERTC->SSR;
-  }while(SSR1 != SSR2);
+  } while (SSR1 != SSR2);
 
   /* Fill the structure fields with the read parameters                                                     */
   ERTC_DateStruct->Year    = (CAR2 & ERTC_YEAR_MASK)    >> ERTC_YEAR_MASK_SHIFT;
@@ -620,7 +673,7 @@ void ERTC_GetTimeBCD(ERTC_TimeTypeDef* ERTC_TimeStruct)
     CAR0 = HT_ERTC->CAR0;
     CAR1 = HT_ERTC->CAR1;
     SSR2 = HT_ERTC->SSR;
-  }while(SSR1 != SSR2);
+  } while (SSR1 != SSR2);
 
   /* Fill the structure fields with the read parameters                                                     */
   ERTC_TimeStruct->Hours   = (CAR1 & ERTC_HOUR_MASK)   >> ERTC_HOUR_MASK_SHIFT;
@@ -662,15 +715,15 @@ void ERTC_GetDateTimeBCD(ERTC_DateTypeDef* ERTC_DateStruct, ERTC_TimeTypeDef* ER
     CAR1 = HT_ERTC->CAR1;
     CAR2 = HT_ERTC->CAR2;
     SSR2 = HT_ERTC->SSR;
-  }while(SSR1 != SSR2);
+  } while (SSR1 != SSR2);
 
-  /* Fill the date structure fields */
+  /* Fill the date structure fields                                                                         */
   ERTC_DateStruct->Year    = (CAR2 & ERTC_YEAR_MASK)    >> ERTC_YEAR_MASK_SHIFT;
   ERTC_DateStruct->Month   = (CAR2 & ERTC_MONTH_MASK)   >> ERTC_MONTH_MASK_SHIFT;
   ERTC_DateStruct->Day     = (CAR1 & ERTC_DAY_MASK)     >> ERTC_DAY_MASK_SHIFT;
   ERTC_DateStruct->WeekDay = (CAR2 & ERTC_WEEKDAY_MASK) >> ERTC_WEEKDAY_MASK_SHIFT;
 
-  /* Fill the time structure fields */
+  /* Fill the time structure fields                                                                         */
   ERTC_TimeStruct->Hours   = (CAR1 & ERTC_HOUR_MASK)   >> ERTC_HOUR_MASK_SHIFT;
   ERTC_TimeStruct->Minutes = (CAR0 & ERTC_MINUTE_MASK) >> ERTC_MINUTE_MASK_SHIFT;
   ERTC_TimeStruct->Seconds = (CAR0 & ERTC_SECOND_MASK) >> ERTC_SECOND_MASK_SHIFT;
@@ -768,11 +821,11 @@ void ERTC_WakeupTimerClockConfig(u8 ERTC_WakeupClock)
   /* Disable the write protection for ERTC registers                                                        */
   HT_ERTC->WPR = gERTCUnProtectKey;
 
-  if((HT_ERTC->CR1 & ERTC_WUTEN_MASK) != RESET)
+  if ((HT_ERTC->CR1 & ERTC_WUTEN_MASK) != RESET)
   {
     Reset_WUTEN;
   }
-  while(!(HT_ERTC->SR & ERTC_FLAG_WUTWF));
+  while (!(HT_ERTC->SR & ERTC_FLAG_WUTWF)){};
 
   /* Configure the clock source                                                                             */
   HT_ERTC->CR1 = (HT_ERTC->CR1 & ~ERTC_WUCLSEL_MASK) | (ERTC_WakeupClock << ERTC_WUCLSEL_SHIFT);
@@ -797,20 +850,22 @@ void ERTC_SetWakeupTimerCompare(u32 Compare)
 
   /* Disable the write protection for ERTC registers                                                        */
   HT_ERTC->WPR = gERTCUnProtectKey;
-
-  if(HT_ERTC->CR1 & ERTC_WUTEN_MASK)
+  if (gRTCAutoReload == 1)
   {
-    Reset_WUTEN;
-    while(!(HT_ERTC->SR & ERTC_FLAG_WUTWF));
     HT_ERTC->WUTR = Compare & 0xFFFF;
-    Set_WUTEN;
-    while((HT_ERTC->SR & ERTC_FLAG_WUTWF));
   }
   else
   {
-    Reset_WUTEN;
-    while(!(HT_ERTC->SR & ERTC_FLAG_WUTWF));
-    HT_ERTC->WUTR = Compare & 0xFFFF;
+    if (gCompareMode == GET_COUNTER)
+    {
+      HT_ERTC->WUTR = Compare & 0xFFFF;
+      ERTC_WakeupTimerCmd(DISABLE);
+      ERTC_WakeupTimerCmd(ENABLE);
+    }
+    else if (gCompareMode == GET_COMPARE)
+    {
+      HT_ERTC->WUTR = Compare & 0xFFFF;
+    }
   }
 
   /* Enable the write protection for ERTC registers                                                         */
@@ -847,7 +902,7 @@ void ERTC_WakeupTimerCmd(ControlStatus NewState)
   else
   {
     Reset_WUTEN;
-    while((HT_ERTC->SR & ERTC_FLAG_WUTWF) == RESET);
+    while ((HT_ERTC->SR & ERTC_FLAG_WUTWF) == RESET){};
   }
   /* Enable the write protection for ERTC registers                                                         */
   HT_ERTC->WPR = 0xFFFF;
@@ -946,7 +1001,7 @@ void ERTC_SetAlarmBCD(ERTC_AlarmTypeDef* ERTC_AlarmStruct)
   /* Disable the write protection for ERTC registers                                                        */
   HT_ERTC->WPR = gERTCUnProtectKey;
 
-  while(!(HT_ERTC->SR  &  ERTC_FLAG_ALRWF));
+  while (!(HT_ERTC->SR  &  ERTC_FLAG_ALRWF)){};
   HT_ERTC->ALMR0 = (ERTC_AlarmStruct->AlarmMask.AlarmMask_Minute << ERTC_ALARM_ALMINAE_SHIFT) | \
                    (ERTC_AlarmStruct->AlarmMask.AlarmMask_Second << ERTC_ALARM_ALSECE_SHIFT)  | \
                    (ERTC_AlarmStruct->AlarmTime.Minutes << ERTC_ALARM_MINUTE_MASK_SHIFT)      | \
@@ -977,7 +1032,7 @@ void ERTC_SetAlarm(ERTC_AlarmTypeDef* ERTC_AlarmStruct)
   tmpStruct.AlarmTime.Hours   = _ERTC_ByteToBcd(ERTC_AlarmStruct->AlarmTime.Hours);
   tmpStruct.AlarmTime.Minutes = _ERTC_ByteToBcd(ERTC_AlarmStruct->AlarmTime.Minutes);
   tmpStruct.AlarmTime.Seconds = _ERTC_ByteToBcd(ERTC_AlarmStruct->AlarmTime.Seconds);
-  if(ERTC_AlarmStruct->AlarmDateWeekDaySel == ERTC_ALARMSEL_DATE)
+  if (ERTC_AlarmStruct->AlarmDateWeekDaySel == ERTC_ALARMSEL_DATE)
   {
     tmpStruct.AlarmDateWeekDay = _ERTC_ByteToBcd(ERTC_AlarmStruct->AlarmDateWeekDay);
   }
@@ -1033,7 +1088,7 @@ void ERTC_AlarmSubSecondConfig(u16 ERTC_AlarmSubSecondValue, u8 ERTC_AlarmSubSec
   /* Disable the write protection for  ERTC registers                                                       */
   HT_ERTC->WPR = gERTCUnProtectKey;
 
-  while(!(HT_ERTC->SR  &  ERTC_FLAG_ALRWF));
+  while (!(HT_ERTC->SR  &  ERTC_FLAG_ALRWF)){};
 
   /* Configure the Alarm SubSecond registers                                                                */
   HT_ERTC->ALMSSMR = ERTC_AlarmSubSecondMask;
@@ -1064,7 +1119,7 @@ void ERTC_AlarmCmd(ControlStatus NewState)
   else
   {
     Reset_ALREN;
-    while((HT_ERTC->SR & ERTC_FLAG_ALRWF) == RESET);
+    while ((HT_ERTC->SR & ERTC_FLAG_ALRWF) == RESET){};
   }
   /* Enable the write protection for ERTC registers                                                         */
   HT_ERTC->WPR = 0xFFFF;
@@ -1090,7 +1145,7 @@ FlagStatus ERTC_GetFlagStatus(u32 ERTC_FLAG_x)
 {
   /* Check the parameters                                                                                   */
   Assert_Param(IS_ERTC_GET_FLAG(ERTC_FLAG_x));
-  if(HT_ERTC->SR & ERTC_FLAG_x)
+  if (HT_ERTC->SR & ERTC_FLAG_x)
   {
     return SET;
   }
@@ -1117,7 +1172,7 @@ void ERTC_ClearFlag(u32 ERTC_FLAG_x)
   /* Check the parameters                                                                                   */
   Assert_Param(IS_ERTC_CLEAR_FLAG(ERTC_FLAG_x));
 
-  if(ERTC_FLAG_x & ERTC_FLAG_RTCOF)
+  if (ERTC_FLAG_x & ERTC_FLAG_RTCOF)
   {
     Set_ROCLR; //write 1 to ROCLR to clear RTCOF
   }
@@ -1158,22 +1213,22 @@ void ERTC_OutConfig(ERTC_ROWM_Enum WMode, ERTC_ROES_Enum EventSel, ERTC_ROAP_Enu
   ROEN = HT_ERTC->CR0 & ERTC_ROEN_MASK;
 
   //* Clear ROEN, ROAP, ROES, ROWM bits                                                                     */
-  HT_ERTC->CR0 &= ~(0xFC00); 
-  while(HT_ERTC->CR0 & ERTC_ROEN_MASK);
+  HT_ERTC->CR0 &= ~(0xFC00);
+  while (HT_ERTC->CR0 & ERTC_ROEN_MASK){};
 
-  /* Configure the output selection and polarity */
-  if((EventSel & ERTC_ROES_SPRE) || (EventSel & ERTC_ROES_APRE))
+  /* Configure the output selection and polarity                                                            */
+  if ((EventSel & ERTC_ROES_SPRE) || (EventSel & ERTC_ROES_APRE))
   {
-    HT_ERTC->CR0 |= (ROEN | WMode);
+    HT_ERTC->CR0 |= (ROEN | EventSel);
   }
   else
   {
     HT_ERTC->CR0 |= (ROEN | WMode | EventSel | Pol);
   }
 
-  if(ROEN)
+  if (ROEN)
   {
-    while(!(HT_ERTC->CR0 & ERTC_ROEN_MASK));
+    while (!(HT_ERTC->CR0 & ERTC_ROEN_MASK)){};
   }
   /* Enable the write protection for ERTC registers                                                         */
   HT_ERTC->WPR = 0xFFFF;
@@ -1190,15 +1245,15 @@ void ERTC_OutCmd(ControlStatus NewState)
   /* Disable the write protection for  ERTC registers                                                       */
   HT_ERTC->WPR = gERTCUnProtectKey;
 
-  if(NewState == ENABLE)
+  if (NewState == ENABLE)
   {
     HT_ERTC->CR0 |= ERTC_ROEN_MASK;
-    while(!(HT_ERTC->CR0 & ERTC_ROEN_MASK));
+    while (!(HT_ERTC->CR0 & ERTC_ROEN_MASK)){};
   }
   else
   {
     HT_ERTC->CR0 &= ~ERTC_ROEN_MASK;
-    while(HT_ERTC->CR0 & ERTC_ROEN_MASK);
+    while (HT_ERTC->CR0 & ERTC_ROEN_MASK){};
   }
 
   /* Enable the write protection for ERTC registers                                                         */
@@ -1228,15 +1283,15 @@ void ERTC_CalibConfig(u16 ERTC_CalibPeriod, u16 ERTC_CalibPlusMask, u8 ERTC_Cali
 
   /* Disable the write protection for  ERTC registers                                                       */
   HT_ERTC->WPR = gERTCUnProtectKey;
-  if(ERTC_CalibPeriod == ERTC_CALIB_PERIOD_16)
+  if (ERTC_CalibPeriod == ERTC_CALIB_PERIOD_16)
   {
     ERTC_CalibValue = ERTC_CalibValue << 1;
   }
-  else if(ERTC_CalibPeriod == ERTC_CALIB_PERIOD_8)
+  else if (ERTC_CalibPeriod == ERTC_CALIB_PERIOD_8)
   {
     ERTC_CalibValue = ERTC_CalibValue << 2;
   }
-  /* Configure the Smooth calibration settings */
+  /* Configure the Smooth calibration settings                                                              */
   HT_ERTC->CALR = (HT_ERTC->CALR & ERTC_CALEN_MASK) | ERTC_CalibPeriod | ERTC_CalibPlusMask | ERTC_CalibValue;
 
   /* Enable the write protection for ERTC registers                                                         */
@@ -1253,10 +1308,12 @@ void ERTC_CalibCmd(ControlStatus NewState)
 {
   /* Check the parameters                                                                                   */
   Assert_Param(IS_CONTROL_STATUS(NewState));
-  /* Disable the write protection for  ERTC registers                                                       */
-  HT_ERTC->WPR = gERTCUnProtectKey;
 
   ERTC_Cmd(DISABLE);
+
+  /* Disable the write protection for ERTC registers                                                        */
+  HT_ERTC->WPR = gERTCUnProtectKey;
+
   if (NewState != DISABLE)
   {
     Set_CALEN;
@@ -1265,10 +1322,11 @@ void ERTC_CalibCmd(ControlStatus NewState)
   {
     Reset_CALEN;
   }
-  ERTC_Cmd(ENABLE);
 
   /* Enable the write protection for ERTC registers                                                         */
   HT_ERTC->WPR = 0xFFFF;
+
+  ERTC_Cmd(ENABLE);
 }
 
 /*********************************************************************************************************//**
@@ -1400,7 +1458,7 @@ u32 ERTC_GetTimeStampSubSecondus(void)
 FlagStatus ERTC_GetTimestampEventSourceStatus(u32 ERTC_TS_EVT)
 {
   Assert_Param(IS_ERTC_TS_EVT(ERTC_TS_EVT));
-  if((HT_ERTC->SR & 0xC000) == ERTC_TS_EVT)
+  if ((HT_ERTC->SR & 0xC000) == ERTC_TS_EVT)
   {
     return SET;
   }
@@ -1414,14 +1472,12 @@ FlagStatus ERTC_GetTimestampEventSourceStatus(u32 ERTC_TS_EVT)
  * @brief  Configures the Synchronization Shift Control Settings.
  * @note   When REFCKON is set, firmware must not write to Shift control register
  * @param  ERTC_ShiftSign : Select to add or substract Second Fractions to the time Calendar.
- *         This parameter can be one of the following values :
- *         @arg ERTC_SHIFT_SIGN_ADD : Add Second Fractions to the clock calendar.
- *         @arg ERTC_SHIFT_SIGN_SUB : Subtract Second Fractions to the clock calendar.
+ *   This parameter can be one of the following values :
+ *     @arg ERTC_SHIFT_SIGN_ADD : Add Second Fractions to the clock calendar.
+ *     @arg ERTC_SHIFT_SIGN_SUB : Subtract Second Fractions to the clock calendar.
  * @param  ERTC_ShiftSubFS: Select the number of Second Fractions to Substitute.
  *         This parameter can be one any value from 0 to 0x7FFF.
- * @retval An ErrorStatus enumeration value:
- *         - SUCCESS: ERTC Shift registers are configured
- *         - ERROR: ERTC Shift registers are not configured
+ * @retval None
  ************************************************************************************************************/
 void ERTC_SynchroShiftConfig(u8 ERTC_ShiftSign, u16 ERTC_ShiftSubFS)
 {
@@ -1435,7 +1491,7 @@ void ERTC_SynchroShiftConfig(u8 ERTC_ShiftSign, u16 ERTC_ShiftSubFS)
   while (((HT_ERTC->SR & ERTC_FLAG_SHPF) != RESET));
 
   /* Configure the Shift settings                                                                           */
-  if(ERTC_ShiftSign == ERTC_SHIFT_SIGN_ADD)
+  if (ERTC_ShiftSign == ERTC_SHIFT_SIGN_ADD)
   {
     HT_ERTC->SHIFTCR = ERTC_ShiftSubFS;
   }
@@ -1456,6 +1512,150 @@ void ERTC_SynchroShiftConfig(u8 ERTC_ShiftSign, u16 ERTC_ShiftSubFS)
 void ERTC_SetUnProtectKey(u16 uUnProtectKey)
 {
   gERTCUnProtectKey = uUnProtectKey;
+}
+
+/*********************************************************************************************************//**
+ * @brief  Get the total seconds elapsed since year 0, Jan 1, 12:00AM.
+ * @retval Elapsed seconds (u32)
+ ************************************************************************************************************/
+u32 ERTC_EpochTime(void)
+{
+  u16 DayCount;
+  u32 HourCount, MinuteCount, SecondCount;
+  ERTC_DateTypeDef ERTC_Date;
+  ERTC_TimeTypeDef ERTC_Time;
+  ERTC_GetDateTime(&ERTC_Date, &ERTC_Time);
+
+  /* Convert years into days (365 days per year plus leap year days)                                        */
+  DayCount = ERTC_Date.Year * 365;
+  if (ERTC_Date.Year != 0)
+    DayCount += ((ERTC_Date.Year - 1) >> 2);
+
+  /* Add days from previous months (fall-through switch accumulates backward)                               */
+  DayCount += gDayBefireMonth[ERTC_Date.Month];
+  /* leap year check                                                                                        */
+  if (ERTC_Date.Month > 2 && (ERTC_Date.Year & 0x3) == 0  && ERTC_Date.Year > 0)
+  {
+    DayCount += 1;
+  }
+
+  /* Add current day                                                                                        */
+  DayCount += ERTC_Date.Day - 1;
+
+  /* Convert days to hours: total_days * 24 + AM/PM offset + hour value                                     */
+  if ((HT_ERTC->CR0 & ERTC_HOURFORMAT_MASK) == ERTC_HOURFORMAT_12)
+    HourCount = DayCount * 24 + (ERTC_Time.AMPM >> 6) * 12 + ((ERTC_Time.Hours == 12) ? 0 : ERTC_Time.Hours);
+  else
+    HourCount = DayCount * 24 + ERTC_Time.Hours;
+
+  /* Convert hours to minutes                                                                               */
+  MinuteCount = HourCount * 60 + ERTC_Time.Minutes;
+
+  /* Convert minutes to seconds                                                                             */
+  SecondCount = MinuteCount * 60 + ERTC_Time.Seconds;
+
+  /* Subtract one day to align base point at 0-01-01 12:00:00 AM                                            */
+  return SecondCount;
+}
+
+/*********************************************************************************************************//**
+ * @brief  Check and verify the ERTC Wakeup Timer setting.
+ * @note   The API is provided for RTC compatibility handling.
+ * @param  WakeupTimerSetting: Specifies the wakeup timer configuration to be checked.
+ *   @arg RTC_WAKEUP_CM
+ *   @arg RTC_INT_CM
+ *   @arg RTC_ROES_MATCH
+ *   @arg RTC_WAKEUP_CSEC
+ *   @arg RTC_INT_CSEC
+ *   @arg RTC_ROES_SECOND
+ * @retval None.
+ ************************************************************************************************************/
+void RTC_CheckWakeupTimerSetting(u8 WakeupTimerSetting)
+{
+  if (gWakeupTimerLastSetting != 0)
+  {
+    if (gWakeupTimerLastSetting != (WakeupTimerSetting))
+    {
+      /*
+        ERROR: A compare mode has already been configured.
+        Switching to a different mode is not allowed,
+        to prevent mixing Compare and Second configurations.
+        The system will halt here in while (1).
+      */
+      while (1){};
+    }
+  }
+  else
+  {
+    if ((WakeupTimerSetting) == 3)
+    {
+      /*
+        ERROR: Using RTC_*_CM | RTC_*_CSEC is not supported.
+        Compare Match and Compare Second cannot be combined.
+        The system will halt here in while (1).
+      */
+      while (1){};
+    }
+    gWakeupTimerLastSetting = (WakeupTimerSetting);
+  }
+}
+
+/*********************************************************************************************************//**
+ * @brief  Set RTC GET_COUNTER Mode Software Flag
+ * @note   The API is provided for RTC compatibility handling.
+ * @retval 0
+ ************************************************************************************************************/
+u32 RTC_GetCounter(void)
+{
+  if (gRTCAutoReload == 0)
+  {
+    gCompareMode = GET_COUNTER;
+  }
+  else
+  {
+    gCompareMode = GET_COMPARE;
+  }
+  return 0;
+}
+
+/*********************************************************************************************************//**
+ * @brief  Set RTC GET_COMPARE Mode Software Flag
+ * @note   The API is provided for RTC compatibility handling.
+ * @retval 0
+ ************************************************************************************************************/
+u32 RTC_GetCompare(void)
+{
+  gCompareMode = GET_COMPARE;
+  return 0;
+}
+
+/*********************************************************************************************************//**
+ * @brief  Set Auto Reload Software Flag.
+ * @note   The API is provided for RTC compatibility handling.
+ * @param  NewState: This parameter can be ENABLE or DISABLE.
+ * @retval None
+ ************************************************************************************************************/
+void RTC_CMPCLRCmd(ControlStatus NewState)
+{
+  gRTCAutoReload = NewState;
+}
+
+/*********************************************************************************************************//**
+ * @brief  Return the ERTC Status register.
+ * @note   The API is provided for RTC compatibility handling.
+ * @retval Status register value.
+ ************************************************************************************************************/
+u32 RTC_GetFlagStatus(void)
+{
+  u32 tempReg = HT_ERTC->SR;
+  /* Disable the write protection for  ERTC registers                                                       */
+  HT_ERTC->WPR = ERTC_UNPROTECT_KEY;
+
+  HT_ERTC->SR = tempReg;
+
+  /* Enable the write protection for ERTC registers                                                         */
+  HT_ERTC->WPR = 0xFFFF;
+  return tempReg & RTC_FLAG_MASK;
 }
 
 /**
