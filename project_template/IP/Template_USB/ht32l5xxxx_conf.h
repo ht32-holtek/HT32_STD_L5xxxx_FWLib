@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    IP/Example/ht32l5xxxx_conf.h
- * @version $Rev:: 1008         $
- * @date    $Date:: 2025-08-28 #$
+ * @version $Rev:: 1141         $
+ * @date    $Date:: 2025-10-22 #$
  * @brief   Library configuration file.
  *************************************************************************************************************
  * @attention
@@ -367,6 +367,21 @@
 */
 #define HTCFG_STACK_USAGE_ANALYSIS                0
 
+//  <h> Calibration Temperature
+//  <o0> Calibration Temperature Point Source
+//      <0=> Fixed Default Temperature
+//      <1=> Factory Trim Code
+// <i> !!! NOTICE !!! The fixed default temperature is calibrated under specific production test conditions,
+// <i> which represent the environment of that batch only. The actual calibration temperature may slightly
+// <i> between production lots.
+#define ADC_CAL_TEMP_POINT_SORUCE     0
+
+// <o0> Temperature Sensor Calibration Reference
+// <i> Set the calibration reference temperature in milli-degree Celsius.
+// <i> This setting is only effective when ADC_CAL_TEMP_POINT_SORUCE is set to 0 (Fixed Default Temperature).
+#define ADC_FIXED_CAL_TEMP_mC       22000
+
+// </h>
 /* Enable/disable the specific peripheral inclusion                                                         */
 
 //  <h> Library Inclusion Configuration

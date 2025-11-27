@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_adc.c
- * @version $Rev:: 422          $
- * @date    $Date:: 2024-06-19 #$
+ * @version $Rev:: 1145         $
+ * @date    $Date:: 2025-10-22 #$
  * @brief   This file provides all the ADC firmware functions.
  *************************************************************************************************************
  * @attention
@@ -781,14 +781,14 @@ void ADC_TempSensorIntConfig(HT_ADC_TypeDef* HT_ADCn, u32 ADC_INT_TP_x, ControlS
 /*********************************************************************************************************//**
  * @brief Get the temperature. (Unit: 0.001 Celsius)
  * @param HT_ADCn: where HT_ADCn is the selected ADC from the ADC peripherals.
- * @param advrefp_mv: ADVREFP's voltage and its unit is in mV.
- *   This parameter must be a number between 0 and LIBCFG_MAX_VREF_VOL.
- * @param ts_data: The digital value output by the actual temperature sensor converted by the ADC.
- *   This parameter must be a number between 1 and 0xFFF.
- * @param temprature_mC: the actual temperature and it is one thousandth degree Celsius.
+ * @param tempPara:  pointer to a ADC_TempSensorParam_TypeDef structure.
+ *   - Advrefp_mV: The reference voltage of ADVREFP in millivolts.
+ *   - TsData: The digital value output by the temperature sensor converted by the ADC.
+ *   - CalTempPoint_mC: The calibration temperature point in milli-degree Celsius
+ * @param temperature_mC: the actual temperature and it is one thousandth degree Celsius.
  * @retval SUCCESS or ERROR
  ************************************************************************************************************/
-ErrStatus ADC_TempSensorCalcTemperature(HT_ADC_TypeDef* HT_ADCn, u16 advrefp_mv, u16 ts_data, s32* temprature_mC)
+ErrStatus ADC_TempSensorGetTemp(HT_ADC_TypeDef* HT_ADCn, ADC_TempSensorParam_TypeDef* tempPara ,s32* temperature_mC)
 {
   u32 ts_calib_vol;   /* The temperature sensor calibration voltage value that is converted from TSCALR     */
   u32 ts_data_vol;    /* The actual temperature sensor output voltage value                                 */
@@ -796,12 +796,12 @@ ErrStatus ADC_TempSensorCalcTemperature(HT_ADC_TypeDef* HT_ADCn, u16 advrefp_mv,
   /* Check the parameters                                                                                   */
   Assert_Param(IS_ADC(HT_ADCn));
 
-  if (ts_data > 0xFFF)
+  if (tempPara->TsData > 0xFFF)
   {
     return ERROR;
   }
 
-  if (advrefp_mv > LIBCFG_MAX_VREF_VOL)
+  if (tempPara->Advrefp_mV > LIBCFG_MAX_VREF_VOL)
   {
     return ERROR;
   }
@@ -814,11 +814,38 @@ ErrStatus ADC_TempSensorCalcTemperature(HT_ADC_TypeDef* HT_ADCn, u16 advrefp_mv,
   /* Calculate the actual temperature sensor output voltage value.                                          */
   /* Note: Multiplying the calculation result by 100 is to scale down the unit to convert to 10uV, avoiding */
   /*       floating-point arithmetic later on.                                                              */
-  ts_data_vol  = (ts_data  * advrefp_mv * 100) >> 12;
+  ts_data_vol  = (tempPara->TsData  * tempPara->Advrefp_mV * 100) >> 12;
 
   /* Calculate the actual temperature.                                                                      */
-  *temprature_mC = (s32)(((ts_calib_vol - ts_data_vol) * 1000) / LIBCFG_ADC_TEMP_SENSOR_AVG_SLOPE + 25000);
+  *temperature_mC = (s32)(((s32)(ts_calib_vol - ts_data_vol) * 1000) / LIBCFG_ADC_TEMP_SENSOR_AVG_SLOPE +
+                    tempPara->CalTempPoint_mC);
   return SUCCESS;
+}
+
+/*********************************************************************************************************//**
+ * @brief Get the calibration temperature point of the Temperature Sensor.
+ * @param HT_ADCn: where HT_ADCn is the selected ADC from the ADC peripherals.
+ * @retval Return the temperature calibration reference temperature (Unit: 0.001 Celsius).
+ * @note The calibration temperature point can be defined by user selection via the ADC_CAL_TEMP_POINT_SOURCE.
+ *   - 0: A fixed default temperature is used.
+ *     !!! NOTICE !!! The fixed default temperature is calibrated under specific production test conditions,
+ *     which represent the environment of that batch only. The actual calibration temperature may slightly
+ *     between production lots.
+ *   - 1: The value is derived from the factory trim code.
+ ************************************************************************************************************/
+s32 ADC_TempSensorGetCalTempPoint(HT_ADC_TypeDef* HT_ADCn)
+{
+  /* Check the parameters                                                                                    */
+  Assert_Param(IS_ADC(HT_ADCn));
+  #if ADC_CAL_TEMP_POINT_SORUCE
+  /* Get calibration temperature point from factory trim code                                                */
+  /* To Do... */
+   #error "Trim code feature is not yet implemented."
+  #else
+  /* Return fixed default calibration temperature point                                                      */
+  HT_ADCn->TSCALR; /* Used only to avoid "unused parameter" compiler warning.                                */
+  return  ADC_FIXED_CAL_TEMP_mC;
+  #endif
 }
 #endif
 

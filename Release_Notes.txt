@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    Release_Notes.txt
- * @version V1.4.1
- * @date    2025-10-07
+ * @version V1.5.1
+ * @date    2025-10-23
  * @brief   The Release notes of HT32L Firmware Library.
  *************************************************************************************************************
  * @attention
@@ -36,6 +36,30 @@
 //   HT32L52343, HT32L52353
 //   HT32L64041
 //   HT32L64141
+
+/*----------------------------------------------------------------------------------------------------------*/
+/* HT32_STD_L5xxxx_FWLib_V1.5.1_1146                                                                        */
+/*----------------------------------------------------------------------------------------------------------*/
+  Release Date: 2025-10-23
+  Main Changes
+  + Update temperature API "ADC_TempSensorCalcTemperature()".
+    - Rename "ADC_TempSensorCalcTemperature()" to "ADC_TempSensorGetTemp()".
+    - Modify input parameters to use the "ADC_TempSensorParam_TypeDef" structure.
+    - Fix "ts_calib_vol - ts_data_vol" to "s32" to fix unsigned subtraction sign errors.
+  + Update ht32l5xxxx_conf.h.
+    - Add configuration macros to allow selection of the temperature calibration point reference.
+      "#define ADC_CAL_TEMP_POINT_SOURCE     0"
+      "#define ADC_FIXED_CAL_TEMP_mC         22000"
+  + Fix "ht32l5xxxx_libcfg.h" parameter error
+    - Fix "LIBCFG_ADC_TEMP_SENSOR_AVG_SLOPE" from 456 to 445.
+    - Fix "LIBCFG_ADC_TEMP_SENSOR_CALIBRATION_ADVREFP" from 2700 to 3000.
+  + Add "ADC_TempSensorParam_TypeDef" struct into the "ht32l5xxxx_adc.h"
+  + Add new API ADC_TempSensorGetCalTempPoint() to get the calibration temperature point.
+
+  Others
+  + Update comment, format, typing error, and coding style.
+  + Update LICENSE.md license declaration.
+  + Update and sync "ht32l5xxxx_conf.h".
 
 /*----------------------------------------------------------------------------------------------------------*/
 /* HT32_STD_L5xxxx_FWLib_V1.4.1_1136                                                                        */

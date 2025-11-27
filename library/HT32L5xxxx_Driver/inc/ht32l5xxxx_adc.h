@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_adc.h
- * @version $Rev:: 1008         $
- * @date    $Date:: 2025-08-28 #$
+ * @version $Rev:: 1145         $
+ * @date    $Date:: 2025-10-22 #$
  * @brief   The header file of the ADC library.
  *************************************************************************************************************
  * @attention
@@ -42,6 +42,21 @@
 
 /** @addtogroup ADC
   * @{
+  */
+
+/* Exported types ------------------------------------------------------------------------------------------*/
+/** @brief Definition of Temperature Sensor parameter Structure.
+  * @{
+  */
+typedef struct
+{
+  u16  Advrefp_mV;               /* ADC reference voltage in millivolts */
+  u16  TsData;                   /* Raw ADC conversion data of the temperature sensor. */
+  s32  CalTempPoint_mC;          /* Calibration temperature point in milli-degree Celsius. */
+} ADC_TempSensorParam_TypeDef;
+
+/**
+  * @}
   */
 
 /* Exported constants --------------------------------------------------------------------------------------*/
@@ -470,7 +485,8 @@ FlagStatus ADC_TempSensorGetFlagStatus(HT_ADC_TypeDef* HT_ADCn, u32 TempSensorFl
 void ADC_TempSensorClearFlag(HT_ADC_TypeDef* HT_ADCn, u32 TempSensorFlag);
 u16 ADC_TempSensorGetCalValue(HT_ADC_TypeDef* HT_ADCn);
 void ADC_TempSensorIntConfig(HT_ADC_TypeDef* HT_ADCn, u32 ADC_INT_TP_x, ControlStatus NewState);
-ErrStatus ADC_TempSensorCalcTemperature(HT_ADC_TypeDef* HT_ADCn, u16 advrefp_mv, u16 ts_data, s32* temprature_mC);
+ErrStatus ADC_TempSensorGetTemp(HT_ADC_TypeDef* HT_ADCn, ADC_TempSensorParam_TypeDef* tempPara ,s32* temperature_mC);
+s32 ADC_TempSensorGetCalTempPoint(HT_ADC_TypeDef* HT_ADCn);
 #endif
 void ADC_LowVoltageModeCmd(HT_ADC_TypeDef* HT_ADCn, ControlStatus NewState);
 /**

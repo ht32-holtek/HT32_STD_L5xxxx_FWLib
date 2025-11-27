@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht50l3200u_libcfg.h
- * @version $Rev:: 812          $
- * @date    $Date:: 2025-08-01 #$
+ * @version $Rev:: 1145         $
+ * @date    $Date:: 2025-10-22 #$
  * @brief   The library configuration file.
  *************************************************************************************************************
 * @attention
@@ -47,11 +47,11 @@
 #define LIBCFG_MAX_VREF_VOL                                (3600)     /* AD Converter Reference Max.        */
                                                                       /* Voltage. Unit: mV                  */
 
-#define LIBCFG_ADC_TEMP_SENSOR_AVG_SLOPE                   (456)      /* The conversion value average slope */
+#define LIBCFG_ADC_TEMP_SENSOR_AVG_SLOPE                   (445)      /* The conversion value average slope */
                                                                       /* from temperature sensor voltage.   */
                                                                       /* Unit: 10uV/ Celsius                */
 
-#define LIBCFG_ADC_TEMP_SENSOR_CALIBRATION_ADVREFP         (2700)     /* Unit: mV                           */
+#define LIBCFG_ADC_TEMP_SENSOR_CALIBRATION_ADVREFP         (3000)     /* Unit: mV                           */
 
 #define LIBCFG_BFTM1                      (1)
 #define LIBCFG_SCTM0                      (1)
