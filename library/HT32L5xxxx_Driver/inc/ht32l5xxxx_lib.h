@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_lib.h
- * @version $Rev:: 1008         $
- * @date    $Date:: 2025-08-28 #$
+ * @version $Rev:: 1257         $
+ * @date    $Date:: 2026-04-24 #$
  * @brief   The header file includes all the header files of the libraries.
  *************************************************************************************************************
  * @attention
@@ -34,8 +34,8 @@
 #endif
 
 /* Settings ------------------------------------------------------------------------------------------------*/
-#define HT32_FWLIB_VER                  (0x01005001)
-#define HT32_FWLIB_SVN                  (0x1146)
+#define HT32_FWLIB_VER                  (0x01006001)
+#define HT32_FWLIB_SVN                  (0x1294)
 
 #if defined(USE_HT32L52231_41)
   #include "ht32l52231_41_libcfg.h"
@@ -51,6 +51,9 @@
 #endif
 #if defined(USE_HT50L3200X)
   #include "ht50l3200x_libcfg.h"
+#endif
+#if defined(USE_HT32L57231_41)
+  #include "ht32L57231_41_libcfg.h"
 #endif
 /* Includes ------------------------------------------------------------------------------------------------*/
 #include <stdio.h>
@@ -132,6 +135,10 @@ void assert_error(u8* file, u32 line);
   #include "ht32l5xxxx_tm_type.h"
   #include "ht32l5xxxx_tm.h"
   #include "ht32l5xxxx_mctm.h"
+#endif
+
+#if _LCD && LIBCFG_LCD
+  #include "ht32l5xxxx_lcd.h"
 #endif
 
 #if _PDMA && LIBCFG_PDMA

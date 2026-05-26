@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_ertc.h
- * @version $Rev:: 718          $
- * @date    $Date:: 2025-07-23 #$
+ * @version $Rev:: 1172         $
+ * @date    $Date:: 2026-02-09 #$
  * @brief   The header file of the ERTC library.
  *************************************************************************************************************
  * @attention
@@ -120,10 +120,10 @@ typedef enum
  */
 typedef enum
 {
-  ERTC_HSE_DIV32 = 0x0,
-  ERTC_HSE_DIV16 = 0x4,
-  ERTC_HSE_DIV8  = 0x8,
-  ERTC_HSE_DIV4  = 0xC,
+  ERTC_HSEPRE_DIV32 = 0x0,
+  ERTC_HSEPRE_DIV16 = 0x4,
+  ERTC_HSEPRE_DIV8  = 0x8,
+  ERTC_HSEPRE_DIV4  = 0xC,
 } ERTC_HSEDIV_Enum;
 
 /**
@@ -164,7 +164,7 @@ typedef enum
   ERTC_SRC_NOCLOCK   = 0x00,
   ERTC_SRC_LSI       = 0x02,
   ERTC_SRC_LSE       = 0x04,
-  ERTC_SRC_HSE_DIV32 = 0x06
+  ERTC_SRC_HSEPRE    = 0x06
 } ERTC_SRC_Enum;
 
 /**
@@ -323,15 +323,15 @@ typedef enum
 
 #define IS_ERTC_LSESM(x) ((x == ERTC_LSESM_SLOW) || (x == ERTC_LSESM_MEDIUM_SLOW) || (x == ERTC_LSESM_MEDIUM_FAST) ||(x == ERTC_LSESM_SUPPER_FAST))
 
-#define IS_ERTC_HSE_DIV(DIV) (((DIV) == ERTC_HSE_DIV32) || \
-                              ((DIV) == ERTC_HSE_DIV16) || \
-                              ((DIV) == ERTC_HSE_DIV8 ) || \
-                              ((DIV) == ERTC_HSE_DIV4 ))
+#define IS_ERTC_HSE_DIV(DIV) (((DIV) == ERTC_HSEPRE_DIV32) || \
+                              ((DIV) == ERTC_HSEPRE_DIV16) || \
+                              ((DIV) == ERTC_HSEPRE_DIV8 ) || \
+                              ((DIV) == ERTC_HSEPRE_DIV4 ))
 
 #define IS_ERTC_CLOCK_SRC(SOURCE) (((SOURCE) == ERTC_SRC_NOCLOCK) || \
                                    ((SOURCE) == ERTC_SRC_LSI)     || \
                                    ((SOURCE) == ERTC_SRC_LSE)     || \
-                                   ((SOURCE) == ERTC_SRC_HSE_DIV32))
+                                   ((SOURCE) == ERTC_SRC_HSEPRE))
 
 #define IS_ERTC_WAKEUP_CLOCK(CLOCK) (((CLOCK) == ERTC_WUP_TM_ERTC_DIV16) || \
                                      ((CLOCK) == ERTC_WUP_TM_ERTC_DIV8)  || \
@@ -501,7 +501,7 @@ u16 ERTC_GetSynchronousPrescaler(void);
 void ERTC_ClockSourceConfig(ERTC_SRC_Enum Source);
 void ERTC_LSESMConfig(ERTC_LSESM_Enum Mode);
 void ERTC_LSECmd(ControlStatus NewState);
-void ERTC_LSEDIVConfig(ERTC_HSEDIV_Enum Div);
+void ERTC_SetHSEPrescaler(ERTC_HSEDIV_Enum Div);
 
 void ERTC_IntConfig(u32 ERTC_INT_x, ControlStatus NewState);
 FlagStatus ERTC_GetFlagStatus(u32 ERTC_FLAG_x);

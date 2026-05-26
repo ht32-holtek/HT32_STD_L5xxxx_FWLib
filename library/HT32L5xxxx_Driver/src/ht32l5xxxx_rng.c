@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_rng.c
- * @version $Rev:: 1073         $
- * @date    $Date:: 2025-09-08 #$
+ * @version $Rev:: 1293         $
+ * @date    $Date:: 2026-05-07 #$
  * @brief   This file provides all the Random Number Generator firmware functions.
  *************************************************************************************************************
  * @attention
@@ -223,7 +223,7 @@ void RNG_ClearFlagStatus(HT_RNG_TypeDef* HT_RNGn, u32 RNG_Flag)
   Assert_Param(IS_RNG(HT_RNGn));
   Assert_Param(IS_RNG_FLAG(RNG_Flag));
 
-  HT_RNGn->ISR |= RNG_FLAG_VALID;
+  HT_RNGn->ISR |= RNG_Flag;
 }
 
 /**

@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_sci.h
- * @version $Rev:: 1008         $
- * @date    $Date:: 2025-08-28 #$
+ * @version $Rev:: 1161         $
+ * @date    $Date:: 2026-01-02 #$
  * @brief   The header file of the SCI library.
  *************************************************************************************************************
  * @attention
@@ -228,9 +228,9 @@ typedef struct
 #define IS_SCI_PDMA_REQ(REQ)                        (((REQ & 0xFFFFFCFF) == 0x0) && (REQ != 0))
 
 #if defined(USE_HT32L52343_53)
-#define IS_SCI_ETU(ETU)                             ((ETU >= 8) & (ETU <= 2047))
+#define IS_SCI_ETU(ETU)                             ((ETU >= 8) & (ETU <= 2048))
 #else
-#define IS_SCI_ETU(ETU)                             ((ETU >= 12) & (ETU <= 2047))
+#define IS_SCI_ETU(ETU)                             ((ETU >= 12) & (ETU <= 2048))
 #endif
 
 #define IS_SCI_GUARDTIME(GUARDTIME)                 ((GUARDTIME >= 11) & (GUARDTIME <= 511))

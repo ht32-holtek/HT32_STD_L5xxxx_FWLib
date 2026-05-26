@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_i2c.c
- * @version $Rev:: 1119         $
- * @date    $Date:: 2025-09-24 #$
+ * @version $Rev:: 1284         $
+ * @date    $Date:: 2026-05-05 #$
  * @brief   This file provides all the I2C firmware functions.
  *************************************************************************************************************
  * @attention
@@ -81,9 +81,9 @@
 
 #if (LIBCFG_I2C_NOSTRETCH)
 /* I2C TXDR_Reset mask                                                                                      */
-#define I2C_NOSTRETCH_SET                           (0x00000040)
-#define I2C_NOSTRETCH_RESET                         (0x00000000)
-#define I2C_NOSTRETCH_MASK                          (0xFFFFFF9F)
+#define I2C_NOSTRETCH_SET        ((u32)0x00000040)
+#define I2C_NOSTRETCH_RESET      ((u32)0x00000000)
+#define I2C_NOSTRETCH_MASK       ((u32)0xFFFFFF9F)
 #endif
 
 /**

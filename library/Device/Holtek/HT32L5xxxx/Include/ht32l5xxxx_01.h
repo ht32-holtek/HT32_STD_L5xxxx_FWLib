@@ -1,8 +1,8 @@
 /***************************************************************************//**
  * @file    ht32l5xxxx_01.h
  * @brief   CMSIS Cortex-M0+ Device Peripheral Access Layer Header File
- * @version $Rev:: 1008         $
- * @date    $Date:: 2025-08-28 #$
+ * @version $Rev:: 1279         $
+ * @date    $Date:: 2026-05-04 #$
  *
  * @note
  * Copyright (C) Holtek Semiconductor Inc. All rights reserved.
@@ -25,6 +25,7 @@
 // ========================================
 //   HT32L52231, HT32L52241
 //   HT32L52343, HT32L52353
+//   HT32L57231, HT32L57241
 
 /** @addtogroup CMSIS
   * @{
@@ -48,13 +49,15 @@
     !defined(USE_HT50L3200U) && \
     !defined(USE_HT50L3200W) && \
     !defined(USE_HT50L3200X) && \
-    !defined(USE_HT32L52343_53)
+    !defined(USE_HT32L52343_53) && \
+    !defined(USE_HT32L57231_41)
 
   //#define USE_HT32L52231_41
   //#define USE_HT50L3200U
   //#define USE_HT50L3200W
   //#define USE_HT50L3200X
   //#define USE_HT32L52343_53
+  //#define USE_HT32L57231_41
 
 #endif
 
@@ -63,7 +66,8 @@
     !defined(USE_HT50L3200U) && \
     !defined(USE_HT50L3200W) && \
     !defined(USE_HT50L3200X) && \
-    !defined(USE_HT32L52343_53)
+    !defined(USE_HT32L52343_53) && \
+    !defined(USE_HT32L57231_41)
 
   #error Please add "USE_HT32Lxxxxx_xx" define into C Preprocessor Symbols of the Project configuration.
 
@@ -125,7 +129,7 @@ typedef enum IRQn
 
 /******  HT32 Specific Interrupt Numbers ***************************************                            */
   LVD_BOD_IRQn            = 0,      /*!< Low voltage & Brown-out detection interrupt                        */
-  #if defined(USE_HT32L52343_53)
+  #if defined(USE_HT32L52343_53) || defined(USE_HT32L57231_41) 
   ERTC_IRQn               = 1,      /*!< ERTC Wake-up Interrupt                                             */
   #else
   RTC_IRQn                = 1,      /*!< RTC Wake-up Interrupt                                              */
@@ -140,15 +144,25 @@ typedef enum IRQn
   #endif
   ADC0_IRQn               = 8,      /*!< ADC Interrupt                                                      */
   #if defined(USE_HT32L52343_53)
-  AES_RNG_IRQn            = 9,      /*!< AES & RNG global Interrupt                                          */
+  AES_RNG_IRQn            = 9,      /*!< AES & RNG global Interrupt                                         */
   #endif
   MCTM0_IRQn              = 10,     /*!< Motor Control Timer interrupt                                      */
   #if defined(USE_HT32L52343_53)
   GPTM1_IRQn              = 11,     /*!< General-Purpose Timer1 Interrupt                                   */
   #endif
+  #if defined(USE_HT32L57231_41)
+  LCD_IRQn                = 11,     /*!< LCD Interrupt                                                      */
+  #endif
   GPTM0_IRQn              = 12,     /*!< General-Purpose Timer Interrupt                                    */
+  #if !defined(USE_HT32L57231_41)
   SCTM0_IRQn              = 13,     /*!< Single Channel Timer0 Interrupt                                    */
+  #endif
+  #if !defined(USE_HT32L57231_41)
   SCTM1_IRQn              = 14,     /*!< Single Channel Timer1 Interrupt                                    */
+  #endif
+  #if defined(USE_HT32L57231_41)
+  PWM0_IRQn               = 15,     /*!< PWM Timer0 Interrupt                                               */
+  #endif
   BFTM0_IRQn              = 17,     /*!< Basic Function Timer0 Interrupt                                    */
   BFTM1_IRQn              = 18,     /*!< Basic Function Timer1 Interrupt                                    */
   I2C0_IRQn               = 19,     /*!< I2C0 global Interrupt                                              */
@@ -479,6 +493,22 @@ typedef struct
 
 
 /**
+ * @brief LCD
+ */
+typedef struct
+{
+                                 /* LCD: 0x4001A000                                                         */
+  __IO uint32_t CR;              /*!< 0x000         Control Register                                        */
+  __IO uint32_t FCR;             /*!< 0x004         Frame Control Register                                  */
+  __IO uint32_t IER;             /*!< 0x008         Interrupt Enable Register                               */
+  __IO uint32_t SR;              /*!< 0x00C         Status Register                                         */
+  __IO uint32_t CLR;             /*!< 0x010         Clear Register                                          */
+       uint32_t RESERVED[3];     /*!< 0x014 - 0x020 Reserved                                                */
+  __IO uint32_t RAM[16];         /*!< 0x020 - 0x05C Display Memory                                          */
+} HT_LCD_TypeDef;
+
+
+/**
  * @brief Random Number Generation
  */
 typedef struct
@@ -512,6 +542,9 @@ typedef struct
   __IO uint32_t GPCCFGR[2];      /*!< 0x030         GPIO Port C Configuration Register 0 ~ 1                */
   #if defined(USE_HT32L52343_53)
   __IO uint32_t GPDCFGR[2];      /*!< 0x038         GPIO Port D Configuration Register 0 ~ 1                */
+  #endif
+  #if defined(USE_HT32L57231_41)
+  __IO uint32_t GPFCFGR[2];      /*!< 0x04C         GPIO Port F Configuration Register 0 ~ 1                */
   #endif
 } HT_AFIO_TypeDef;
 
@@ -562,7 +595,7 @@ typedef struct
   __IO uint32_t SR;              /*!< 0x00C         Status Register                                         */
   __IO uint32_t SHPGR;           /*!< 0x010         SCL High Period Generation Register                     */
   __IO uint32_t SLPGR;           /*!< 0x014         SCL Low Period Generation Register                      */
-  #if defined(USE_HT32L52343_53)
+  #if defined(USE_HT32L52343_53) || defined(USE_HT32L57231_41)
   __IO uint32_t TXDR;            /*!< 0x018         TX Data Register                                        */
   #else
   __IO uint32_t DR;              /*!< 0x018         Data Register                                           */
@@ -571,7 +604,7 @@ typedef struct
   __IO uint32_t ADDMR;           /*!< 0x020         Address Mask Register                                   */
   __IO uint32_t ADDSR;           /*!< 0x024         Address Snoop Register                                  */
   __IO uint32_t TOUT;            /*!< 0x028         Timeout Register                                        */
-  #if defined(USE_HT32L52343_53)
+  #if defined(USE_HT32L52343_53) || defined(USE_HT32L57231_41)
   __IO uint32_t RXDR;            /*!< 0x02C         RX Data Register                                        */
   #endif
 } HT_I2C_TypeDef;
@@ -592,7 +625,7 @@ typedef struct
   __IO uint32_t CSR;             /*!< 0x018         Clock Selection Register                                */
 } HT_WDT_TypeDef;
 
-#if defined(USE_HT32L52343_53)
+#if defined(USE_HT32L52343_53) || defined(USE_HT32L57231_41)
 /**
  * @brief Enhanced Real-Time Clock
  */
@@ -716,6 +749,9 @@ typedef struct
   __IO uint32_t HSICR;           /*!< 0x040         HSI Control Register                                    */
   __IO uint32_t HSIATCR;         /*!< 0x044         HSI Auto Trimming Counter Register                      */
        uint32_t RESERVED1[1];    /*!< 0x048         Reserved                                                */
+  #if defined(USE_HT32L57231_41)
+  __IO uint32_t APBPCSR2;        /*!< 0x048         APB Peripheral Clock Selection Register 2               */
+  #endif
   __IO uint32_t HSIRDYCR;        /*!< 0x04C         HSI Ready Counter Register                              */
   __IO uint32_t LSITCR;          /*!< 0x050         LSI Trim Control Register                               */
        uint32_t RESERVED2[172];  /*!< 0x054 ~ 0x300 Reserved                                                */
@@ -988,10 +1024,12 @@ typedef struct
 #define HT_SPI0_BASE             (HT_APBPERIPH_BASE + 0x4000)     /* 0x40004000                             */
 #define HT_I2C2_BASE             (HT_APBPERIPH_BASE + 0x8000)     /* 0x40008000                             */
 #define HT_ADC0_BASE             (HT_APBPERIPH_BASE + 0x10000)    /* 0x40010000                             */
+#define HT_LCD_BASE              (HT_APBPERIPH_BASE + 0x1A000)    /* 0x4001A000                             */
 #define HT_RNG_BASE              (HT_APBPERIPH_BASE + 0x21000)    /* 0x40021000                             */
 #define HT_AFIO_BASE             (HT_APBPERIPH_BASE + 0x22000)    /* 0x40022000                             */
 #define HT_EXTI_BASE             (HT_APBPERIPH_BASE + 0x24000)    /* 0x40024000                             */
 #define HT_MCTM0_BASE            (HT_APBPERIPH_BASE + 0x2C000)    /* 0x4002C000                             */
+#define HT_PWM0_BASE             (HT_APBPERIPH_BASE + 0x31000)    /* 0x40031000                             */
 #define HT_SCTM0_BASE            (HT_APBPERIPH_BASE + 0x34000)    /* 0x40034000                             */
 #define HT_SCTM2_BASE            (HT_APBPERIPH_BASE + 0x35000)    /* 0x40035000                             */
 #define HT_SCI1_BASE             (HT_APBPERIPH_BASE + 0x3A000)    /* 0x4003A000                             */
@@ -1006,7 +1044,7 @@ typedef struct
 #define HT_CMP0_BASE             (HT_APBPERIPH_BASE + 0x58000)    /* 0x40058000                             */
 #define HT_CMP1_BASE             (HT_APBPERIPH_BASE + 0x58100)    /* 0x40058100                             */
 #define HT_WDT_BASE              (HT_APBPERIPH_BASE + 0x68000)    /* 0x40068000                             */
-#if defined(USE_HT32L52343_53)
+#if defined(USE_HT32L52343_53) || defined(USE_HT32L57231_41)
 #define HT_ERTC_BASE             (HT_APBPERIPH_BASE + 0x6A000)    /* 0x4006A000                             */
 #else
 #define HT_RTC_BASE              (HT_APBPERIPH_BASE + 0x6A000)    /* 0x4006A000                             */
@@ -1066,8 +1104,12 @@ typedef struct
 #define HT_I2C0                  ((HT_I2C_TypeDef *) HT_I2C0_BASE)
 #define HT_ADC0                  ((HT_ADC_TypeDef *) HT_ADC0_BASE)
 #define HT_USART0                ((HT_USART_TypeDef *) HT_USART0_BASE)
+
+#if !defined(USE_HT32L57231_41)
 #define HT_SCTM0                 ((HT_TM_TypeDef *) HT_SCTM0_BASE)
 #define HT_SCTM1                 ((HT_TM_TypeDef *) HT_SCTM1_BASE)
+#endif
+
 #define HT_GPTM0                 ((HT_TM_TypeDef *) HT_GPTM0_BASE)
 
 #if defined(USE_HT32L52343_53)
@@ -1157,6 +1199,23 @@ typedef struct
 #define HT_AES                   ((HT_AES_TypeDef *) HT_AES_BASE)
 #endif
 
+#if defined(USE_HT32L57231_41)
+#define HT_CRC                   ((HT_CRC_TypeDef *) HT_CRC_BASE)
+#define HT_DIV                   ((HT_DIV_TypeDef *) HT_DIV_BASE)
+#define HT_PDMA                  ((HT_PDMA_TypeDef *) HT_PDMA_BASE)
+#define HT_GPIOC                 ((HT_GPIO_TypeDef *) HT_GPIOC_BASE)
+#define HT_GPIOD                 ((HT_GPIO_TypeDef *) HT_GPIOD_BASE)
+#define HT_GPIOF                 ((HT_GPIO_TypeDef *) HT_GPIOF_BASE)
+#define HT_UART1                 ((HT_USART_TypeDef *) HT_UART1_BASE)
+#define HT_SPI1                  ((HT_SPI_TypeDef *) HT_SPI1_BASE)
+#define HT_I2C1                  ((HT_I2C_TypeDef *) HT_I2C1_BASE)
+#define HT_BFTM1                 ((HT_BFTM_TypeDef *) HT_BFTM1_BASE)
+#define HT_MCTM0                 ((HT_TM_TypeDef *) HT_MCTM0_BASE)
+#define HT_PWM0                  ((HT_TM_TypeDef *) HT_PWM0_BASE)
+#define HT_ERTC                  ((HT_ERTC_TypeDef *) HT_ERTC_BASE)
+#define HT_LCD                   ((HT_LCD_TypeDef *) HT_LCD_BASE)
+#endif
+
 #if defined USE_HT32_DRIVER
   #include "ht32l5xxxx_lib.h"
 #endif
@@ -1178,6 +1237,7 @@ typedef struct
 #define HT_ADC                   HT_ADC0
 #define ADC                      ADC0
 #define ADC_IRQn                 ADC0_IRQn
+#define AFIO_FUN_ADC             AFIO_FUN_ADC0
 
 #define HT_DAC                   HT_DAC0
 #define AFIO_FUN_DAC             AFIO_FUN_DAC0

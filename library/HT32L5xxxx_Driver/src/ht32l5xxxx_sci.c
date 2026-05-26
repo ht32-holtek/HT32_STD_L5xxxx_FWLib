@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_sci.c
- * @version $Rev:: 1008         $
- * @date    $Date:: 2025-08-28 #$
+ * @version $Rev:: 1161         $
+ * @date    $Date:: 2026-01-02 #$
  * @brief   This file provides all the SCI firmware functions.
  *************************************************************************************************************
  * @attention
@@ -168,6 +168,11 @@ void SCI_ETUConfig(HT_SCI_TypeDef* SCIx, u32 SCI_ETU, u32 SCI_Compensation)
   /* Check the parameters                                                                                   */
   Assert_Param(IS_SCI_ETU(SCI_ETU));
   Assert_Param(IS_SCI_ETU_COMPENSATION(SCI_Compensation));
+
+  if (SCI_ETU == 2048)
+  {
+    SCI_ETU = 0;
+  }
 
   SCIx->ETU = SCI_ETU | SCI_Compensation;
 }

@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_flash.h
- * @version $Rev:: 449          $
- * @date    $Date:: 2024-07-09 #$
+ * @version $Rev:: 1284         $
+ * @date    $Date:: 2026-05-05 #$
  * @brief   The header file of the FLASH library.
  *************************************************************************************************************
  * @attention
@@ -88,8 +88,6 @@ typedef struct
 
 /* Flash Information                                                                                        */
 #define FLASH_PAGE_SIZE               (LIBCFG_FLASH_PAGESIZE)   /* Flash page size                          */
-
-
 
 /* Flash Wait State                                                                                         */
 #define FLASH_WAITSTATE_0             (0x00000001)   /* FLASH zero wait state                               */

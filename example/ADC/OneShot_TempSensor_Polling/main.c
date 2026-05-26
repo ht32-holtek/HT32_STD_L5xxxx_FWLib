@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ADC/OneShot_TempSensor_Polling/main.c
- * @version $Rev:: 490          $
- * @date    $Date:: 2024-11-07 #$
+ * @version $Rev:: 1236         $
+ * @date    $Date:: 2026-04-16 #$
  * @brief   Main program.
  *************************************************************************************************************
  * @attention
@@ -27,7 +27,6 @@
 
 /* Includes ------------------------------------------------------------------------------------------------*/
 #include "ht32.h"
-#include "ht32_board.h"
 #include "ht32_board_config.h"
 
 /** @addtogroup HT32_Series_Peripheral_Examples HT32 Peripheral Examples
@@ -59,7 +58,7 @@ int main(void)
 
   while (1)
   {
-    ADC_TempSensor_MainRoutine();    /* ADC and Temperature Sensor main routine                             */
+    ADC_TempSensor_MainRoutine();     /* ADC and Temperature Sensor main routine                            */
   }
 }
 
@@ -76,15 +75,22 @@ void ADC_TempSensor_Configuration(void)
   CKCU_PeripClockConfig(CKCUClock, ENABLE);
 
   /* ADC related settings                                                                                   */
-  /* CK_ADC frequency is set to (CK_AHB / 8)                                                                */
-  CKCU_SetADCnPrescaler(HTCFG_ADC_CKCU_ADCPRE, CKCU_ADCPRE_DIV8);
+  /* CK_ADC frequency is set to (CK_AHB / HTCFG_ADC_CKCU_ADCPRE_DIV)                                        */
+  CKCU_SetADCnPrescaler(HTCFG_ADC_CKCU_ADCPRE, HTCFG_ADC_CKCU_ADCPRE_DIV);
 
   /* One Shot mode, sequence length = 1                                                                     */
   ADC_RegularGroupConfig(HTCFG_ADC_PORT, ONE_SHOT_MODE, 1, 0);
 
-  /* ADC conversion time = (Sampling time + Latency) / CK_ADC = (1 + ADST + 13) / CK_ADC                    */
-  /* Set ADST = 59, sampling time = 1 + ADST                                                                */
-  ADC_SamplingTimeConfig(HTCFG_ADC_PORT, 59);
+  /* !!! NOTICE !!!
+    According to the datasheet: tSTS = 10 us (ADC sampling time when reading the temperature sensor voltage)
+    For Example:
+      CK_AHB = 48 MHz
+      CK_ADC = CK_AHB / 8 = 6 MHz
+      Sampling time needs to meet tSRS = 10 us, so set ADST = 59.
+      Sampling time = (sampling clock) / CK_ADC = (1 + 59) / 6 MHz = 10 us.
+      ADC conversion time = (sampling clock + latency) / CK_ADC = (1 + 59 + 13) / 6 MHz = 12.16 us.
+  */
+  ADC_SamplingTimeConfig(HTCFG_ADC_PORT, SystemCoreClock / HTCFG_CK_ADC_DIV / 100000 - 1);
 
   /* Set ADC conversion sequence as channel temperature sensor                                              */
   ADC_RegularChannelConfig(HTCFG_ADC_PORT, ADC_CH_VTS, 0);
@@ -95,9 +101,14 @@ void ADC_TempSensor_Configuration(void)
   /* Eanble Temperature Sensor                                                                              */
   ADC_TempSensorCmd(HTCFG_ADC_PORT, ENABLE);
 
-  /* TSCLK = (ADCPCLK / 2^n) = 48 MHz / 256 = 187.5 kHz                                                     */
-  /* TSCLK shall be around 250 kHz                                                                          */
-  ADC_TempSensorSetClockDivider(HTCFG_ADC_PORT, 8);
+  /* !!! NOTICE !!!
+    TSCLK shall be around 250 kHz
+    For Example:
+      ADCPCLK = 48 MHz
+      HTCFG_TSCLK_DIV = 8
+      TSCLK = (ADCPCLK / 2^HTCFG_TSCLK_DIV) = (48 MHz / 2^8) = 48 MHz / 256 = 187.5 kHz
+  */
+  ADC_TempSensorSetClockDivider(HTCFG_ADC_PORT, HTCFG_TSCLK_DIV);
 
   /* Enable ADC end of conversion interrupt                                                                 */
   ADC_IntConfig(HTCFG_ADC_PORT, ADC_INT_CYCLE_EOC, ENABLE);
@@ -109,20 +120,51 @@ void ADC_TempSensor_Configuration(void)
   ***********************************************************************************************************/
 void ADC_TempSensor_MainRoutine(void)
 {
-  /* Trigger the Temperature Sensor to start preparing the voltage                                          */
-  ADC_TempSensorStartOperateCmd(HTCFG_ADC_PORT, ENABLE);
+  ADC_TempSensorParam_TypeDef tempPara;
+  s32 temperature_mC;
+  u8 index;
+  u32 sumdata = 0;
 
-  /* Waits until the volatge of Temperature Sensor is ready                                                 */
-  while (!ADC_TempSensorGetFlagStatus(HTCFG_ADC_PORT, TEMP_SENSOR_FLAG_READY));
-  ADC_TempSensorClearFlag(HTCFG_ADC_PORT, TEMP_SENSOR_FLAG_READY); /* Clear ready flag                      */
+  /* Calculate the average of 32 temperature sensor samples                                                 */
+  for (index = 0; index < 32; index++)
+  {
+    /* Trigger the Temperature Sensor to start preparing the voltage                                        */
+    ADC_TempSensorStartOperateCmd(HTCFG_ADC_PORT, ENABLE);
 
-  /* Software trigger to start ADC conversion                                                               */
-  ADC_SoftwareStartConvCmd(HTCFG_ADC_PORT, ENABLE);
-  while (!ADC_GetIntStatus(HTCFG_ADC_PORT, ADC_INT_CYCLE_EOC)); /* Waits until the ADC comversion is finish */
-  ADC_ClearIntPendingBit(HTCFG_ADC_PORT, ADC_INT_CYCLE_EOC);   /* Clear ready end of conversion flag        */
+    /* Waits until the volatge of Temperature Sensor is ready                                               */
+    while (!ADC_TempSensorGetFlagStatus(HTCFG_ADC_PORT, TEMP_SENSOR_FLAG_READY)){};
+    ADC_TempSensorClearFlag(HTCFG_ADC_PORT, TEMP_SENSOR_FLAG_READY); /* Clear ready flag                    */
 
-  /* Display the ADC conversion result                                                                      */
-  printf("Temperature Sensor digital value = %04d\r\n", (int)(HTCFG_ADC_PORT->DR[0] & 0x0FFF));
+    /* Software trigger to start ADC conversion                                                             */
+    ADC_SoftwareStartConvCmd(HTCFG_ADC_PORT, ENABLE);
+    while (!ADC_GetIntStatus(HTCFG_ADC_PORT, ADC_INT_CYCLE_EOC)){};  /* Waits for ADC conversion finish     */
+
+    ADC_ClearIntPendingBit(HTCFG_ADC_PORT, ADC_INT_CYCLE_EOC);       /* Clear ready end of conversion flag  */
+
+    sumdata += (u32)(ADC_GetConversionData(HTCFG_ADC_PORT, 0));      /* Sum of ADC conversion results       */
+  }
+
+  /* Prepare parameters for temperature calculation                                                         */
+  /* !!! NOTICE !!!
+    If an external VREF is used, tempPara.Advrefp_mV must be set to the corresponding supply voltage.
+    For example, if the external VREF is 3.3 V, then tempPara.Advrefp_mV = 3300 (millivolts).
+    If the internal VREF is selected, the actual VREF voltage depends on the VREFVAL configuration,
+    and tempPara.Advrefp_mV should be set to the corresponding voltage value.
+  */
+  tempPara.Advrefp_mV = HTCFG_ADC_ADVREFP_MV;
+  tempPara.TsData = (u16)(sumdata >> 5);             /* Dividing by 32, Calculate the average of 32 samples */
+  tempPara.CalTempPoint_mC = ADC_TempSensorGetCalTempPoint(HTCFG_ADC_PORT);
+
+  if(ADC_TempSensorGetTemp(HTCFG_ADC_PORT, &tempPara, &temperature_mC) == SUCCESS)
+  {
+    /* Display the average temperature result                                                               */
+    printf("Current Temperature = %d mC\r\n", temperature_mC);
+  }
+  else
+  {
+    printf("Temperature calculation error!\r\n");
+    while(1){};
+  }
 }
 
 

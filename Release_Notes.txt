@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    Release_Notes.txt
- * @version V1.5.1
- * @date    2025-10-23
+ * @version V1.6.1
+ * @date    2026-05-07
  * @brief   The Release notes of HT32L Firmware Library.
  *************************************************************************************************************
  * @attention
@@ -36,6 +36,38 @@
 //   HT32L52343, HT32L52353
 //   HT32L64041
 //   HT32L64141
+
+/*----------------------------------------------------------------------------------------------------------*/
+/* HT32_STD_L5xxxx_FWLib_V1.6.1_1294                                                                        */
+/*----------------------------------------------------------------------------------------------------------*/
+  Release Date: 2026-05-07
+  Main Changes
+  + Update "syscalls.c" to eliminate GNU compiler warnings.
+  + Update "StackUsageAnalysisInit()" in "ht32_cm0plus_misc.c" to support the GNU compiler.
+  + Add "SystemLoadTrimCode()" function to "system_ht32l5xxxx_01.c" for specific MCU series.
+  + Add new IP driver:
+    - Liquid Crystal Display, "ht32l5xxxx_lcd.c/.h".
+  + Update ERTC driver:
+    - Modify function name "ERTC_LSEDIVConfig()" trun to "ERTC_SetHSEPrescaler()".
+    - Modify the enumerator names in "ERTC_HSEDIV_Enum":
+      ERTC_HSE_DIVxx     -> ERTC_HSEPRE_DIVxx
+      ERTC_SRC_HSE_DIV32 -> ERTC_SRC_HSEPRE
+  + Update PWRCU driver:
+    - Fix "PWRCU_SetWakeupPinFilter()" API register write address issue.
+    - Fix "PWRCU_SetWakeupPinFilterPrescaler()" API register write address issue.
+  + Update GPIO driver:
+    - Optimize "AFIO_GPxConfig()" API code size, and add HT32_LIB_LITE option.
+  + Update SCI driver by modifying "SCI_ETUConfig()" to support the maximum ETU value of 2048.
+  + Update TM/PWM example by casting the parameter in "PWM_UpdateDuty()" to (u32) to eliminate IAR compiler warnings.
+  + Update ADC/OneShot_TempSensor_Polling example and optimize the process.
+  + Fix "ADC/OneShot_TempSensor_Interrupt" example IRQ handler name error and optimize process.
+  + Update example/SYSTICK/DelayMicrosecond to prevent unexpected COUNTFLAG triggers.
+
+  Others
+  + Update comment, format, typing error, and coding style.
+  + Update "Tips/Checksum_CRC16/_Tools/srec_make_combo.bat" to copy output files to TOOL_PATH instead of IN_FULL_PATH.
+  + Update "IS_I2C_FLAG()" and "IS_I2C_SEQ_FILTER_MASK()" macro to improve readability.
+  + Update "RNG_ClearFlagStatus()" to use the specified flag parameter.
 
 /*----------------------------------------------------------------------------------------------------------*/
 /* HT32_STD_L5xxxx_FWLib_V1.5.1_1146                                                                        */
@@ -262,7 +294,7 @@
   + Updated comments, formatting, typing errors, and coding style.
   + Modify "void FLASH_SetRemappingMode(FLASH_Vector FLASH_BOOT_x);". Changed parameter name from
     "RemapMode" to "FLASH_BOOT_x".
-  + Modified comments to remind users about “Stack Usage Analysis” notification.
+  + Modified comments to remind users about "Stack Usage Analysis" notification.
   + Update CKCU API. Enhanced program stability with robustness settings for parameter "PCLKPrescaler"
     in "CKCU_SetPeripPrescaler(..., CKCU_APBCLKPRE_TypeDef PCLKPrescaler)".
   + Add a new CKCU parameter "#define CKCU_LSITRIM_ACCURACY_0P0         (0)" for CKCU API

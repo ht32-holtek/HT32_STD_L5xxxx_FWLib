@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ADC/OneShot_TempSensor_Interrupt/main.c
- * @version $Rev:: 490          $
- * @date    $Date:: 2024-11-07 #$
+ * @version $Rev:: 1236         $
+ * @date    $Date:: 2026-04-16 #$
  * @brief   Main program.
  *************************************************************************************************************
  * @attention
@@ -46,8 +46,9 @@
 void ADC_TempSensor_Configuration(void);
 
 /* Global variables ----------------------------------------------------------------------------------------*/
-u16 gADC_Result;
 vu8 gADC_CycleEndOfConversion = FALSE;
+extern s32 gTemp;
+extern bool bIsAvgTempReady;
 
 /* Global functions ----------------------------------------------------------------------------------------*/
 /*********************************************************************************************************//**
@@ -69,8 +70,12 @@ int main(void)
   {
     if (gADC_CycleEndOfConversion)
     {
-      /* Display the ADC conversion result                                                                  */
-      printf("Temperature Sensor digital value = %04d\r\n", gADC_Result);
+      /* Display the temperature result                                                                     */
+      if(bIsAvgTempReady)
+      {
+        printf("Current Temperature = %d mC\r\n", gTemp);
+        bIsAvgTempReady = FALSE;
+      }
       gADC_CycleEndOfConversion = FALSE;
 
       /* Trigger the Temperature Sensor to start preparing the voltage                                      */
@@ -92,15 +97,22 @@ void ADC_TempSensor_Configuration(void)
   CKCU_PeripClockConfig(CKCUClock, ENABLE);
 
   /* ADC related settings                                                                                   */
-  /* CK_ADC frequency is set to (CK_AHB / 8)                                                                */
-  CKCU_SetADCnPrescaler(HTCFG_ADC_CKCU_ADCPRE, CKCU_ADCPRE_DIV8);
+  /* CK_ADC frequency is set to (CK_AHB / HTCFG_ADC_CKCU_ADCPRE_DIV)                                        */
+  CKCU_SetADCnPrescaler(HTCFG_ADC_CKCU_ADCPRE, HTCFG_ADC_CKCU_ADCPRE_DIV);
 
   /* One Shot mode, sequence length = 1                                                                     */
   ADC_RegularGroupConfig(HTCFG_ADC_PORT, ONE_SHOT_MODE, 1, 0);
 
-  /* ADC conversion time = (Sampling time + Latency) / CK_ADC = (1 + ADST + 13) / CK_ADC                    */
-  /* Set ADST = 59, sampling time = 1 + ADST                                                                */
-  ADC_SamplingTimeConfig(HTCFG_ADC_PORT, 59);
+  /* !!! NOTICE !!!
+    According to the datasheet: tSTS = 10 us (ADC sampling time when reading the temperature sensor voltage)
+    For Example:
+      CK_AHB = 48 MHz
+      CK_ADC = CK_AHB / 8 = 6 MHz
+      Sampling time needs to meet tSRS = 10 us, so set ADST = 59.
+      Sampling time = (sampling clock) / CK_ADC = (1 + 59) / 6 MHz = 10 us.
+      ADC conversion time = (sampling clock + latency) / CK_ADC = (1 + 59 + 13) / 6 MHz = 12.16 us.
+  */
+  ADC_SamplingTimeConfig(HTCFG_ADC_PORT, SystemCoreClock / HTCFG_CK_ADC_DIV / 100000 - 1);
 
   /* Set ADC conversion sequence as channel temperature sensor                                              */
   ADC_RegularChannelConfig(HTCFG_ADC_PORT, ADC_CH_VTS, 0);
@@ -111,9 +123,14 @@ void ADC_TempSensor_Configuration(void)
   /* Eanble Temperature Sensor                                                                              */
   ADC_TempSensorCmd(HTCFG_ADC_PORT, ENABLE);
 
-  /* TSCLK = (ADCPCLK / 2^n) = 48 MHz / 256 = 187.5 kHz                                                     */
-  /* TSCLK shall be around 250 kHz                                                                          */
-  ADC_TempSensorSetClockDivider(HTCFG_ADC_PORT, 8);
+  /* !!! NOTICE !!!
+    TSCLK shall be around 250 kHz
+    For Example:
+      ADCPCLK = 48 MHz
+      HTCFG_TSCLK_DIV = 8
+      TSCLK = (ADCPCLK / 2^HTCFG_TSCLK_DIV) = (48 MHz / 2^8) = 48 MHz / 256 = 187.5 kHz
+  */
+  ADC_TempSensorSetClockDivider(HTCFG_ADC_PORT, HTCFG_TSCLK_DIV);
 
   /* Enable ADC end of conversion interrupt                                                                 */
   ADC_IntConfig(HTCFG_ADC_PORT, ADC_INT_CYCLE_EOC, ENABLE);

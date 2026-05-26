@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ADC/OneShot_TempSensor_Polling/ht32_board_config.h
- * @version $Rev:: 352          $
- * @date    $Date:: 2024-03-25 #$
+ * @version $Rev:: 1155         $
+ * @date    $Date:: 2025-11-21 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -34,16 +34,24 @@
 
 
 /* Settings ------------------------------------------------------------------------------------------------*/
-#define HTCFG_ADC_IPN                             ADC0
+#if defined(USE_HT32L52241_SK)
+  #define HTCFG_ADC_IPN                           ADC0
+  #define HTCFG_CK_ADC_DIV                        8
+  #define HTCFG_TSCLK_DIV                         8
+#endif
 
-#define HTCFG_ADC_PORT                            STRCAT2(HT_,            HTCFG_ADC_IPN)
-#define HTCFG_ADC_AFIO_MODE                       STRCAT2(AFIO_FUN_,      HTCFG_ADC_IPN)
-#define HTCFG_ADC_CKCU_ADCPRE                     STRCAT2(CKCU_ADCPRE_,   HTCFG_ADC_IPN)
-#define HTCFG_ADC_IRQn                            STRCAT2(HTCFG_ADC_IPN, _IRQn)
+#if defined(USE_HT32L52353_SK)
+  #define HTCFG_ADC_IPN                           ADC0
+  #define HTCFG_CK_ADC_DIV                        8
+  #define HTCFG_TSCLK_DIV                         8
+#endif
 
-#define HTCFG_ADC_IRQHandler                      ADC_IRQHandler
+#define HTCFG_ADC_PORT                            STRCAT2(HT_,                 HTCFG_ADC_IPN)
+#define HTCFG_ADC_AFIO_MODE                       STRCAT2(AFIO_FUN_,           HTCFG_ADC_IPN)
+#define HTCFG_ADC_CKCU_ADCPRE                     STRCAT2(CKCU_ADCPRE_,        HTCFG_ADC_IPN)
+#define HTCFG_ADC_CKCU_ADCPRE_DIV                 STRCAT2(CKCU_ADCPRE_DIV,     HTCFG_CK_ADC_DIV)
 
-
+#define HTCFG_ADC_ADVREFP_MV                      3300      /* Assume ADVREFP = 3.3V                   */
 
 #ifdef __cplusplus
 }

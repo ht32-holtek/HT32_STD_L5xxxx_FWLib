@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_ertc.c
- * @version $Rev:: 422          $
- * @date    $Date:: 2024-06-19 $#
+ * @version $Rev:: 1172         $
+ * @date    $Date:: 2026-02-09#$#
  * @brief   This file provides all the ERTC firmware functions.
  *************************************************************************************************************
  * @attention
@@ -429,7 +429,7 @@ u16 ERTC_GetSynchronousPrescaler(void)
  *   @arg  ERTC_SRC_NOCLOCK   : No clock.
  *   @arg  ERTC_SRC_LSI       : Low speed internal clock.
  *   @arg  ERTC_SRC_LSE       : Low speed external clock.
- *   @arg  ERTC_SRC_HSE_DIV32 : High speed external clock divided by 32.
+ *   @arg  ERTC_SRC_HSEPRE    : High speed external clock prescaler.
  * @retval None
  ************************************************************************************************************/
 void ERTC_ClockSourceConfig(ERTC_SRC_Enum Source)
@@ -448,16 +448,16 @@ void ERTC_ClockSourceConfig(ERTC_SRC_Enum Source)
 }
 
 /*********************************************************************************************************//**
- * @brief Set CK_ERTC HSE division value.
+ * @brief Set CK_ERTC HSE prescaler value.
  * @param Div: HSE Prescaler Selection bits [3:2].
  *   This parameter can be one of the following values:
- *     @arg ERTC_HSE_DIV32: HSE/32 clock is selected
- *     @arg ERTC_HSE_DIV16: HSE/16 clock is selected
- *     @arg ERTC_HSE_DIV8 : HSE/8  clock is selected
- *     @arg ERTC_HSE_DIV4 : HSE/4  clock is selected
+ *     @arg ERTC_HSEPRE_DIV32: HSE/32 clock is selected
+ *     @arg ERTC_HSEPRE_DIV16: HSE/16 clock is selected
+ *     @arg ERTC_HSEPRE_DIV8 : HSE/8  clock is selected
+ *     @arg ERTC_HSEPRE_DIV4 : HSE/4  clock is selected
  * @retval None
  ************************************************************************************************************/
-void ERTC_LSEDIVConfig(ERTC_HSEDIV_Enum Div)
+void ERTC_SetHSEPrescaler(ERTC_HSEDIV_Enum Div)
 {
   /* Check the parameters                                                                                   */
   Assert_Param(IS_ERTC_HSE_DIV(Div));

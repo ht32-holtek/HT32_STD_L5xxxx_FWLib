@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_pwrcu.c
- * @version $Rev:: 1074         $
- * @date    $Date:: 2025-09-08 #$
+ * @version $Rev:: 1245         $
+ * @date    $Date:: 2026-04-21 #$
  * @brief   This file provides all the Power Control Unit firmware functions.
  *************************************************************************************************************
  * @attention
@@ -790,11 +790,11 @@ void PWRCU_SetWakeupPinFilter(PWRCU_WUP_Enum Pin , PWRCU_WUPFLT_Enum Count)
 
   if (Pin == PWRCU_WAKEUP_PIN_0)
   {
-    HT_PWRCU->CR = (HT_PWRCU->CR & WUP0FLT_MASK) | (Count << WUP0FLT_Pos);
+    HT_PWRCU->CR1 = (HT_PWRCU->CR1 & WUP0FLT_MASK) | (Count << WUP0FLT_Pos);
   }
   else
   {
-    HT_PWRCU->CR = (HT_PWRCU->CR & WUP1FLT_MASK) | (Count << WUP1FLT_Pos);
+    HT_PWRCU->CR1 = (HT_PWRCU->CR1 & WUP1FLT_MASK) | (Count << WUP1FLT_Pos);
   }
 }
 
@@ -813,7 +813,7 @@ void PWRCU_SetWakeupPinFilterPrescaler(PWRCU_WUPFREQ_Enum WAKEPRE)
   /* Check the parameters                                                                                   */
   Assert_Param(IS_PWRCU_WUPFREQ(WAKEPRE));
 
-  HT_PWRCU->CR = (HT_PWRCU->CR & WUPFREQ_MASK) | WAKEPRE;
+  HT_PWRCU->CR1 = (HT_PWRCU->CR1 & WUPFREQ_MASK) | WAKEPRE;
 }
 #endif
 

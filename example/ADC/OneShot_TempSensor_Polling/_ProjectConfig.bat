@@ -104,4 +104,3 @@ rem gsar.exe -s"SEARCH_STRING:x0a" -r"REPLACE_STRING:x0a" SourceryG++Lite\*_FILE
 REM ============================================================================
 rem Edit your code here....
 REM ============================================================================
-gsar.exe -s"#define PLL_NF2_DIV       (6)" -r"#define PLL_NF2_DIV       (4)" system_ht32l5xxxx_*.c -o

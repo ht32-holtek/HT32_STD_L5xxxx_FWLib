@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_gpio.h
- * @version $Rev:: 568          $
- * @date    $Date:: 2025-05-29 #$
+ * @version $Rev:: 1279         $
+ * @date    $Date:: 2026-05-04 #$
  * @brief   The header file of the GPIO and AFIO library.
  *************************************************************************************************************
  * @attention
@@ -183,8 +183,6 @@ typedef enum
 #define AFIO_FUN_SCTM2      AFIO_FUN_SCTM
 #define AFIO_FUN_SCTM3      AFIO_FUN_SCTM
 
-#define AFIO_FUN_ADC        AFIO_FUN_ADC0
-
 /* Definitions of GPIO_Px                                                                                   */
 #define GPIO_PORT_NUM   (6)
 #define GPIO_PIN_NUM    (16)
@@ -302,7 +300,7 @@ typedef enum
 #define IS_GPIO4(x)          (x == HT_GPIOE)
 #else
 #define IS_GPIO4(x)          (0)
-  #endif
+#endif
 #if (LIBCFG_GPIOF)
 #define IS_GPIO5(x)          (x == HT_GPIOF)
 #else
@@ -349,7 +347,7 @@ typedef enum
                               IS_GPIO_PR_DISABLE(x))
 
 /* check parameter of the GPIOx driving current                                                             */
-#define IS_GPIO_DV(x)        (((x) == GPIO_DV_4MA) || ((x) == GPIO_DV_8MA) || ((x) == GPIO_DV_12MA) || ((x) == GPIO_DV_16MA) )
+#define IS_GPIO_DV(x)        (((x) == GPIO_DV_4MA) || ((x) == GPIO_DV_8MA) || ((x) == GPIO_DV_12MA) || ((x) == GPIO_DV_16MA))
 
 /* check parameter of the GPIOx input/output direction                                                      */
 #define IS_GPIO_DIR(x)       (((x) == GPIO_DIR_IN) || ((x) == GPIO_DIR_OUT))

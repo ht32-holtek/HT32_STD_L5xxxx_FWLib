@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_usbd.h
- * @version $Rev:: 1008         $
- * @date    $Date:: 2025-08-28 #$
+ * @version $Rev:: 1291         $
+ * @date    $Date:: 2026-05-06 #$
  * @brief   The header file of the USB Device Driver.
  *************************************************************************************************************
  * @attention
@@ -57,7 +57,7 @@
 /** @defgroup USBDevice_Settings USB Device settings
   * @{
   */
-#if (LIBCFG_USBD_V2)  
+#if (LIBCFG_USBD_V2)
 #define MAX_EP_NUM                  (10)
 #else
 #define MAX_EP_NUM                  (8)
@@ -158,6 +158,10 @@ typedef struct
 #define EP5IE                       ((u32)0x00002000)   /*!< Endpoint 5 Interrupt Enable                    */
 #define EP6IE                       ((u32)0x00004000)   /*!< Endpoint 6 Interrupt Enable                    */
 #define EP7IE                       ((u32)0x00008000)   /*!< Endpoint 7 Interrupt Enable                    */
+#if (LIBCFG_USBD_V2)
+#define EP8IE                       ((u32)0x00010000)   /*!< Endpoint 8 Interrupt Enable                    */
+#define EP9IE                       ((u32)0x00020000)   /*!< Endpoint 9 Interrupt Enable                    */
+#endif
 
 /* USB Interrupt Status Register (USBISR)                                                                   */
 #define SOFIF                       ((u32)0x00000002)   /*!< Start Of Frame Interrupt Flag                  */

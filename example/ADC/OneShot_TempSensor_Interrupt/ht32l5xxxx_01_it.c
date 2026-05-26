@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ADC/OneShot_TempSensor_Interrupt/ht32l5xxxx_01_it.c
- * @version $Rev:: 327          $
- * @date    $Date:: 2024-03-18 #$
+ * @version $Rev:: 1236         $
+ * @date    $Date:: 2026-04-16 #$
  * @brief   This file provides all interrupt service routine.
  *************************************************************************************************************
  * @attention
@@ -27,6 +27,7 @@
 
 /* Includes ------------------------------------------------------------------------------------------------*/
 #include "ht32.h"
+#include "ht32_board.h"
 #include "ht32_board_config.h"
 
 /** @addtogroup HT32_Series_Peripheral_Examples HT32 Peripheral Examples
@@ -41,6 +42,11 @@
   * @{
   */
 
+/* Global variables ----------------------------------------------------------------------------------------*/
+u8 guCount;
+s32 gTemp;
+u32 gSumData;
+bool bIsAvgTempReady = FALSE;
 
 /* Global functions ----------------------------------------------------------------------------------------*/
 /*********************************************************************************************************//**
@@ -111,15 +117,15 @@ void SysTick_Handler(void)
 {
 }
 
-#include "ht32_board.h"
 /*********************************************************************************************************//**
  * @brief   This function handles ADC interrupt.
  * @retval  None
  ************************************************************************************************************/
-void ADC_IRQHandler(void)
+void HTCFG_ADC_IRQHandler(void)
 {
-  extern u16 gADC_Result;
   extern vu8 gADC_CycleEndOfConversion;
+  ADC_TempSensorParam_TypeDef tempPara;
+  s32 temperature_mC;
 
   if(ADC_TempSensorGetFlagStatus(HTCFG_ADC_PORT, TEMP_SENSOR_FLAG_READY))
   {
@@ -144,9 +150,36 @@ void ADC_IRQHandler(void)
 
     /* Change the SW flag                                                                                   */
     gADC_CycleEndOfConversion = TRUE;
-    gADC_Result = HTCFG_ADC_PORT->DR[0] & 0x0FFF;
+
+    gSumData += (u32)(ADC_GetConversionData(HTCFG_ADC_PORT, 0));      /* ADC conversion result              */
+    guCount++;
+
+    if (guCount >= 32)
+    {
+      /* Prepare parameters for temperature calculation                                                     */
+      /* !!! NOTICE !!!
+        If an external VREF is used, tempPara.Advrefp_mV must be set to the corresponding supply voltage.
+        For example, if the external VREF is 3.3 V, then tempPara.Advrefp_mV = 3300 (millivolts).
+        If the internal VREF is selected, the actual VREF voltage depends on the VREFVAL configuration,
+        and tempPara.Advrefp_mV should be set to the corresponding voltage value.
+      */
+      tempPara.Advrefp_mV = HTCFG_ADC_ADVREFP_MV;
+      tempPara.TsData = (u16)(gSumData >> 5);
+      tempPara.CalTempPoint_mC = ADC_TempSensorGetCalTempPoint(HTCFG_ADC_PORT);
+      if(ADC_TempSensorGetTemp(HTCFG_ADC_PORT, &tempPara, &temperature_mC) == SUCCESS)
+      {
+        gTemp = temperature_mC;
+        guCount = 0;
+        gSumData = 0;
+        bIsAvgTempReady = TRUE;
+      }
+      else
+      {
+        printf("Temperature calculation error!\r\n");
+        while(1){};
+      }
+    }
   }
-  
 }
 
 /**

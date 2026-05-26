@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_i2c.h
- * @version $Rev:: 1098         $
- * @date    $Date:: 2025-09-12 #$
+ * @version $Rev:: 1162         $
+ * @date    $Date:: 2026-01-14 #$
  * @brief   The header file of the I2C library.
  *************************************************************************************************************
  * @attention
@@ -81,7 +81,6 @@ typedef struct
                                                      (CALL == I2C_GENERALCALL_DISABLE))
 
 #define I2C_ADDRESSING_7BIT                         ((u32)0x00000000)
-
 #define I2C_ADDRESSING_10BIT                        ((u32)0x00000080)
 
 #define IS_I2C_ACKNOWLEDGE_ADDRESS(ADDRESS)         ((ADDRESS == I2C_ADDRESSING_7BIT) || \
@@ -109,11 +108,13 @@ typedef struct
 #define I2C_INT_RXBF                                ((u32)0x00040000)
 #if (LIBCFG_I2C_NOSTRETCH)
 #define I2C_INT_ALL                                 ((u32)0x00070F2F)
-
-#define IS_I2C_INT(int)                             (((int & 0xFFF8F0D0) == 0x0) && (int != 0x0))
 #else
 #define I2C_INT_ALL                                 ((u32)0x00070F0F)
+#endif
 
+#if (LIBCFG_I2C_NOSTRETCH)
+#define IS_I2C_INT(int)                             (((int & 0xFFF8F0D0) == 0x0) && (int != 0x0))
+#else
 #define IS_I2C_INT(int)                             (((int & 0xFFF8F0F0) == 0x0) && (int != 0x0))
 #endif
 
@@ -158,9 +159,6 @@ typedef struct
 #define I2C_FLAG_GCS                                ((u32)0x00000008)
 #if (LIBCFG_I2C_NOSTRETCH)
 #define I2C_FLAG_OVR                                ((u32)0x00000020)
-#define IS_I2C_FLAG1(FLAG)                          (FLAG == I2C_FLAG_OVR)
-#else
-#define IS_I2C_FLAG1(FLAG)                          (x)
 #endif
 #define I2C_FLAG_ARBLOS                             ((u32)0x00000100)
 #define I2C_FLAG_RXNACK                             ((u32)0x00000200)
@@ -173,11 +171,17 @@ typedef struct
 #define I2C_FLAG_MASTER                             ((u32)0x00100000)
 #define I2C_FLAG_TXNRX                              ((u32)0x00200000)
 
+#if (LIBCFG_I2C_NOSTRETCH)
+#define IS_FLAG_OVR(x)                              (x == I2C_FLAG_OVR)
+#else
+#define IS_FLAG_OVR(x)                              (0)
+#endif
+
 #define IS_I2C_FLAG(FLAG)                           ((FLAG == I2C_FLAG_STA)    || \
                                                      (FLAG == I2C_FLAG_STO)    || \
                                                      (FLAG == I2C_FLAG_ADRS)   || \
                                                      (FLAG == I2C_FLAG_GCS)    || \
-                                                     IS_I2C_FLAG1(FLAG)        || \
+                                                     IS_FLAG_OVR(FLAG)         || \
                                                      (FLAG == I2C_FLAG_ARBLOS) || \
                                                      (FLAG == I2C_FLAG_RXNACK) || \
                                                      (FLAG == I2C_FLAG_BUSERR) || \
@@ -313,20 +317,30 @@ typedef struct
 #define SEQ_FILTER_5_PCLK                           ((u32)0x00014000)
 #define SEQ_FILTER_6_PCLK                           ((u32)0x00018000)
 #define SEQ_FILTER_7_PCLK                           ((u32)0x0001C000)
+#endif
 
-#define IS_I2C_SEQ_FILTER_MASK1(CONFIG)             ((CONFIG == SEQ_FILTER_3_PCLK)  || \
-                                                     (CONFIG == SEQ_FILTER_4_PCLK)  || \
-                                                     (CONFIG == SEQ_FILTER_5_PCLK)  || \
-                                                     (CONFIG == SEQ_FILTER_6_PCLK)  || \
-                                                     (CONFIG == SEQ_FILTER_7_PCLK))
+#if (LIBCFG_I2C_SEQ3_7)
+#define IS_SEQ_FILTER_3_PCLK(x)                     (x == SEQ_FILTER_3_PCLK)
+#define IS_SEQ_FILTER_4_PCLK(x)                     (x == SEQ_FILTER_4_PCLK)
+#define IS_SEQ_FILTER_5_PCLK(x)                     (x == SEQ_FILTER_5_PCLK)
+#define IS_SEQ_FILTER_6_PCLK(x)                     (x == SEQ_FILTER_6_PCLK)
+#define IS_SEQ_FILTER_7_PCLK(x)                     (x == SEQ_FILTER_7_PCLK)
 #else
-#define IS_I2C_SEQ_FILTER_MASK1(CONFIG)             (x)
+#define IS_SEQ_FILTER_3_PCLK(x)                     (0)
+#define IS_SEQ_FILTER_4_PCLK(x)                     (0)
+#define IS_SEQ_FILTER_5_PCLK(x)                     (0)
+#define IS_SEQ_FILTER_6_PCLK(x)                     (0)
+#define IS_SEQ_FILTER_7_PCLK(x)                     (0)
 #endif
 
 #define IS_I2C_SEQ_FILTER_MASK(CONFIG)              ((CONFIG == SEQ_FILTER_DISABLE) || \
                                                      (CONFIG == SEQ_FILTER_1_PCLK)  || \
                                                      (CONFIG == SEQ_FILTER_2_PCLK)  || \
-                                                     IS_I2C_SEQ_FILTER_MASK1(CONFIG))
+                                                     IS_SEQ_FILTER_3_PCLK(CONFIG)  || \
+                                                     IS_SEQ_FILTER_4_PCLK(CONFIG)  || \
+                                                     IS_SEQ_FILTER_5_PCLK(CONFIG)  || \
+                                                     IS_SEQ_FILTER_6_PCLK(CONFIG)  || \
+                                                     IS_SEQ_FILTER_7_PCLK(CONFIG))
 
 #if (LIBCFG_I2C_NOSTRETCH)
 #define I2C_STRETCH_YES                             (0x00)

@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    SYSTICK/DelayMicrosecond/main.c
- * @version $Rev:: 234          $
- * @date    $Date:: 2024-02-27 #$
+ * @version $Rev:: 1160         $
+ * @date    $Date:: 2025-12-24 #$
  * @brief   Main program.
  *************************************************************************************************************
  * @attention
@@ -47,7 +47,7 @@
 /* !!! NOTICE !!!
    Notice that the value of the preprocessor depends on the device.
 */
-#define TICK_OFFSET                               (13)
+#define TICK_OFFSET                               (17)
 
 #define TICK_US                                   (LIBCFG_MAX_SPEED / 1000000)
 
@@ -56,6 +56,7 @@
 
 #define delayMicroseconds(cnt)                    {SysTick->LOAD = cnt;\
                                                    SysTick->VAL = 0;\
+                                                   SysTick->CTRL;\
                                                    while (SysTick->CTRL == 5);}
 
 /* Global functions ----------------------------------------------------------------------------------------*/

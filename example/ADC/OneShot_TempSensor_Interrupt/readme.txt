@@ -14,19 +14,19 @@
 This example shows how to measure the ADC of Temperature Sensor using ADC one shot mode trigger by software.
 
   <PRE>
-  ====================     ===================     =================     ===============================
-  =       Main()     =     = ADC ISR (TSRDY) =     = ADC ISR (EOC) =     =           Main()            =
-  =    TempSensor    = --> = ADC SW Trigger  = --> = Save Value    = --> =     Print gADC_Result       =
-  = start to operate =     =                 =     = gADC_Result   =     = TempSensor start to operate =
-  ====================     ===================     =================     ===============================
-                 TempSensor Ready            Cycle End        gADC_CycleEndOfConversion
+  ====================     ===================     ========================     ===============================
+  =       Main()     =     = ADC ISR (TSRDY) =     = ADC ISR (EOC)        =     =           Main()            =
+  =    TempSensor    = --> = ADC SW Trigger  = --> = Sum and Avg ADC Data = --> =        Print gTemp          =
+  = start to operate =     =                 =     = Calculate gTemp      =     = TempSensor start to operate =
+  ====================     ===================     ========================     ===============================
+                 TempSensor Ready            Cycle End             gADC_CycleEndOfConversion
   </PRE>
 
 
-Temperture Sensor of ADC configuration:
+Temperature Sensor of ADC configuration:
   - The temperature sensor's optimal operation clock frequency (TSCLK) is around 250 kHz. Therefore,
     in this example, the system frequency is set to 48 MHz through system_ht32l5xxxx_xx.c, and the
-    temperature divider (TSDIV) is setted to 8 (TSCLK = (48 MHz / 2^8) = 48 MHz / 256 = 187.5 kHz).
+    temperature divider (TSDIV) is set to 8 (TSCLK = (48 MHz / 2^8) = 48 MHz / 256 = 187.5 kHz).
 
 ADC configuration:
   - ADC clock frequency: CK_ADC = 48 MHz / 8 = 6 MHz
@@ -35,8 +35,10 @@ ADC configuration:
   - Conversion time = (Sampling time + Latency) / CK_ADC = (1 + ADST + 13) / CK_ADC
   - Set ADC conversion sequence 0 as channel ADC_CH_VTS.
 
-The cycle-end of conversion Polling is enabled. Each time the ADC cycle conversion is finished a "cycle-end
-of conversion" Polling will be occurred. The ADC Polling service routine will display the ADC result.
+The cycle-end of conversion interrupt is enabled. Each time the ADC cycle conversion is finished a "cycle-end
+of conversion" interrupt will occur. In this example, the ADC accumulates data until 32 samples are collected.
+The 32 samples are then averaged, and the averaged value is used to calculate the temperature through
+conversion. The resulting temperature is then displayed.
 
 If the USART/UART is connected to PC, the ADC result will be printed on the terminal.
 
