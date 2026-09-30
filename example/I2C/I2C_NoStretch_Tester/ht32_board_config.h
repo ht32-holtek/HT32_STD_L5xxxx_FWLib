@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    I2C/I2C_NoStretch_Tester/ht32_board_config.h
- * @version $Rev:: 1097         $
- * @date    $Date:: 2025-09-12 #$
+ * @version $Rev:: 1325         $
+ * @date    $Date:: 2026-09-09 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -43,6 +43,15 @@
 #endif
 
 #if defined(USE_HT32L52353_SK)
+  #define HTCFG_I2C_MASTER_CLK(ck)          (ck.Bit.I2C1)
+  #define HTCFG_I2C_MASTER_PORT             (HT_I2C1)
+  #define HTCFG_I2C_MASTER_SCL_GPIO_ID      (GPIO_PA)
+  #define HTCFG_I2C_MASTER_SCL_AFIO_PIN     (AFIO_PIN_0)
+  #define HTCFG_I2C_MASTER_SDA_GPIO_ID      (GPIO_PA)
+  #define HTCFG_I2C_MASTER_SDA_AFIO_PIN     (AFIO_PIN_1)
+#endif
+
+#if defined(USE_HT32L57241_SK)
   #define HTCFG_I2C_MASTER_CLK(ck)          (ck.Bit.I2C1)
   #define HTCFG_I2C_MASTER_PORT             (HT_I2C1)
   #define HTCFG_I2C_MASTER_SCL_GPIO_ID      (GPIO_PA)

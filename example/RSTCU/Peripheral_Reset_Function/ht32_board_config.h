@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    RSTCU/Peripheral_Reset_Function/ht32_board_config.h
- * @version $Rev:: 1008         $
- * @date    $Date:: 2025-08-28 #$
+ * @version $Rev:: 1325         $
+ * @date    $Date:: 2026-09-09 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -39,6 +39,10 @@
 
 #if defined(USE_HT32L52353_SK)
   #define HTCFG_LED1_RST                          PC
+#endif
+
+#if defined(USE_HT32L57241_SK)
+  #define HTCFG_LED1_RST                          PF
 #endif
 
 #ifdef __cplusplus

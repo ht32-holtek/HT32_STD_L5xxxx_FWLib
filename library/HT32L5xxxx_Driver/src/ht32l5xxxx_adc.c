@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_adc.c
- * @version $Rev:: 1145         $
- * @date    $Date:: 2025-10-22 #$
+ * @version $Rev:: 1296         $
+ * @date    $Date:: 2026-05-21 #$
  * @brief   This file provides all the ADC firmware functions.
  *************************************************************************************************************
  * @attention
@@ -229,7 +229,6 @@ void ADC_RegularTrigConfig(HT_ADC_TypeDef* HT_ADCn, u32 ADC_TRIG_x)
 
   /* Config external trigger conversion source of regular group                                             */
   HT_ADCn->TCR = ADC_TRIG_x & 0x0000001F;
-
   HT_ADCn->TSR = ADC_TRIG_x & (~0x0000001F);
 }
 

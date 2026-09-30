@@ -1,8 +1,8 @@
 /***************************************************************************//**
  * @file    ht32l5xxxx_01.h
  * @brief   CMSIS Cortex-M0+ Device Peripheral Access Layer Header File
- * @version $Rev:: 1279         $
- * @date    $Date:: 2026-05-04 #$
+ * @version $Rev:: 1318         $
+ * @date    $Date:: 2026-07-07 #$
  *
  * @note
  * Copyright (C) Holtek Semiconductor Inc. All rights reserved.
@@ -748,9 +748,10 @@ typedef struct
   __IO uint32_t APBPCSR1;        /*!< 0x03C         APB Peripheral Clock Selection Register 1               */
   __IO uint32_t HSICR;           /*!< 0x040         HSI Control Register                                    */
   __IO uint32_t HSIATCR;         /*!< 0x044         HSI Auto Trimming Counter Register                      */
-       uint32_t RESERVED1[1];    /*!< 0x048         Reserved                                                */
   #if defined(USE_HT32L57231_41)
   __IO uint32_t APBPCSR2;        /*!< 0x048         APB Peripheral Clock Selection Register 2               */
+  #else
+       uint32_t RESERVED1[1];    /*!< 0x048         Reserved                                                */
   #endif
   __IO uint32_t HSIRDYCR;        /*!< 0x04C         HSI Ready Counter Register                              */
   __IO uint32_t LSITCR;          /*!< 0x050         LSI Trim Control Register                               */

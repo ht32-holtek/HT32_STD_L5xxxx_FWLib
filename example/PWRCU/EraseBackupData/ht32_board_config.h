@@ -42,6 +42,10 @@
   #define HTCFG_WAKEUP_BUTTON_PIN                  PWRCU_WAKEUP_PIN_0
 #endif
 
+#if defined(USE_HT32L57241_SK)
+  #define HTCFG_WAKEUP_BUTTON_PIN                  PWRCU_WAKEUP_PIN_0
+#endif
+
 #ifdef __cplusplus
 }
 #endif

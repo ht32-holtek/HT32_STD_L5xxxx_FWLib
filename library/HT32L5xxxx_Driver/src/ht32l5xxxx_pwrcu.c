@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_pwrcu.c
- * @version $Rev:: 1245         $
- * @date    $Date:: 2026-04-21 #$
+ * @version $Rev:: 1325         $
+ * @date    $Date:: 2026-09-09 #$
  * @brief   This file provides all the Power Control Unit firmware functions.
  *************************************************************************************************************
  * @attention
@@ -97,8 +97,10 @@
 #if (LIBCFG_PWRCU_WAKEUPBKUCLR)
 #define Set_ERBKR         SetBit_BB((u32)&HT_PWRCU->CR1, 12)
 #define Reset_ERBKR       ResetBit_BB((u32)&HT_PWRCU->CR1, 12)
+#if (LIBCFG_PWRCU_WAKEUP1)
 #define Set_ERBKR1        SetBit_BB((u32)&HT_PWRCU->CR1, 13)
 #define Reset_ERBKR1      ResetBit_BB((u32)&HT_PWRCU->CR1, 13)
+#endif
 #endif
 
 #if (LIBCFG_PWRCU_WAKEUPTIMESTAMP)
@@ -114,7 +116,9 @@
 #define PWRTEST_READY     0x27
 #define TIME_OUT          24000000
 #define WUP0TYPE_MASK     0xFFFCFFFF
+#define WUP0TYPE_Pos      16
 #define WUP1TYPE_MASK     0xFFF3FFFF
+#define WUP1TYPE_Pos      18
 #define LVDS_MASK         0xFFB9FFFF
 #define VREG_V_MASK       0xF3FFFFFF
 #define VREG_M_MASK       0xFCFFFFFF
@@ -126,6 +130,7 @@
 #define WUP1FLT_MASK      0xFFFFFF3F
 #define WUPFREQ_MASK      0xFFFFFFFC
 #endif
+
 /**
   * @}
   */
@@ -171,7 +176,7 @@ PWRCU_Status PWRCU_CheckReadyAccessed(void)
  *   - 0x0000                                   : There is no flag is set.
  *   - 0x0001 (PWRCU_FLAG_PWRPOR)               : VDD power domain power-on reset flag has been set.
  *   - 0x0002 (PWRCU_FLAG_PD)                   : Power-Down flag has been set.
- *   - 0x0004 (PWRCU_FLAG_LDONRDY)              : Main Regulator LDO not ready status flag.
+ *   - 0x0004 (PWRCU_FLAG_LDONRDY)              : Main Regulator LDO not ready status flag has been set.
  *   - 0x0010 (PWRCU_FLAG_POR)                  : Power-on reset flag has been set.
  *   - 0x0100 (PWRCU_FLAG_WUP0)                 : External WAKEUP0 pin flag has been set.
  *   - 0x0200 (PWRCU_FLAG_WUP1)                 : External WAKEUP1 pin flag has been set.
@@ -669,21 +674,25 @@ void PWRCU_WakeupMultiPinCmd(PWRCU_WUP_Enum Pin, PWRCU_WUPTYPE_Enum Type, Contro
   {
     if (Pin == PWRCU_WAKEUP_PIN_0)
     {
-      HT_PWRCU->CR = (HT_PWRCU->CR & WUP0TYPE_MASK) | (Type << 16);
+      HT_PWRCU->CR = (HT_PWRCU->CR & WUP0TYPE_MASK) | (Type << WUP0TYPE_Pos);
       Set_WUP0EN;
     }
+    #if (LIBCFG_PWRCU_WAKEUP1)
     else
     {
-      HT_PWRCU->CR = (HT_PWRCU->CR & WUP1TYPE_MASK) | (Type << 18);
+      HT_PWRCU->CR = (HT_PWRCU->CR & WUP1TYPE_MASK) | (Type << WUP1TYPE_Pos);
       Set_WUP1EN;
     }
+    #endif
   }
   else
   {
     if (Pin == PWRCU_WAKEUP_PIN_0)
       Reset_WUP0EN;
+    #if (LIBCFG_PWRCU_WAKEUP1)
     else
       Reset_WUP1EN;
+    #endif
   }
 }
 #endif
@@ -719,15 +728,19 @@ void PWRCU_WakeupPinEraseBakRegCmd(PWRCU_WUP_Enum Pin, ControlStatus NewState)
   {
     if (Pin == PWRCU_WAKEUP_PIN_0)
       Set_ERBKR;
+    #if (LIBCFG_PWRCU_WAKEUP1)
     else
       Set_ERBKR1;
+    #endif
   }
   else
   {
     if (Pin == PWRCU_WAKEUP_PIN_0)
       Reset_ERBKR;
+    #if (LIBCFG_PWRCU_WAKEUP1)
     else
       Reset_ERBKR1;
+    #endif
   }
 }
 #endif
@@ -792,10 +805,12 @@ void PWRCU_SetWakeupPinFilter(PWRCU_WUP_Enum Pin , PWRCU_WUPFLT_Enum Count)
   {
     HT_PWRCU->CR1 = (HT_PWRCU->CR1 & WUP0FLT_MASK) | (Count << WUP0FLT_Pos);
   }
+  #if (LIBCFG_PWRCU_WAKEUP1)
   else
   {
     HT_PWRCU->CR1 = (HT_PWRCU->CR1 & WUP1FLT_MASK) | (Count << WUP1FLT_Pos);
   }
+  #endif
 }
 
 /*********************************************************************************************************//**

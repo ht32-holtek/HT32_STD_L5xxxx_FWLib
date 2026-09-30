@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
- * @file    USBD/Virtual_COM/ht32l5xxxx_02_usbdconf.h
- * @version $Rev:: 872          $
- * @date    $Date:: 2025-08-12 #$
+ * @file    CKCU/HSI_AutoTrim_By_USB/ht325xxxx_01_usbdconf.h
+ * @version $Rev:: 1305         $
+ * @date    $Date:: 2026-06-01 #$
  * @brief   The configuration file of USB Device Driver.
  *************************************************************************************************************
  * @attention
@@ -27,8 +27,8 @@
 // <<< Use Configuration Wizard in Context Menu >>>
 
 /* Define to prevent recursive inclusion -------------------------------------------------------------------*/
-#ifndef __HT32L5XXXX_02_USBDCONF_H
-#define __HT32L5XXXX_02_USBDCONF_H
+#ifndef __HT32L5XXXX_01_USBDCONF_H
+#define __HT32L5XXXX_01_USBDCONF_H
 
 // <e0> Enter Low Power mode when Suspended
 #define USBDCORE_ENABLE_LOW_POWER   (0)
@@ -58,9 +58,7 @@
 //    <o0.13> Endpoint5 Interrupt Enable (EP5IE)
 //    <o0.14> Endpoint6 Interrupt Enable (EP6IE)
 //    <o0.15> Endpoint7 Interrupt Enable (EP7IE)
-//    <o0.16> Endpoint8 Interrupt Enable (EP8IE)
-//    <o0.17> Endpoint9 Interrupt Enable (EP9IE)
-#define _UIER               (0x0F1D)
+#define _UIER               (0x071D)
 //  </h>
 
 
@@ -108,8 +106,6 @@
 //      <5=> 5
 //      <6=> 6
 //      <7=> 7
-//      <8=> 8
-//      <9=> 9
 #define _EP1_CFG_EPADR      (1)
 
 //    <o0.0> Endpoint Enable (EPEN)
@@ -118,7 +114,7 @@
 //    <o0> Endpoint Transfer Type
 //      <2=> Bulk
 //      <3=> Interrupt
-#define _EP1_TYPR           (2)
+#define _EP1_TYPR           (3)
 
 //    <o0> Endpoint Direction (EPDIR)
 //      <1=> IN
@@ -139,7 +135,7 @@
 //      <o0.5> NAK Transmitted Interrupt Enable (NAKIE)
 //      <o0.6> STALL Transmitted Interrupt Enable (STLIE)
 //      <o0.7> USB Error Interrupt Enable (UERIE)
-#define _EP1_IER            (0x12)
+#define _EP1_IER            (0x10)
 // </h>
 // </e>
 
@@ -158,8 +154,6 @@
 //      <5=> 5
 //      <6=> 6
 //      <7=> 7
-//      <8=> 8
-//      <9=> 9
 #define _EP2_CFG_EPADR      (2)
 
 //    <o0.0> Endpoint Enable (EPEN)
@@ -173,11 +167,11 @@
 //    <o0> Endpoint Direction (EPDIR)
 //      <1=> IN
 //      <0=> OUT
-#define _EP2_CFG_EPDIR      (1)
+#define _EP2_CFG_EPDIR      (0)
 
 //    <o0> Endpoint Buffer Length (EPLEN) (in byte) <4-64:4>
                             /* Maximum: 64 Bytes                                                            */
-#define _EP2LEN_TMP         (8)
+#define _EP2LEN_TMP         (64)
 
 //    <h> Endpoint Interrupt Enable Settings (EPIER)
 //      <o0> Endpoint Interrupt Enable Settings (EPIER) <0x0-0xFF:1>
@@ -189,7 +183,7 @@
 //      <o0.5> NAK Transmitted Interrupt Enable (NAKIE)
 //      <o0.6> STALL Transmitted Interrupt Enable (STLIE)
 //      <o0.7> USB Error Interrupt Enable (UERIE)
-#define _EP2_IER            (0x012)
+#define _EP2_IER            (0x002)
 // </h>
 // </e>
 
@@ -197,7 +191,7 @@
 /* Endpoint3 Configuration Setting                                                                          */
 /*----------------------------------------------------------------------------------------------------------*/
 //  <e0> Endpoint3 Configuration
-#define _EP3_ENABLE         (1)
+#define _EP3_ENABLE         (0)
 
 //    <o0> Endpoint Address (EPADR)
 //      <1=> 1
@@ -207,8 +201,6 @@
 //      <5=> 5
 //      <6=> 6
 //      <7=> 7
-//      <8=> 8
-//      <9=> 9
 #define _EP3_CFG_EPADR      (3)
 
 //    <o0.0> Endpoint Enable (EPEN)
@@ -217,16 +209,16 @@
 //    <o0> Endpoint Transfer Type
 //      <2=> Bulk
 //      <3=> Interrupt
-#define _EP3_TYPR           (2)
+#define _EP3_TYPR           (3)
 
 //    <o0> Endpoint Direction (EPDIR)
 //      <1=> IN
 //      <0=> OUT
-#define _EP3_CFG_EPDIR      (0)
+#define _EP3_CFG_EPDIR      (1)
 
 //    <o0> Endpoint Buffer Length (EPLEN) (in byte) <4-64:4>
                             /* Maximum: 64 Bytes                                                            */
-#define _EP3LEN_TMP         (64)
+#define _EP3LEN_TMP         (8)
 
 //    <h> Endpoint Interrupt Enable Settings (EPIER)
 //      <o0> Endpoint Interrupt Enable Settings (EPIER) <0x0-0xFF:1>
@@ -238,7 +230,7 @@
 //      <o0.5> NAK Transmitted Interrupt Enable (NAKIE)
 //      <o0.6> STALL Transmitted Interrupt Enable (STLIE)
 //      <o0.7> USB Error Interrupt Enable (UERIE)
-#define _EP3_IER            (0x12)
+#define _EP3_IER            (0x10)
 // </h>
 // </e>
 
@@ -256,8 +248,6 @@
 //      <5=> 5
 //      <6=> 6
 //      <7=> 7
-//      <8=> 8
-//      <9=> 9
 #define _EP4_CFG_EPADR      (4)
 
 //    <o0.0> Endpoint Enable (EPEN)
@@ -312,8 +302,6 @@
 //      <5=> 5
 //      <6=> 6
 //      <7=> 7
-//      <8=> 8
-//      <9=> 9
 #define _EP5_CFG_EPADR      (5)
 
 //    <o0.0> Endpoint Enable (EPEN)
@@ -369,8 +357,6 @@
 //      <5=> 5
 //      <6=> 6
 //      <7=> 7
-//      <8=> 8
-//      <9=> 9
 #define _EP6_CFG_EPADR      (6)
 
 //    <o0.0> Endpoint Enable (EPEN)
@@ -425,8 +411,6 @@
 //      <5=> 5
 //      <6=> 6
 //      <7=> 7
-//      <8=> 8
-//      <9=> 9
 #define _EP7_CFG_EPADR      (7)
 
 //    <o0.0> Endpoint Enable (EPEN)
@@ -463,106 +447,6 @@
 //      <o0.6> STALL Transmitted Interrupt Enable (STLIE)
 //      <o0.7> USB Error Interrupt Enable (UERIE)
 #define _EP7_IER            (0x10)
-// </h>
-// </e>
-
-
-/*----------------------------------------------------------------------------------------------------------*/
-/* Endpoint8 Configuration Setting                                                                          */
-/*----------------------------------------------------------------------------------------------------------*/
-//  <e0> Endpoint8 Configuration
-#define _EP8_ENABLE         (0)
-
-//    <o0> Endpoint Address (EPADR)
-//      <1=> 1
-//      <2=> 2
-//      <3=> 3
-//      <4=> 4
-//      <5=> 5
-//      <6=> 6
-//      <7=> 7
-//      <8=> 8
-//      <9=> 9
-#define _EP8_CFG_EPADR      (8)
-
-//    <o0.0> Endpoint Enable (EPEN)
-#define _EP8_CFG_EPEN_TMP   (1)
-
-//    <o0> Endpoint Transfer Type
-//      <2=> Bulk
-//      <3=> Interrupt
-#define _EP8_TYPR           (3)
-
-//    <o0> Endpoint Direction (EPDIR)
-//      <1=> IN
-//      <0=> OUT
-#define _EP8_CFG_EPDIR      (1)
-
-//    <o0> Endpoint Buffer Length (EPLEN) (in byte) <4-64:4>
-                            /* Maximum: 64 Bytes                                                            */
-#define _EP8LEN_TMP         (8)
-
-//    <h> Endpoint Interrupt Enable Settings (EPIER)
-//      <o0> Endpoint Interrupt Enable Settings (EPIER) <0x0-0xFF:1>
-//      <o0.0> OUT Token Packet Received Interrupt Enable (OTRXIE)
-//      <o0.1> OUT Data Packet Received Interrupt Enable (ODRXIE)
-//      <o0.2> OUT Data Buffer Overrun Interrupt Enable (ODOVIE)
-//      <o0.3> IN Token Packet Received Interrupt Enable (ITRXIE)
-//      <o0.4> IN Data Packet Transmitted Interrupt Enable (IDTXIE)
-//      <o0.5> NAK Transmitted Interrupt Enable (NAKIE)
-//      <o0.6> STALL Transmitted Interrupt Enable (STLIE)
-//      <o0.7> USB Error Interrupt Enable (UERIE)
-#define _EP8_IER            (0x10)
-// </h>
-// </e>
-
-
-/*----------------------------------------------------------------------------------------------------------*/
-/* Endpoint9 Configuration Setting                                                                          */
-/*----------------------------------------------------------------------------------------------------------*/
-//  <e0> Endpoint9 Configuration
-#define _EP9_ENABLE         (0)
-
-//    <o0> Endpoint Address (EPADR)
-//      <1=> 1
-//      <2=> 2
-//      <3=> 3
-//      <4=> 4
-//      <5=> 5
-//      <6=> 6
-//      <7=> 7
-//      <8=> 8
-//      <9=> 9
-#define _EP9_CFG_EPADR      (9)
-
-//    <o0.0> Endpoint Enable (EPEN)
-#define _EP9_CFG_EPEN_TMP   (1)
-
-//    <o0> Endpoint Transfer Type
-//      <2=> Bulk
-//      <3=> Interrupt
-#define _EP9_TYPR           (3)
-
-//    <o0> Endpoint Direction (EPDIR)
-//      <1=> IN
-//      <0=> OUT
-#define _EP9_CFG_EPDIR      (1)
-
-//    <o0> Endpoint Buffer Length (EPLEN) (in byte) <4-64:4>
-                            /* Maximum: 64 Bytes                                                            */
-#define _EP9LEN_TMP         (8)
-
-//    <h> Endpoint Interrupt Enable Settings (EPIER)
-//      <o0> Endpoint Interrupt Enable Settings (EPIER) <0x0-0xFF:1>
-//      <o0.0> OUT Token Packet Received Interrupt Enable (OTRXIE)
-//      <o0.1> OUT Data Packet Received Interrupt Enable (ODRXIE)
-//      <o0.2> OUT Data Buffer Overrun Interrupt Enable (ODOVIE)
-//      <o0.3> IN Token Packet Received Interrupt Enable (ITRXIE)
-//      <o0.4> IN Data Packet Transmitted Interrupt Enable (IDTXIE)
-//      <o0.5> NAK Transmitted Interrupt Enable (NAKIE)
-//      <o0.6> STALL Transmitted Interrupt Enable (STLIE)
-//      <o0.7> USB Error Interrupt Enable (UERIE)
-#define _EP9_IER            (0x10)
 // </h>
 // </e>
 

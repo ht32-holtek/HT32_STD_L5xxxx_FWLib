@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_pwrcu.h
- * @version $Rev:: 1074         $
- * @date    $Date:: 2025-09-08 #$
+ * @version $Rev:: 1325         $
+ * @date    $Date:: 2026-09-09 #$
  * @brief   The header file of the Power Control Unit library.
  *************************************************************************************************************
  * @attention
@@ -212,7 +212,9 @@ typedef enum
 #endif
 #if (LIBCFG_PWRCU_WAKEUPBKUCLR)
 #define PWRCU_FLAG_ERBKR0       0x1000  /*!< WAKEUP0 pin Erase Backup Registers Flag                        */
+#if (LIBCFG_PWRCU_WAKEUP1)
 #define PWRCU_FLAG_ERBKR1       0x2000  /*!< WAKEUP1 pin Erase Backup Registers Flag                        */
+#endif
 #endif
 
 /* check PWRCU_LVDS parameter                                                                               */
@@ -317,7 +319,6 @@ void PWRCU_WakeupPinTimeStampCmd(PWRCU_WUP_Enum Pin, ControlStatus NewState);
 void PWRCU_SetWakeupPinFilter(PWRCU_WUP_Enum Pin , PWRCU_WUPFLT_Enum Count);
 void PWRCU_SetWakeupPinFilterPrescaler(PWRCU_WUPFREQ_Enum WAKEPRE);
 #endif
-
 /**
   * @}
   */

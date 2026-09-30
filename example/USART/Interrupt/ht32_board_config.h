@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    USART/Interrupt/ht32_board_config.h
- * @version $Rev:: 1008         $
- * @date    $Date:: 2025-08-28 #$
+ * @version $Rev:: 1325         $
+ * @date    $Date:: 2026-09-09 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -48,6 +48,15 @@
   #define _HTCFG_UART_RX_GPION                    5
   #define HTCFG_UART_IPN                          USART1
 #endif
+
+#if defined(USE_HT32L57241_SK)
+  #define _HTCFG_UART_TX_GPIOX                    A
+  #define _HTCFG_UART_TX_GPION                    4
+  #define _HTCFG_UART_RX_GPIOX                    A
+  #define _HTCFG_UART_RX_GPION                    5
+  #define HTCFG_UART_IPN                          USART0
+#endif
+
 
 
 #define HTCFG_UART_TX_GPIO_ID                     STRCAT2(GPIO_P,         _HTCFG_UART_TX_GPIOX)

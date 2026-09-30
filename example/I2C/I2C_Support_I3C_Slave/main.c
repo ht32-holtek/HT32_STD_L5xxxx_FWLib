@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    I2C/I2C_Support_I3C_Slave/main.c
- * @version $Rev:: 1097         $
- * @date    $Date:: 2025-09-12 #$
+ * @version $Rev:: 1336         $
+ * @date    $Date:: 2026-09-10 #$
  * @brief   Main program.
  *************************************************************************************************************
  * @attention
@@ -181,7 +181,7 @@ void I2C_Slave_Configuration(void)
            Filter duration = TPCLK * SEQ_FILTER_n_PCLK >= 50 ns
 
        Example:
-       If PCLK frequency = 72 MHz (i.e., period TPCLK ≈ 13.89 ns),
+       If PCLK frequency = 72 MHz (i.e., period TPCLK ~= 13.89 ns),
        setting SEQ_FILTER_4_PCLK results in a filter duration of:
            13.89 ns * 4 = 55.56 ns,
        which effectively filters pulses shorter than 50 ns,

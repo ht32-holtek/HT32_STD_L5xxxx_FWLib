@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ADC/OneShot_TempSensor_Interrupt/ht32_board_config.h
- * @version $Rev:: 1159         $
- * @date    $Date:: 2025-12-04 #$
+ * @version $Rev:: 1325         $
+ * @date    $Date:: 2026-09-09 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -42,6 +42,13 @@
 #endif
 
 #if defined(USE_HT32L52353_SK)
+  #define HTCFG_ADC_IRQHandler                    ADC_IRQHandler
+  #define HTCFG_ADC_IPN                           ADC0
+  #define HTCFG_CK_ADC_DIV                        8
+  #define HTCFG_TSCLK_DIV                         8
+#endif
+
+#if defined(USE_HT32L57241_SK)
   #define HTCFG_ADC_IRQHandler                    ADC_IRQHandler
   #define HTCFG_ADC_IPN                           ADC0
   #define HTCFG_CK_ADC_DIV                        8

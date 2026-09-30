@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ADC/BandgapVoltage/ht32_board_config.h
- * @version $Rev:: 1008         $
- * @date    $Date:: 2025-08-28 #$
+ * @version $Rev:: 1325         $
+ * @date    $Date:: 2026-09-09 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -47,6 +47,15 @@
   #define _HTCFG_VR_GPIOX                         A
   #define _HTCFG_VR_GPION                         6
   #define  HTCFG_VR_ADC_CH                        (ADC_CH_6)
+
+  #define _HTCFG_VBG_GPIOX                        A
+  #define _HTCFG_VBG_GPION                        0
+#endif
+
+#if defined(USE_HT32L57241_SK)
+  #define _HTCFG_VR_GPIOX                         D
+  #define _HTCFG_VR_GPION                         4
+  #define  HTCFG_VR_ADC_CH                        (ADC_CH_8)
 
   #define _HTCFG_VBG_GPIOX                        A
   #define _HTCFG_VBG_GPION                        0

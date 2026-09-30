@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_adc.h
- * @version $Rev:: 1145         $
- * @date    $Date:: 2025-10-22 #$
+ * @version $Rev:: 1325         $
+ * @date    $Date:: 2026-09-09 #$
  * @brief   The header file of the ADC library.
  *************************************************************************************************************
  * @attention
@@ -69,7 +69,6 @@ typedef struct
 #define CONTINUOUS_MODE                         (0x00000002)
 #define DISCONTINUOUS_MODE                      (0x00000003)
 
-
 #define IS_ADC_CONVERSION_MODE(REGULAR_MODE)    ((REGULAR_MODE == ONE_SHOT_MODE)   || \
                                                  (REGULAR_MODE == CONTINUOUS_MODE) || \
                                                  (REGULAR_MODE == DISCONTINUOUS_MODE))
@@ -111,6 +110,17 @@ typedef struct
 #endif
 
 #if defined(USE_HT32L52343_53)
+#define ADC_CH_VTS                              (12)
+#define ADC_CH_BANDGAP                          (15)
+#define ADC_CH_GND_VREF                         (16)
+#define ADC_CH_MVDDA                            (17)
+#define IS_ADC_CH_INTERNAL1(CH)                 (((CH) == ADC_CH_VTS) || \
+                                                 ((CH) == ADC_CH_BANDGAP) || \
+                                                 ((CH) == ADC_CH_GND_VREF) || \
+                                                 ((CH) == ADC_CH_MVDDA))
+#endif
+
+#if defined(USE_HT32L57231_41)
 #define ADC_CH_VTS                              (12)
 #define ADC_CH_BANDGAP                          (15)
 #define ADC_CH_GND_VREF                         (16)
@@ -327,10 +337,8 @@ typedef struct
 #define ADC_INT_SINGLE_EOC                      (0x00000001)
 #define ADC_INT_SUB_GROUP_EOC                   (0x00000002)
 #define ADC_INT_CYCLE_EOC                       (0x00000004)
-
 #define ADC_INT_AWD_LOWER                       (0x00010000)
 #define ADC_INT_AWD_UPPER                       (0x00020000)
-
 #define ADC_INT_DATA_OVERWRITE                  (0x01000000)
 
 #define IS_ADC_INT(INT)                         ((((INT) & 0xFEFCFFF8) == 0) && ((INT) != 0))
@@ -338,12 +346,9 @@ typedef struct
 
 #define ADC_FLAG_SINGLE_EOC                     (0x00000001)
 #define ADC_FLAG_SUB_GROUP_EOC                  (0x00000002)
-
 #define ADC_FLAG_CYCLE_EOC                      (0x00000004)
-
 #define ADC_FLAG_AWD_LOWER                      (0x00010000)
 #define ADC_FLAG_AWD_UPPER                      (0x00020000)
-
 #define ADC_FLAG_DATA_OVERWRITE                 (0x01000000)
 
 #define IS_ADC_FLAG(FLAG)                       ((((FLAG) & 0xFEFCFFF8) == 0) && ((FLAG) != 0))

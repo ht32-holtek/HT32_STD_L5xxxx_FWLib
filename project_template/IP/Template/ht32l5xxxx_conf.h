@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    IP/Example/ht32l5xxxx_conf.h
- * @version $Rev:: 1141         $
- * @date    $Date:: 2025-10-22 #$
+ * @version $Rev:: 1301         $
+ * @date    $Date:: 2026-05-28 #$
  * @brief   Library configuration file.
  *************************************************************************************************************
  * @attention
@@ -254,6 +254,7 @@
 //      <9=> GPTM0
 //      <10=> GPTM1
 //      <11=> MCTM0
+//      <12=> MCTM1
 
 //  <h> Timer Clock Setting
 //  </h>
@@ -381,7 +382,6 @@
 // <i> This setting is only effective when ADC_CAL_TEMP_POINT_SORUCE is set to 0 (Fixed Default Temperature).
 #define ADC_FIXED_CAL_TEMP_mC       22000
 
-// </h>
 /* Enable/disable the specific peripheral inclusion                                                         */
 
 //  <h> Library Inclusion Configuration
@@ -455,7 +455,7 @@
 /*
 //<q> ERTC Library
 */
-#define _ERTC          1
+#define _ERTC         1
 
 /* EXTI ----------------------------------------------------------------------------------------------------*/
 /*
@@ -591,7 +591,7 @@
 
 /* USART ---------------------------------------------------------------------------------------------------*/
 /*
-//<q0> USART/UART Library
+//<q> USART/UART Library
 */
 #define _USART        1
 

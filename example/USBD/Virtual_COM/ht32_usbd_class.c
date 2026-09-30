@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    USBD/Virtual_COM/ht32_usbd_class.c
- * @version $Rev:: 872          $
- * @date    $Date:: 2025-08-12 #$
+ * @version $Rev:: 1314         $
+ * @date    $Date:: 2026-06-05 #$
  * @brief   The USB Device Class.
  *************************************************************************************************************
  * @attention
@@ -377,7 +377,7 @@ static void USBDClass_Endpoint3(USBD_EPTn_Enum EPTn)
   if (Buffer_Write(&gRingBuffer, gOutputDataBuffer, gCDCEPOUTLen) != gCDCEPOUTLen)
   {
   /* Ring Buffer Overflow.                                                                                  */
-    while(1);
+    while(1){};
   }
 
   __DBG_USBPrintf("%06ld CDC OUT\t[%02d]", ++__DBG_USBCount, (int)gCDCEPOUTLen);

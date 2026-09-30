@@ -32,14 +32,14 @@ The program behaves as follows:
 2. Calibration configuration:
    - Measure CKOUT frequency or pulse count during a calibration window (8s / 16s / 32s).
    - Calculate error:
-     - Expected = 32768 × window_seconds
-     - Error = Measured – Expected
+     - Expected = 32768 x window_seconds
+     - Error = Measured - Expected
    - Apply correction:
      - If Error > 0: LSE is faster, remove pulses.
      - If Error < 0: LSE is slower, add pulses.
    - Example in code:
      `ERTC_CalibConfig(ERTC_CALIB_PERIOD_32, ERTC_CALIB_MASK_PULSES, 224);`
-     → 32-second calibration window, removing 224 pulses.
+     - 32-second calibration window, removing 224 pulses.
 
 3. Observation:
    - Probe **PA9 (CKOUT)** with oscilloscope or frequency counter.

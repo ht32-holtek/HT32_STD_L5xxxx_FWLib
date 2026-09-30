@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_lcd.c
- * @version $Rev:: 8333         $
- * @date    $Date:: 2025-01-17 #$
+ * @version $Rev:: 1325         $
+ * @date    $Date:: 2026-09-09 #$
  * @brief   This file provides all the LCD firmware functions.
  *************************************************************************************************************
  * @attention
@@ -63,7 +63,7 @@ void LCD_DriverInit(LCD_InitTypeDef* LCD_InitStruct)
      Must wait until the LCDENS = 0 before change the LCD control register.
   */
   #if 0
-  while (LCD_GetFlagStatus(LCD_FLAG_ENS) == 1);
+  while (LCD_GetFlagStatus(LCD_FLAG_ENS) == SET){};
   #endif
 
   HT_LCD->FCR = (u32)(LCD_InitStruct->LCD_Prescaler) |
@@ -89,7 +89,7 @@ void LCD_MaskTimeConfig(LCD_MaskTime_Enum Sel)
      Must wait until the LCDENS = 0 before change the LCD control register.
   */
   #if 0
-  while (LCD_GetFlagStatus(LCD_FLAG_ENS) == 1);
+  while (LCD_GetFlagStatus(LCD_FLAG_ENS) == SET){};
   #endif
 
   HT_LCD->CR = (HT_LCD->CR & ~(1ul << 24)) | Sel;
@@ -129,90 +129,43 @@ void LCD_StaticSwitchConfig(LCD_StaticSwitch_Enum Sel)
      Must wait until the LCDENS = 0 before change the LCD control register.
   */
   #if 0
-  while (LCD_GetFlagStatus(LCD_FLAG_ENS) == 1);
+  while (LCD_GetFlagStatus(LCD_FLAG_ENS) == SET){};
   #endif
 
   HT_LCD->CR = (HT_LCD->CR & ~(1ul << 14)) | Sel;
 }
 
 /*********************************************************************************************************//**
- * @brief Configure MuxCOM7 to be COM7 or SEGx.
- * @param Sel: Specify the MuxSEG.
+ * @brief Configure MuxPin to be COM or SEG.
+ * @param Pin: Specify the LCD Mux Pin.
+ * @param Sel: Specify the LCD Mux Mode.
  *   This parameter can be one of the following values:
- *     @arg LCD_MUXCOM7_IS_COM7  :
- *     @arg LCD_MUXCOM7_IS_SEGx  :(52341: SEG28, 57352: SEG36)
- * @retval None
+ *     @arg LCD_MUX_SEL_COM
+ *     @arg LCD_MUX_SEL_SEG
+ * @retval TRUE or FALSE
  ************************************************************************************************************/
-void LCD_MuxCOM7Config(LCD_MUXCOM7_Enum Sel)
+bool LCD_MuxConfig(u16 MuxPin, LCD_MUX_SEL_Enum Sel)
 {
-  /* !!! NOTICE !!!
-     Must wait until the LCDENS = 0 before change the LCD control register.
-  */
-  #if 0
-  while (LCD_GetFlagStatus(LCD_FLAG_ENS) == 1);
-  #endif
-
-  HT_LCD->CR = (HT_LCD->CR & ~(1ul << 11)) | Sel;
-}
-
-/*********************************************************************************************************//**
- * @brief Configure MuxCOM6 to be COM6 or SEGx.
- * @param Sel: Specify the MuxSEG.
- *   This parameter can be one of the following values:
- *     @arg LCD_MUXCOM7_IS_COM6  :
- *     @arg LCD_MUXCOM7_IS_SEGx  :(52341: SEG27, 57352: SEG35)
- * @retval None
- ************************************************************************************************************/
-void LCD_MuxCOM6Config(LCD_MUXCOM6_Enum Sel)
-{
+  u32 reg;
   /* !!! NOTICE !!!
      Must wait until the LCDENS = 0 before change the LCD settings.
   */
   #if 0
-  while (LCD_GetFlagStatus(LCD_FLAG_ENS) == 1);
+  while (LCD_GetFlagStatus(LCD_FLAG_ENS) == SET){};
   #endif
-
-  HT_LCD->CR = (HT_LCD->CR & ~(1ul << 10)) | Sel;
-}
-
-/*********************************************************************************************************//**
- * @brief Configure MuxCOM5 to be COM5 or SEGx.
- * @param Sel: Specify the MuxSEG.
- *   This parameter can be one of the following values:
- *     @arg LCD_MUXCOM7_IS_COM5  :
- *     @arg LCD_MUXCOM7_IS_SEGx  :(52341: SEG26, 57352: SEG34)
- * @retval None
- ************************************************************************************************************/
-void LCD_MuxCOM5Config(LCD_MUXCOM5_Enum Sel)
-{
-  /* !!! NOTICE !!!
-     Must wait until the LCDENS = 0 before change the LCD settings.
-  */
-  #if 0
-  while (LCD_GetFlagStatus(LCD_FLAG_ENS) == 1);
+  reg = HT_LCD->CR;
+  #if (LIBCFG_LCD_MULTI_MUXCOM)
+  if(Sel == LCD_MUX_SEL_COM)
+  {
+    u16 PairPin = (MuxPin & 0x1F00) >> 8; // get pair pin
+    if ((reg & (1ul << PairPin)) == 0)
+    {
+      return FALSE; // check pair pin is COM mode
+    }
+  }
   #endif
-
-  HT_LCD->CR = (HT_LCD->CR & ~(1ul << 9)) | Sel;
-}
-
-/*********************************************************************************************************//**
- * @brief Configure MuxCOM4 to be COM4 or SEGx.
- * @param Sel: Specify the MuxSEG.
- *   This parameter can be one of the following values:
- *     @arg LCD_MUXCOM7_IS_COM4  :
- *     @arg LCD_MUXCOM7_IS_SEGx  :(52341: SEG25, 57352: SEG33)
- * @retval None
- ************************************************************************************************************/
-void LCD_MuxCOM4Config(LCD_MUXCOM4_Enum Sel)
-{
-  /* !!! NOTICE !!!
-     Must wait until the LCDENS = 0 before change the LCD settings.
-  */
-  #if 0
-  while (LCD_GetFlagStatus(LCD_FLAG_ENS) == 1);
-  #endif
-
-  HT_LCD->CR = (HT_LCD->CR & ~(1ul << 8)) | Sel;
+  HT_LCD->CR = (reg & ~(1ul << (MuxPin & 0x001F))) | (Sel << (MuxPin & 0x001F));
+  return TRUE;
 }
 
 /*********************************************************************************************************//**
@@ -229,7 +182,7 @@ void LCD_WaveformConfig(LCD_Waveform_Enum Sel)
      Must wait until the LCDENS = 0 before change the LCD settings.
   */
   #if 0
-  while (LCD_GetFlagStatus(LCD_FLAG_ENS) == 1);
+  while (LCD_GetFlagStatus(LCD_FLAG_ENS) == SET){};
   #endif
 
   HT_LCD->CR = (HT_LCD->CR & ~(1ul << 7)) | Sel;
@@ -251,7 +204,7 @@ void LCD_BiasConfig(LCD_Bias_Enum Sel)
      Must wait until the LCDENS = 0 before change the LCD settings.
   */
   #if 0
-  while (LCD_GetFlagStatus(LCD_FLAG_ENS) == 1);
+  while (LCD_GetFlagStatus(LCD_FLAG_ENS) == SET){};
   #endif
 
   HT_LCD->CR = (HT_LCD->CR & ~(3ul << 5)) | Sel;
@@ -274,7 +227,7 @@ void LCD_DutyConfig(LCD_Duty_Enum Sel)
      Must wait until the LCDENS = 0 before change the LCD settings.
   */
   #if 0
-  while (LCD_GetFlagStatus(LCD_FLAG_ENS) == 1);
+  while (LCD_GetFlagStatus(LCD_FLAG_ENS) == SET){};
   #endif
 
   HT_LCD->CR = (HT_LCD->CR & ~(7ul << 2)) | Sel;
@@ -294,7 +247,7 @@ void LCD_VoltageSourceConfig(LCD_VoltageSource_Enum Sel)
      Must wait until the LCDENS = 0 before change the LCD settings.
   */
   #if 0
-  while (LCD_GetFlagStatus(LCD_FLAG_ENS) == 1);
+  while (LCD_GetFlagStatus(LCD_FLAG_ENS) == SET){};
   #endif
 
   HT_LCD->CR = (HT_LCD->CR & ~(1ul << 1)) | Sel;
@@ -344,7 +297,7 @@ void LCD_Cmd(ControlStatus NewState)
  ************************************************************************************************************/
 void LCD_PrescalerConfig(LCD_Prescaler_Enum Sel)
 {
-  while (LCD_GetFlagStatus(LCD_FLAG_FCRSF) == SET);
+  while (LCD_GetFlagStatus(LCD_FLAG_FCRSF) == SET){};
   HT_LCD->FCR = (HT_LCD->FCR & ~(15ul << 22)) | Sel;
 }
 
@@ -372,7 +325,7 @@ void LCD_PrescalerConfig(LCD_Prescaler_Enum Sel)
  ************************************************************************************************************/
 void LCD_DividerConfig(LCD_Divider_Enum Sel)
 {
-  while (LCD_GetFlagStatus(LCD_FLAG_FCRSF) == SET);
+  while (LCD_GetFlagStatus(LCD_FLAG_FCRSF) == SET){};
   HT_LCD->FCR = (HT_LCD->FCR & ~(15ul << 18)) | Sel;
 }
 
@@ -387,7 +340,7 @@ void LCD_DividerConfig(LCD_Divider_Enum Sel)
  ************************************************************************************************************/
 void LCD_BlinkModeConfig(LCD_BlinkMode_Enum Sel)
 {
-  while (LCD_GetFlagStatus(LCD_FLAG_FCRSF) == SET);
+  while (LCD_GetFlagStatus(LCD_FLAG_FCRSF) == SET){};
   HT_LCD->FCR = (HT_LCD->FCR & ~(3ul << 16)) | Sel;
 }
 
@@ -406,7 +359,7 @@ void LCD_BlinkModeConfig(LCD_BlinkMode_Enum Sel)
  ************************************************************************************************************/
 void LCD_BlinkFrequencyConfig(LCD_BlinkFrequency_Enum Sel)
 {
-  while (LCD_GetFlagStatus(LCD_FLAG_FCRSF) == SET);
+  while (LCD_GetFlagStatus(LCD_FLAG_FCRSF) == SET){};
   HT_LCD->FCR = (HT_LCD->FCR & ~(7ul << 13)) | Sel;
 }
 
@@ -414,14 +367,14 @@ void LCD_BlinkFrequencyConfig(LCD_BlinkFrequency_Enum Sel)
  * @brief Configure the LCD Charge Pump Voltage Selection.
  * @param Sel: Specify LCD Charge Pump Voltage Selection.
  *   This parameter can be one of the following values:
- *     @arg LCD_ChargePump_2V65 : Charge pump voltage = 2.65 V
- *     @arg LCD_ChargePump_2V75 : Charge pump voltage = 2.75 V
- *     @arg LCD_ChargePump_2V85 : Charge pump voltage = 2.85 V
- *     @arg LCD_ChargePump_2V95 : Charge pump voltage = 2.95 V
- *     @arg LCD_ChargePump_3V10 : Charge pump voltage = 3.10 V
- *     @arg LCD_ChargePump_3V25 : Charge pump voltage = 3.25 V
- *     @arg LCD_ChargePump_3V40 : Charge pump voltage = 3.40 V
- *     @arg LCD_ChargePump_3V55 : Charge pump voltage = 3.55 V
+ *     @arg LCD_ChargePump_LEVEL1
+ *     @arg LCD_ChargePump_LEVEL2
+ *     @arg LCD_ChargePump_LEVEL3
+ *     @arg LCD_ChargePump_LEVEL4
+ *     @arg LCD_ChargePump_LEVEL5
+ *     @arg LCD_ChargePump_LEVEL6
+ *     @arg LCD_ChargePump_LEVEL7
+ *     @arg LCD_ChargePump_LEVEL8
  ************************************************************************************************************/
 void LCD_ChargePumpConfig(LCD_ChargePump_Enum Sel)
 {
@@ -429,10 +382,10 @@ void LCD_ChargePumpConfig(LCD_ChargePump_Enum Sel)
      Must wait until the LCDENS = 0 before change the LCD settings.
   */
   #if 0
-  while (LCD_GetFlagStatus(LCD_FLAG_ENS) == 1);
+  while (LCD_GetFlagStatus(LCD_FLAG_ENS) == SET){};
   #endif
 
-  while (LCD_GetFlagStatus(LCD_FLAG_FCRSF));
+  while (LCD_GetFlagStatus(LCD_FLAG_FCRSF)){};
   HT_LCD->FCR = (HT_LCD->FCR & ~(7ul << 10)) | Sel;
 }
 
@@ -451,7 +404,7 @@ void LCD_ChargePumpConfig(LCD_ChargePump_Enum Sel)
  ************************************************************************************************************/
 void LCD_DeadTimeConfig(LCD_DeadTime_Enum Sel)
 {
-  while (LCD_GetFlagStatus(LCD_FLAG_FCRSF) == SET);
+  while (LCD_GetFlagStatus(LCD_FLAG_FCRSF) == SET){};
   HT_LCD->FCR = (HT_LCD->FCR & ~(7ul << 7)) | Sel;
 }
 
@@ -459,14 +412,23 @@ void LCD_DeadTimeConfig(LCD_DeadTime_Enum Sel)
  * @brief Configure the LCD High Drive Duration Selection.
  * @param Sel: Specify LCD High Drive Duration Selection.
  *   This parameter LCD_DEAD_Enum can be one of the following values:
+ *   In the Type A waveform, CK_HDD = 2 * CK_PS; In the Type B waveform, CK_HDD = CK_PS.
  *     @arg LCD_HighDrive_0      : No high drive
- *     @arg LCD_HighDrive_1      : High drive duration = 1 CK_PS pulses
- *     @arg LCD_HighDrive_2      : High drive duration = 2 CK_PS pulses
- *     @arg LCD_HighDrive_3      : High drive duration = 3 CK_PS pulses
- *     @arg LCD_HighDrive_4      : High drive duration = 4 CK_PS pulses
- *     @arg LCD_HighDrive_5      : High drive duration = 5 CK_PS pulses
- *     @arg LCD_HighDrive_6      : High drive duration = 6 CK_PS pulses
- *     @arg LCD_HighDrive_7      : High drive duration = 7 CK_PS pulses
+ *     @arg LCD_HighDrive_1      : High drive duration =  1 CK_HDD pulses
+ *     @arg LCD_HighDrive_2      : High drive duration =  2 CK_HDD pulses
+ *     @arg LCD_HighDrive_3      : High drive duration =  3 CK_HDD pulses
+ *     @arg LCD_HighDrive_4      : High drive duration =  4 CK_HDD pulses
+ *     @arg LCD_HighDrive_5      : High drive duration =  5 CK_HDD pulses
+ *     @arg LCD_HighDrive_6      : High drive duration =  6 CK_HDD pulses
+ *     @arg LCD_HighDrive_7      : High drive duration =  7 CK_HDD pulses
+ *     @arg LCD_HighDrive_8      : High drive duration =  8 CK_HDD pulses
+ *     @arg LCD_HighDrive_9      : High drive duration =  9 CK_HDD pulses
+ *     @arg LCD_HighDrive_10     : High drive duration = 10 CK_HDD pulses
+ *     @arg LCD_HighDrive_11     : High drive duration = 11 CK_HDD pulses
+ *     @arg LCD_HighDrive_12     : High drive duration = 12 CK_HDD pulses
+ *     @arg LCD_HighDrive_13     : High drive duration = 13 CK_HDD pulses
+ *     @arg LCD_HighDrive_14     : High drive duration = 14 CK_HDD pulses
+ *     @arg LCD_HighDrive_15     : High drive duration = 15 CK_HDD pulses
  *     @arg LCD_HighDrive_Static : Static high drive
  ************************************************************************************************************/
 void LCD_HighDriveConfig(LCD_HighDrive_Enum Sel)
@@ -480,10 +442,10 @@ void LCD_HighDriveConfig(LCD_HighDrive_Enum Sel)
   else
   {
     FCR &= ~(1ul << 0);
-    FCR = (FCR & ~(7ul << 4)) | Sel;
+    FCR = (FCR & ~((1ul << 26) | (7ul << 4))) | Sel;
   }
 
-  while (LCD_GetFlagStatus(LCD_FLAG_FCRSF));
+  while (LCD_GetFlagStatus(LCD_FLAG_FCRSF)){};
   HT_LCD->FCR = FCR;
 }
 
@@ -563,6 +525,63 @@ void LCD_ClearFlag(u32 LCD_Flag)
 
   HT_LCD->CLR = LCD_Flag;
 }
+
+/*********************************************************************************************************//**
+ * @brief Configure the LCD internal comparator input hysteresis level.
+ * @param Sel: Specify hysteresis level.
+ *   This parameter can be one of the following values:
+ *     @arg LCD_CMPHYST_LEVEL1
+ *     @arg LCD_CMPHYST_LEVEL2
+ *     @arg LCD_CMPHYST_LEVEL3
+ *     @arg LCD_CMPHYST_LEVEL4
+ * @retval None
+ ************************************************************************************************************/
+void LCD_CMPHysteresisConfig(LCD_CMPHYST_Enum Sel)
+{
+  HT_LCD->CR = (HT_LCD->CR & ~(3ul << 25)) | ((u32)Sel << 25);
+}
+
+/*********************************************************************************************************//**
+ * @brief Enable or Disable LCD I/O decharge function.
+ * @param NewState: This parameter can be ENABLE or DISABLE.
+ * @retval None
+ ************************************************************************************************************/
+void LCD_IODechargeCmd(ControlStatus NewState)
+{
+  /* Check the parameters                                                                                   */
+  Assert_Param(IS_CONTROL_STATUS(NewState));
+
+  if (NewState != DISABLE)
+  {
+    HT_LCD->CR |= (1ul << 27);
+  }
+  else
+  {
+    HT_LCD->CR &= ~(1ul << 27);
+  }
+}
+
+/*********************************************************************************************************//**
+ * @brief Enable or Disable LCD low power bias mode.
+ * @param NewState: This parameter can be ENABLE or DISABLE.
+ * @retval None
+ ************************************************************************************************************/
+void LCD_LowPowerBiasCmd(ControlStatus NewState)
+{
+  /* Check the parameters                                                                                   */
+  Assert_Param(IS_CONTROL_STATUS(NewState));
+
+  if (NewState != DISABLE)
+  {
+    HT_LCD->CR |= (1ul << 12);
+  }
+  else
+  {
+    HT_LCD->CR &= ~(1ul << 12);
+  }
+}
+
+
 /**
   * @}
   */

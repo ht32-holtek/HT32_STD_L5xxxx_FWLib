@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_lcd.h
- * @version $Rev:: 8333         $
- * @date    $Date:: 2025-01-17 #$
+ * @version $Rev:: 1325         $
+ * @date    $Date:: 2026-09-09 #$
  * @brief   The header file of the LCD library.
  *************************************************************************************************************
  * @attention
@@ -66,48 +66,13 @@ typedef enum {
 } LCD_StaticSwitch_Enum;
 
 /**
- * @brief Enumeration of LCD MUXCOM7.
+ * @brief LCD MUX selection mode
  */
 typedef enum
 {
-  /*!< 57341: SEG28/COM7                                                                                    */
-  /*!< 57352: SEG36/COM7                                                                                    */
-  LCD_MUXCOM7_IS_COM7  = (0x00 << 11),
-  LCD_MUXCOM7_IS_SEGx = (0x01 << 11),
-} LCD_MUXCOM7_Enum;
-
-/**
- * @brief Enumeration of LCD MUXCOM6.
- */
-typedef enum
-{
-  /*!< 57341: SEG27/COM6                                                                                    */
-  /*!< 57352: SEG35/COM6                                                                                    */
-  LCD_MUXCOM6_IS_COM6  = (0x00 << 10),
-  LCD_MUXCOM6_IS_SEGx = (0x01 << 10),
-} LCD_MUXCOM6_Enum;
-
-/**
- * @brief Enumeration of LCD MUXCOM5.
- */
-typedef enum
-{
-  /*!< 57341: SEG26/COM5                                                                                    */
-  /*!< 57352: SEG34/COM5                                                                                    */
-  LCD_MUXCOM5_IS_COM5  = (0x00 << 9),
-  LCD_MUXCOM5_IS_SEGx = (0x01 << 9),
-} LCD_MUXCOM5_Enum;
-
-/**
- * @brief Enumeration of LCD MUXCOM4.
- */
-typedef enum
-{
-  /*!< 57341: SEG25/COM4                                                                                    */
-  /*!< 57352: SEG33/COM4                                                                                    */
-  LCD_MUXCOM4_IS_COM4  = (0x00 << 8),
-  LCD_MUXCOM4_IS_SEGx = (0x01 << 8),
-} LCD_MUXCOM4_Enum;
+    LCD_MUX_SEL_COM = 0x00,
+    LCD_MUX_SEL_SEG = 0x01,
+} LCD_MUX_SEL_Enum;
 
 /**
  * @brief Enumeration of LCD waveform.
@@ -222,14 +187,14 @@ typedef enum
   */
 typedef enum
 {
-  LCD_ChargePump_2V65 = (0x00 << 10), /*!< Charge pump voltage = 2.65 V                                     */
-  LCD_ChargePump_2V75 = (0x01 << 10), /*!< Charge pump voltage = 2.75 V                                     */
-  LCD_ChargePump_2V85 = (0x02 << 10), /*!< Charge pump voltage = 2.85 V                                     */
-  LCD_ChargePump_2V95 = (0x03 << 10), /*!< Charge pump voltage = 2.95 V                                     */
-  LCD_ChargePump_3V10 = (0x04 << 10), /*!< Charge pump voltage = 3.10 V                                     */
-  LCD_ChargePump_3V25 = (0x05 << 10), /*!< Charge pump voltage = 3.25 V                                     */
-  LCD_ChargePump_3V40 = (0x06 << 10), /*!< Charge pump voltage = 3.40 V                                     */
-  LCD_ChargePump_3V55 = (0x07 << 10), /*!< Charge pump voltage = 3.55 V                                     */
+  LCD_ChargePump_LEVEL1 = (0x00 << 10), /*!< Charge pump voltage = 2.65 V                                     */
+  LCD_ChargePump_LEVEL2 = (0x01 << 10), /*!< Charge pump voltage = 2.75 V                                     */
+  LCD_ChargePump_LEVEL3 = (0x02 << 10), /*!< Charge pump voltage = 2.85 V                                     */
+  LCD_ChargePump_LEVEL4 = (0x03 << 10), /*!< Charge pump voltage = 2.95 V                                     */
+  LCD_ChargePump_LEVEL5 = (0x04 << 10), /*!< Charge pump voltage = 3.10 V                                     */
+  LCD_ChargePump_LEVEL6 = (0x05 << 10), /*!< Charge pump voltage = 3.25 V                                     */
+  LCD_ChargePump_LEVEL7 = (0x06 << 10), /*!< Charge pump voltage = 3.40 V                                     */
+  LCD_ChargePump_LEVEL8 = (0x07 << 10), /*!< Charge pump voltage = 3.55 V                                     */
 } LCD_ChargePump_Enum;
 
 /**
@@ -252,16 +217,35 @@ typedef enum
   */
 typedef enum
 {
-  LCD_HighDrive_0 = (0x00 << 4), /*!< No high drive                                                         */
-  LCD_HighDrive_1 = (0x01 << 4), /*!< High drive duration = 1 CK_PS pulses                                  */
-  LCD_HighDrive_2 = (0x02 << 4), /*!< High drive duration = 2 CK_PS pulses                                  */
-  LCD_HighDrive_3 = (0x03 << 4), /*!< High drive duration = 3 CK_PS pulses                                  */
-  LCD_HighDrive_4 = (0x04 << 4), /*!< High drive duration = 4 CK_PS pulses                                  */
-  LCD_HighDrive_5 = (0x05 << 4), /*!< High drive duration = 5 CK_PS pulses                                  */
-  LCD_HighDrive_6 = (0x06 << 4), /*!< High drive duration = 6 CK_PS pulses                                  */
-  LCD_HighDrive_7 = (0x07 << 4), /*!< High drive duration = 7 CK_PS pulses                                  */
+  LCD_HighDrive_0  = (0x00 <<  4),               /*!< No high drive                                         */
+  LCD_HighDrive_1  = (0x01 <<  4),               /*!< High drive duration =  1 CK_HDD pulses                */
+  LCD_HighDrive_2  = (0x02 <<  4),               /*!< High drive duration =  2 CK_HDD pulses                */
+  LCD_HighDrive_3  = (0x03 <<  4),               /*!< High drive duration =  3 CK_HDD pulses                */
+  LCD_HighDrive_4  = (0x04 <<  4),               /*!< High drive duration =  4 CK_HDD pulses                */
+  LCD_HighDrive_5  = (0x05 <<  4),               /*!< High drive duration =  5 CK_HDD pulses                */
+  LCD_HighDrive_6  = (0x06 <<  4),               /*!< High drive duration =  6 CK_HDD pulses                */
+  LCD_HighDrive_7  = (0x07 <<  4),               /*!< High drive duration =  7 CK_HDD pulses                */
+  LCD_HighDrive_8  = (0x01 << 26),               /*!< High drive duration =  8 CK_HDD pulses                */
+  LCD_HighDrive_9  = (0x01 << 26) | (0x01 << 4), /*!< High drive duration =  9 CK_HDD pulses                */
+  LCD_HighDrive_10 = (0x01 << 26) | (0x02 << 4), /*!< High drive duration = 10 CK_HDD pulses                */
+  LCD_HighDrive_11 = (0x01 << 26) | (0x03 << 4), /*!< High drive duration = 11 CK_HDD pulses                */
+  LCD_HighDrive_12 = (0x01 << 26) | (0x04 << 4), /*!< High drive duration = 12 CK_HDD pulses                */
+  LCD_HighDrive_13 = (0x01 << 26) | (0x05 << 4), /*!< High drive duration = 13 CK_HDD pulses                */
+  LCD_HighDrive_14 = (0x01 << 26) | (0x06 << 4), /*!< High drive duration = 14 CK_HDD pulses                */
+  LCD_HighDrive_15 = (0x01 << 26) | (0x07 << 4), /*!< High drive duration = 15 CK_HDD pulses                */
   LCD_HighDrive_Static = (0xff), /*!< Static high drive                                                     */
 } LCD_HighDrive_Enum;
+
+/**
+  * @brief Enumeration of LCD Internal Comparator Input Hysteresis Level Selection.
+  */
+typedef enum
+{
+    LCD_CMPHYST_LEVEL1 = 0x0,
+    LCD_CMPHYST_LEVEL2 = 0x1,
+    LCD_CMPHYST_LEVEL3 = 0x2,
+    LCD_CMPHYST_LEVEL4 = 0x3
+} LCD_CMPHYST_Enum;
 
 /**
  * @brief Definition of LCD Init Structure.
@@ -308,6 +292,34 @@ typedef struct
 #define LCD_CLR_SOF                          ((u32)0x00000001)
 
 #define IS_LCD_CLEAR(CLR)                    ((((CLR) & 0xFFFFFFFC) == 0) && ((CLR) != 0))
+
+#define LCD_CMPHYST_10mV                      LCD_CMPHYST_LEVEL1
+#define LCD_CMPHYST_20mV                      LCD_CMPHYST_LEVEL2
+#define LCD_CMPHYST_30mV                      LCD_CMPHYST_LEVEL3
+#define LCD_CMPHYST_50mV                      LCD_CMPHYST_LEVEL4
+
+#define LCD_ChargePump_2V65                   LCD_ChargePump_LEVEL1
+#define LCD_ChargePump_2V75                   LCD_ChargePump_LEVEL2
+#define LCD_ChargePump_2V85                   LCD_ChargePump_LEVEL3
+#define LCD_ChargePump_2V95                   LCD_ChargePump_LEVEL4
+#define LCD_ChargePump_3V10                   LCD_ChargePump_LEVEL5
+#define LCD_ChargePump_3V25                   LCD_ChargePump_LEVEL6
+#define LCD_ChargePump_3V40                   LCD_ChargePump_LEVEL7
+#define LCD_ChargePump_3V55                   LCD_ChargePump_LEVEL8
+
+// #define SEGX_COMN                          (u16)((Pair REG bit) << 8 | (Self REG bit))
+#if defined(USE_HT32L57231_41)
+#define SEG28_COM7                            (u16)(19 << 8 | 11) // PC13
+#define SEG27_COM6                            (u16)(18 << 8 | 10) // PC12
+#define SEG26_COM5                            (u16)(17 << 8 |  9) // PC11
+#define SEG25_COM4                            (u16)(16 << 8 |  8) // PC10
+#define SEG8_COM7                             (u16)(11 << 8 | 19) // PB5
+#define SEG7_COM6                             (u16)(10 << 8 | 18) // PB4
+#define SEG6_COM5                             (u16)( 9 << 8 | 17) // PB3
+#define SEG5_COM4                             (u16)( 8 << 8 | 16) // PB2
+#endif
+
+
 /**
   * @}
   */
@@ -323,15 +335,15 @@ typedef struct
      LCD_DriverInit()
      LCD_MaskTimeConfig()
      LCD_StaticSwitchConfig()
-     LCD_MuxCOM7Config()
-     LCD_MuxCOM6Config()
-     LCD_MuxCOM5Config()
-     LCD_MuxCOM4Config()
+     LCD_MuxConfig()
      LCD_WaveformConfig()
      LCD_BiasConfig()
      LCD_DutyConfig()
      LCD_VoltageSourceConfig()
      LCD_ChargePumpConfig()
+     LCD_CMPHysteresisConfig()
+     LCD_IODechargeCmd()
+     LCD_LowPowerBiasCmd
 */
 
 void LCD_DriverDeInit(void);
@@ -340,15 +352,15 @@ void LCD_DriverInit(LCD_InitTypeDef* LCD_InitStruct);
 void LCD_MaskTimeConfig(LCD_MaskTime_Enum Sel);
 void LCD_HalfRLCmd(ControlStatus NewState);
 void LCD_StaticSwitchConfig(LCD_StaticSwitch_Enum Sel);
-void LCD_MuxCOM7Config(LCD_MUXCOM7_Enum Sel);
-void LCD_MuxCOM6Config(LCD_MUXCOM6_Enum Sel);
-void LCD_MuxCOM5Config(LCD_MUXCOM5_Enum Sel);
-void LCD_MuxCOM4Config(LCD_MUXCOM4_Enum Sel);
+bool LCD_MuxConfig(u16 MuxPin, LCD_MUX_SEL_Enum Sel);
 void LCD_WaveformConfig(LCD_Waveform_Enum Sel);
 void LCD_BiasConfig(LCD_Bias_Enum Sel);
 void LCD_DutyConfig(LCD_Duty_Enum Sel);
 void LCD_VoltageSourceConfig(LCD_VoltageSource_Enum Sel);
+void LCD_CMPHysteresisConfig(LCD_CMPHYST_Enum Sel);
 void LCD_Cmd(ControlStatus NewState);
+void LCD_IODechargeCmd(ControlStatus NewState);
+void LCD_LowPowerBiasCmd(ControlStatus NewState);
 
 void LCD_PrescalerConfig(LCD_Prescaler_Enum Sel);
 void LCD_DividerConfig(LCD_Divider_Enum Sel);

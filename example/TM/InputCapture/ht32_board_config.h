@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    TM/InputCapture/ht32_board_config.h
- * @version $Rev:: 1008         $
- * @date    $Date:: 2025-08-28 #$
+ * @version $Rev:: 1325         $
+ * @date    $Date:: 2026-09-09 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -60,6 +60,19 @@
   #define _HTCFG_PWM_GPIOX                        C
   #define _HTCFG_PWM_GPION                        4
   #define  HTCFG_PWM_IPN                          SCTM0
+  #define _HTCFG_PWM_CHN                          0
+#endif
+
+#if defined(USE_HT32L57241_SK)
+  #define _HTCFG_CAP_GPIOX                        C
+  #define _HTCFG_CAP_GPION                        5
+  #define  HTCFG_CAP_IPN                          GPTM0
+  #define _HTCFG_CAP_CHN                          1
+  #define  HTCFG_CAP_CCR                          (TM_INT_CH1CC)
+
+  #define _HTCFG_PWM_GPIOX                        D
+  #define _HTCFG_PWM_GPION                        4
+  #define  HTCFG_PWM_IPN                          PWM0
   #define _HTCFG_PWM_CHN                          0
 #endif
 

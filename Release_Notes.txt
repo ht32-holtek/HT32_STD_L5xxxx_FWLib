@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    Release_Notes.txt
- * @version V1.6.1
- * @date    2026-05-07
+ * @version V1.7.1
+ * @date    2026-09-15
  * @brief   The Release notes of HT32L Firmware Library.
  *************************************************************************************************************
  * @attention
@@ -36,6 +36,44 @@
 //   HT32L52343, HT32L52353
 //   HT32L64041
 //   HT32L64141
+//   HT32L57231, HT32L57241
+
+/*----------------------------------------------------------------------------------------------------------*/
+/* HT32_STD_L5xxxx_FWLib_V1.7.1_1361                                                                        */
+/*----------------------------------------------------------------------------------------------------------*/
+  Release Date: 2026-09-15
+  Main Changes
+  + Add new device support:
+    - HT32L57231, HT32L57241
+  + Update LCD driver:
+    - Integrate "LCD_MuxCOMxConfig()" APIs into "LCD_MuxConfig()" to configure shared SEG/COM pins.
+    - Add "LCD_CMPHysteresisConfig()", "LCD_IODechargeCmd()", and "LCD_LowPowerBiasCmd()" APIs.
+    - Extend the high-drive duration setting from 7 to 15 CK_HDD pulses.
+    - Update charge-pump enumerator names to generalized level-based identifiers and retain compatibility macros for the original names.
+  + Add new examples as below.
+    - "CKCU/HSI_AutoTrim_By_USB"
+    - "Mono_LCD/Demo"
+    - "Mono_LCD/LCD_module"
+  + Update I2C driver to avoid I2C Busy Flag being set in "I2C_SequentialFilterConfig()" function.
+  + Update PWRCU driver to guard WAKEUP1-related definitions and processes with "LIBCFG_PWRCU_WAKEUP1".
+  + Update interval for polling endpoint in the following examples to comply with the specification:
+    - "example/USBD/HID_Keyboard_Virtual_COM"
+    - "example/USBD/Virtual_COM"
+  + Update EEPROM Emulation middleware, improve reliability and error handling.
+    "utilities/middleware/eeprom_emulation.c/h"
+    - Improve EEPROM page state handling and recovery mechanism.
+    - Add parameter, address range, and Flash operation checks.
+    - Improve Flash erase/program and cache handling.
+  + Update time function in the following files to support MCTM1:
+    - "ht32l5xxxx_conf.h"
+
+  Others
+  + Update comment, format, typing error, and coding style.
+  + Update the readme.txt in the project_template with HT32-IDE information.
+  + Update "Tips/Checksum_CRC16/_Tools/srec_make_combo.bat" to support Keil single-binary processing.
+  + Modify "printf.c" to avoid compilation issues when "_RETARGET" is disabled.
+  + Update GCC startup files, modify stack and heap section attributes.
+    "startup_ht32l5xxxx_gcc_nn.s"
 
 /*----------------------------------------------------------------------------------------------------------*/
 /* HT32_STD_L5xxxx_FWLib_V1.6.1_1294                                                                        */

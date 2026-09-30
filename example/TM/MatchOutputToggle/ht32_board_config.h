@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    TM/MatchOutputToggle/ht32_board_config.h
- * @version $Rev:: 1008         $
- * @date    $Date:: 2025-08-28 #$
+ * @version $Rev:: 1325         $
+ * @date    $Date:: 2026-09-09 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -62,6 +62,19 @@
   #define _HTCFG_COMP_CH3_GPION                   3
 
   #define HTCFG_COMP_IPN                          GPTM1
+#endif
+
+#if defined(USE_HT32L57241_SK)
+  #define _HTCFG_COMP_CH0_GPIOX                   A
+  #define _HTCFG_COMP_CH1_GPIOX                   A
+  #define _HTCFG_COMP_CH2_GPIOX                   A
+  #define _HTCFG_COMP_CH3_GPIOX                   A
+  #define _HTCFG_COMP_CH0_GPION                   0
+  #define _HTCFG_COMP_CH1_GPION                   1
+  #define _HTCFG_COMP_CH2_GPION                   2
+  #define _HTCFG_COMP_CH3_GPION                   3
+
+  #define HTCFG_COMP_IPN                          GPTM0
 #endif
 
 #define HTCFG_COMP_CH0_GPIO_ID                    STRCAT2(GPIO_P,         _HTCFG_COMP_CH0_GPIOX)
