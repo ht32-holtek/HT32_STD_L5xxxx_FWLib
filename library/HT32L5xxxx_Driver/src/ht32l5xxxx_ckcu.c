@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_ckcu.c
- * @version $Rev:: 460          $
- * @date    $Date:: 2024-07-11 #$
+ * @version $Rev:: 1396         $
+ * @date    $Date:: 2026-10-01 #$
  * @brief   This file provides all the Clock Control Unit firmware functions.
  *************************************************************************************************************
  * @attention
@@ -501,7 +501,7 @@ void CKCU_SetADCnPrescaler(CKCU_ADCPRE_ADCn_TypeDef CKCU_ADCPRE_ADCn, CKCU_ADCPR
 #if (LIBCFG_LCD)
 /*********************************************************************************************************//**
  * @brief Configure LCD clock prescaler.
- * @param LCDCPS: Specify LCD clock prescaler.
+ * @param LCDPRE: Specify LCD clock prescaler.
  *   This parameter can be one of the following values:
  *     @arg CKCU_LCDPRE_DIV1  :
  *     @arg CKCU_LCDPRE_DIV2  :

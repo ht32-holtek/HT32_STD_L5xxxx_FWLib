@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_usbdinit.h
- * @version $Rev:: 1008         $
- * @date    $Date:: 2025-08-28 #$
+ * @version $Rev:: 1369         $
+ * @date    $Date:: 2026-09-23 #$
  * @brief   The header file of the USB Device Driver.
  *************************************************************************************************************
  * @attention
@@ -245,7 +245,7 @@
   #define _EP7LEN_T         (_EP7LEN_TMP * (_EP7_CFG_SDBS + 1))
 #else
   #define _EP7LEN           (0)
-  #define _EP7LEN_T         (0)  
+  #define _EP7LEN_T         (0)
 #endif
 #if (_EP7_TYPR == EP_TYPE_ISO)
   #define _EP7_CFG_EPTYPE   (1)

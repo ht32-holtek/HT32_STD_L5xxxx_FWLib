@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_rng.h
- * @version $Rev:: 1328         $
- * @date    $Date:: 2026-09-09 #$
+ * @version $Rev:: 1363         $
+ * @date    $Date:: 2026-09-16 #$
  * @brief   The header file of the RNG library.
  *************************************************************************************************************
  * @attention
@@ -87,12 +87,6 @@ typedef struct
 
 #define RNG_FLAG_VALID                          (0x00000001)
 #define RNG_INT_VALID                           (0x00000001)
-#define RNG_FLAG_AUCO                           (0x00000002)
-#define RNG_INT_AUCO                            (0x00000002)
-#define RNG_FLAG_CRNGT                          (0x00000004)
-#define RNG_INT_CRNGT                           (0x00000004)
-#define RNG_FLAG_VNE                            (0x00000008)
-#define RNG_INT_VNE                             (0x00000008)
 
 /**
   * @}

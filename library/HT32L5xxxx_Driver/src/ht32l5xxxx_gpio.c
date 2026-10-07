@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_gpio.c
- * @version $Rev:: 1290         $
- * @date    $Date:: 2026-05-06 #$
+ * @version $Rev:: 1369         $
+ * @date    $Date:: 2026-09-23 #$
  * @brief   This file provides all the GPIO and AFIO firmware functions.
  *************************************************************************************************************
  * @attention
@@ -652,10 +652,10 @@ void AFIO_GPxConfig(u32 GPIO_Px, u32 AFIO_PIN_n, AFIO_MODE_Enum AFIO_MODE_n)
   {
     pin_idx++;
   }
-  
+
   reg_idx = (GPIO_Px << 1) + (pin_idx >> 3);
-  shift = (pin_idx & 0x07) << 2;  
-  
+  shift = (pin_idx & 0x07) << 2;
+
   HT_AFIO->GPACFGR[reg_idx] = (HT_AFIO->GPACFGR[reg_idx] & ~(0xF << shift)) | (AFIO_MODE_n << shift);
   #endif
 }

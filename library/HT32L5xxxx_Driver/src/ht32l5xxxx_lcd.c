@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_lcd.c
- * @version $Rev:: 1325         $
- * @date    $Date:: 2026-09-09 #$
+ * @version $Rev:: 1396         $
+ * @date    $Date:: 2026-10-01 #$
  * @brief   This file provides all the LCD firmware functions.
  *************************************************************************************************************
  * @attention
@@ -137,7 +137,7 @@ void LCD_StaticSwitchConfig(LCD_StaticSwitch_Enum Sel)
 
 /*********************************************************************************************************//**
  * @brief Configure MuxPin to be COM or SEG.
- * @param Pin: Specify the LCD Mux Pin.
+ * @param MuxPin: Specify the LCD Mux Pin.
  * @param Sel: Specify the LCD Mux Mode.
  *   This parameter can be one of the following values:
  *     @arg LCD_MUX_SEL_COM

@@ -1,5 +1,5 @@
 /*********************************************************************************************************//**
- * @file    CKCU/HSI_AutoTrim_By_USB/ht325xxxx_01_usbdconf.h
+ * @file    CKCU/HSI_AutoTrim_By_USB/ht32l5xxxx_01_usbdconf.h
  * @version $Rev:: 1305         $
  * @date    $Date:: 2026-06-01 #$
  * @brief   The configuration file of USB Device Driver.

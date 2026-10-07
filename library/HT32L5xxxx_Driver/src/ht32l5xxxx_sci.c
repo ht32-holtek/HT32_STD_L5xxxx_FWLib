@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_sci.c
- * @version $Rev:: 1161         $
- * @date    $Date:: 2026-01-02 #$
+ * @version $Rev:: 1365         $
+ * @date    $Date:: 2026-09-21 #$
  * @brief   This file provides all the SCI firmware functions.
  *************************************************************************************************************
  * @attention
@@ -187,6 +187,21 @@ void SCI_SetGuardTimeValue(HT_SCI_TypeDef* SCIx, u16 SCI_GuardTime)
 {
   /* Check the parameters                                                                                   */
   Assert_Param(IS_SCI_GUARDTIME(SCI_GuardTime));
+
+  #if (HT32_LIB_LITE == 0)
+  if (SCIx->CR & SCI_CREP)
+  {
+    /* !!! NOTICE !!!
+       When automatic character repetition (CREP) is enabled,
+       the minimum Guard Time value is 12.
+       A Guard Time value of 11 ETUs is only valid when CREP is disabled.
+    */
+    if (SCI_GuardTime < 12)
+    {
+      while (1){};
+    }
+  }
+  #endif
 
   SCIx->GT = SCI_GuardTime;
 }

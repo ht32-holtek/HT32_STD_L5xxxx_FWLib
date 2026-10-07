@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_ertc.c
- * @version $Rev:: 1172         $
- * @date    $Date:: 2026-02-09#$#
+ * @version $Rev:: 1383         $
+ * @date    $Date:: 2026-09-24#$#
  * @brief   This file provides all the ERTC firmware functions.
  *************************************************************************************************************
  * @attention
@@ -850,22 +850,12 @@ void ERTC_SetWakeupTimerCompare(u32 Compare)
 
   /* Disable the write protection for ERTC registers                                                        */
   HT_ERTC->WPR = gERTCUnProtectKey;
-  if (gRTCAutoReload == 1)
+  HT_ERTC->WUTR = Compare & 0xFFFF;
+
+  if ((gRTCAutoReload != 1) && (gCompareMode == GET_COUNTER))
   {
-    HT_ERTC->WUTR = Compare & 0xFFFF;
-  }
-  else
-  {
-    if (gCompareMode == GET_COUNTER)
-    {
-      HT_ERTC->WUTR = Compare & 0xFFFF;
       ERTC_WakeupTimerCmd(DISABLE);
       ERTC_WakeupTimerCmd(ENABLE);
-    }
-    else if (gCompareMode == GET_COMPARE)
-    {
-      HT_ERTC->WUTR = Compare & 0xFFFF;
-    }
   }
 
   /* Enable the write protection for ERTC registers                                                         */
@@ -1217,7 +1207,7 @@ void ERTC_OutConfig(ERTC_ROWM_Enum WMode, ERTC_ROES_Enum EventSel, ERTC_ROAP_Enu
   while (HT_ERTC->CR0 & ERTC_ROEN_MASK){};
 
   /* Configure the output selection and polarity                                                            */
-  if ((EventSel & ERTC_ROES_SPRE) || (EventSel & ERTC_ROES_APRE))
+  if ((EventSel == ERTC_ROES_SPRE) || (EventSel == ERTC_ROES_APRE))
   {
     HT_ERTC->CR0 |= (ROEN | EventSel);
   }

@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    Release_Notes.txt
- * @version V1.7.1
- * @date    2026-09-15
+ * @version V1.7.2
+ * @date    2026-10-01
  * @brief   The Release notes of HT32L Firmware Library.
  *************************************************************************************************************
  * @attention
@@ -37,6 +37,31 @@
 //   HT32L64041
 //   HT32L64141
 //   HT32L57231, HT32L57241
+
+/*----------------------------------------------------------------------------------------------------------*/
+/* HT32_STD_L5xxxx_FWLib_V1.7.2_1403                                                                        */
+/*----------------------------------------------------------------------------------------------------------*/
+  Release Date: 2026-10-01
+  Main Changes
+  + Update CMP driver.
+    - Fix parameter check macros for interrupt, edge detection, and flag settings.
+    - Update "CMP_Init()" to correctly initialize the control register.
+  + Update RNG driver.
+    - Remove unsupported RNG interrupt and flag definitions.
+  + Update SCI driver.
+    - Update "SCI_SetGuardTimeValue()" to check the minimum Guard Time when automatic character repetition is enabled.
+  + Update "ADC_TempSensorGetCalTempPoint()" to return "ADC_FIXED_CAL_TEMP_mC" when the macro is defined.
+  + Update ERTC driver:
+    - Fix "ERTC_OutConfig()" to match "ERTC_ROES_SPRE" and "ERTC_ROES_APRE" exactly.
+    - Clear "ERTC_FLAG_WUTF" in "RTC_SetCompare()" before setting the compare value.
+    - Simplify "ERTC_SetWakeupTimerCompare()" by removing redundant conditional branches.
+  + Update HT32L57241_SK board and example HT32L57241 pin configuration.
+    - "utilities/HT32_Board/ht32l57241_sk.h"
+    - "example/ADC/OneShot_TMTrigger_PDMA"
+    - "example/TM/PWMInput"
+
+  Others
+  + Update comment, format, typing error, and coding style.
 
 /*----------------------------------------------------------------------------------------------------------*/
 /* HT32_STD_L5xxxx_FWLib_V1.7.1_1361                                                                        */

@@ -46,7 +46,7 @@ The program behaves as follows:
 
 @par Hardware and Software Environment:
 
-- Connect a null-modem female/female RS232 cable between the COM1 DB9 connector and PC serial port.
+- Connect a null-modem female/female RS232 cable between the UxART and PC serial port.
   HyperTerminal configuration:
   - Word Length = 8 Bits
   - One Stop Bit

@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ADC/OneShot_TMTrigger_PDMA/ht32_board_config.h
- * @version $Rev:: 1325         $
- * @date    $Date:: 2026-09-09 #$
+ * @version $Rev:: 1370         $
+ * @date    $Date:: 2026-09-23 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -68,10 +68,10 @@
   #define _HTCFG_VR_GPION                         4
   #define _HTCFG_VR_ADC_CHN                       8
 
-  #define _HTCFG_LED_GPIOX                        C
-  #define _HTCFG_LED_GPION                        14
-  #define  HTCFG_LED_TM_IPN                       MCTM0
-  #define  HTCFG_LED_TM_CHN                       3
+  #define _HTCFG_LED_GPIOX                        F
+  #define _HTCFG_LED_GPION                        0
+  #define  HTCFG_LED_TM_IPN                       PWM0
+  #define  HTCFG_LED_TM_CHN                       0
 #endif
 
 #define HTCFG_VR_GPIO_ID                          STRCAT2(GPIO_P,         _HTCFG_VR_GPIOX)

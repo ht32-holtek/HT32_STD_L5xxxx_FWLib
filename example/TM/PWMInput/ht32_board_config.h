@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    TM/PWMInput/ht32_board_config.h
- * @version $Rev:: 1325         $
- * @date    $Date:: 2026-09-09 #$
+ * @version $Rev:: 1373         $
+ * @date    $Date:: 2026-09-23 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -60,9 +60,9 @@
   #define _HTCFG_CAP_GPION                        1
   #define  HTCFG_CAP_IPN                          GPTM0
 
-  #define _HTCFG_PWM_GPIOX                        C
+  #define _HTCFG_PWM_GPIOX                        D
   #define _HTCFG_PWM_GPION                        4
-  #define  HTCFG_PWM_IPN                          GPTM0
+  #define  HTCFG_PWM_IPN                          PWM0
   #define _HTCFG_PWM_CHN                          0
 #endif
 

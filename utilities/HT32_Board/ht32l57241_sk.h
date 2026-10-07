@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l57241_sk.h
- * @version $Rev:: 1197         $
- * @date    $Date:: 2026-03-31 #$
+ * @version $Rev:: 1372         $
+ * @date    $Date:: 2026-09-23 #$
  * @brief   The header file of HT32l57241 Starter kit.
  *************************************************************************************************************
  * @attention
@@ -189,8 +189,8 @@ typedef enum
 /** @addtogroup HT32L57241_SK_SPI_LCD
   * @{
   */
-#define LCD_SPI_CLK(CK)             (CK.Bit.SPI1)
-#define LCD_SPI                     (HT_SPI1)
+#define LCD_SPI_CLK(CK)             (CK.Bit.SPI0)
+#define LCD_SPI                     (HT_SPI0)
 
 #define LCD_SPI_SCK_GPIO_ID         (GPIO_PB)
 #define LCD_SPI_SCK_AFIO_PIN        (AFIO_PIN_3)
@@ -204,20 +204,20 @@ typedef enum
 #define LCD_SPI_MISO_AFIO_PIN       (AFIO_PIN_5)
 #define LCD_SPI_MISO_AFIO_MODE      (AFIO_FUN_SPI)
 
-#define LCD_SPI_SEL_GPIO_ENABLE     (0)
+#define LCD_SPI_SEL_GPIO_ENABLE     (1)
 #define LCD_SPI_SEL_GPIO_ID         (GPIO_PC)
 #define LCD_SPI_SEL_AFIO_PIN        (AFIO_PIN_10)
-#define LCD_SPI_SEL_AFIO_MODE       (AFIO_FUN_SPI)
+#define LCD_SPI_SEL_AFIO_MODE       (AFIO_FUN_GPIO)
 #define LCD_SPI_SEL_CLK(CK)         (CK.Bit.PC)
 
 #define LCD_SPI_BL_ENABLE           (1)
-#define LCD_SPI_BL_GPIO_ID          (GPIO_PA)
-#define LCD_SPI_BL_GPIO_PIN         (GPIO_PIN_10)
+#define LCD_SPI_BL_GPIO_ID          (GPIO_PB)
+#define LCD_SPI_BL_GPIO_PIN         (GPIO_PIN_15)
 #define LCD_SPI_BL_AFIO_MODE        (AFIO_FUN_GPIO)
-#define LCD_SPI_BL_CLK(CK)          (CK.Bit.PA)
+#define LCD_SPI_BL_CLK(CK)          (CK.Bit.PB)
 
 #define LCD_SPI_RST_GPIO_ID         (GPIO_PA)
-#define LCD_SPI_RST_GPIO_PIN        (GPIO_PIN_11)
+#define LCD_SPI_RST_GPIO_PIN        (GPIO_PIN_8)
 #define LCD_SPI_RST_AFIO_MODE       (AFIO_FUN_GPIO)
 #define LCD_SPI_RST_CLK(CK)         (CK.Bit.PA)
 /**

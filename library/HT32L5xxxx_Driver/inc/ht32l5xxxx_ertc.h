@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_ertc.h
- * @version $Rev:: 1172         $
- * @date    $Date:: 2026-02-09 #$
+ * @version $Rev:: 1383         $
+ * @date    $Date:: 2026-09-24 #$
  * @brief   The header file of the ERTC library.
  *************************************************************************************************************
  * @attention
@@ -460,7 +460,9 @@ typedef enum
                                                   ERTC_WakeupTimerCmd(NewState); \
                                                   ERTC_Cmd(NewState); \
                                                   ERTC_SetUnProtectKey(0)
-#define RTC_SetCompare(Compare)                   UNPROTECT(ERTC_SetWakeupTimerCompare(Compare);)
+#define RTC_SetCompare(Compare)                   UNPROTECT(\
+                                                  ERTC_ClearFlag(ERTC_FLAG_WUTF);\
+                                                  ERTC_SetWakeupTimerCompare(Compare);)
 #define RTC_WakeupConfig(RTC_WAKEUP, NewState)    UNPROTECT(\
                                                   RTC_CheckWakeupTimerSetting(RTC_WAKEUP); \
                                                   if ((RTC_WAKEUP) == 2 && RTC_GetCompare() != 1) \

@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_cmp.h
- * @version $Rev:: 1008         $
- * @date    $Date:: 2025-08-28 #$
+ * @version $Rev:: 1362         $
+ * @date    $Date:: 2026-09-16 #$
  * @brief   The header file of the CMP library.
  *************************************************************************************************************
  * @attention
@@ -187,14 +187,14 @@ typedef struct
 #define CMP_INT_FE                                ((u32)0x00000001)
 
 /* Check the CMP Interrupt Parameter                                                                        */
-#define IS_CMP_INT(x)                             ((x & 0xFFFFFF00) != 0x0)
+#define IS_CMP_INT(x)                             (((x) != 0) && (((x) & ~((u32)0x3)) == 0))
 
 
 /* Definitions of CMP Output Edge Detection Enable bit                                                      */
 #define CMP_RE_Detect                             ((u32)0x00000200)
 #define CMP_FE_Detect                             ((u32)0x00000100)
 
-#define IS_CMP_EdgeDetect(x)                      ((x == CMP_RE_Detect) || (x == CMP_FE_Detect))
+#define IS_CMP_EdgeDetect(x)                      (((x) != 0) && (((x) & ~((u32)0x300)) == 0))
 
 
 /* Definitions of CMP Output Edge Flag                                                                      */
@@ -202,7 +202,7 @@ typedef struct
 #define CMP_FLAG_FE                               ((u32)0x00000001)
 
 /* Check the CMP flag Parameter                                                                             */
-#define IS_CMP_FLAG(x)                            ((x & 0xFFFFFFFC) != 0x0)
+#define IS_CMP_FLAG(x)                            (((x) != 0) && (((x) & ~((u32)0x3)) == 0))
 
 
 /* Check the CMPx Parameter                                                                                 */
