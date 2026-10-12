@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_lcd.h
- * @version $Rev:: 1325         $
- * @date    $Date:: 2026-09-09 #$
+ * @version $Rev:: 1410         $
+ * @date    $Date:: 2026-10-06 #$
  * @brief   The header file of the LCD library.
  *************************************************************************************************************
  * @attention
@@ -72,6 +72,7 @@ typedef enum
 {
     LCD_MUX_SEL_COM = 0x00,
     LCD_MUX_SEL_SEG = 0x01,
+    LCD_MUX_UNUSED  = 0x02,
 } LCD_MUX_SEL_Enum;
 
 /**
@@ -293,6 +294,12 @@ typedef struct
 
 #define IS_LCD_CLEAR(CLR)                    ((((CLR) & 0xFFFFFFFC) == 0) && ((CLR) != 0))
 
+#define IS_LCD_MUX_NOT_BOTH_COM(SEL1, SEL2)  (!(((SEL1) == LCD_MUX_SEL_COM) && ((SEL2) == LCD_MUX_SEL_COM)))
+
+#define IS_LCD_MUX_SEL(SEL)                  (((SEL) == LCD_MUX_SEL_COM) || \
+                                              ((SEL) == LCD_MUX_SEL_SEG) || \
+                                              ((SEL) == LCD_MUX_UNUSED))
+
 #define LCD_CMPHYST_10mV                      LCD_CMPHYST_LEVEL1
 #define LCD_CMPHYST_20mV                      LCD_CMPHYST_LEVEL2
 #define LCD_CMPHYST_30mV                      LCD_CMPHYST_LEVEL3
@@ -307,16 +314,11 @@ typedef struct
 #define LCD_ChargePump_3V40                   LCD_ChargePump_LEVEL7
 #define LCD_ChargePump_3V55                   LCD_ChargePump_LEVEL8
 
-// #define SEGX_COMN                          (u16)((Pair REG bit) << 8 | (Self REG bit))
 #if defined(USE_HT32L57231_41)
-#define SEG28_COM7                            (u16)(19 << 8 | 11) // PC13
-#define SEG27_COM6                            (u16)(18 << 8 | 10) // PC12
-#define SEG26_COM5                            (u16)(17 << 8 |  9) // PC11
-#define SEG25_COM4                            (u16)(16 << 8 |  8) // PC10
-#define SEG8_COM7                             (u16)(11 << 8 | 19) // PB5
-#define SEG7_COM6                             (u16)(10 << 8 | 18) // PB4
-#define SEG6_COM5                             (u16)( 9 << 8 | 17) // PB3
-#define SEG5_COM4                             (u16)( 8 << 8 | 16) // PB2
+#define COM7_SEG28_SEG8                       (u16)(11 << 8 | 19) // SEG28: PC13, SEG8: PB5
+#define COM6_SEG27_SEG7                       (u16)(10 << 8 | 18) // SEG27: PC12, SEG7: PB4
+#define COM5_SEG26_SEG6                       (u16)( 9 << 8 | 17) // SEG26: PC11, SEG6: PB3
+#define COM4_SEG25_SEG5                       (u16)( 8 << 8 | 16) // SEG25: PC10, SEG5: PB2
 #endif
 
 
@@ -352,7 +354,7 @@ void LCD_DriverInit(LCD_InitTypeDef* LCD_InitStruct);
 void LCD_MaskTimeConfig(LCD_MaskTime_Enum Sel);
 void LCD_HalfRLCmd(ControlStatus NewState);
 void LCD_StaticSwitchConfig(LCD_StaticSwitch_Enum Sel);
-bool LCD_MuxConfig(u16 MuxPin, LCD_MUX_SEL_Enum Sel);
+void LCD_MuxConfig(u16 MuxPinGroup, LCD_MUX_SEL_Enum Sel1, LCD_MUX_SEL_Enum Sel2);
 void LCD_WaveformConfig(LCD_Waveform_Enum Sel);
 void LCD_BiasConfig(LCD_Bias_Enum Sel);
 void LCD_DutyConfig(LCD_Duty_Enum Sel);

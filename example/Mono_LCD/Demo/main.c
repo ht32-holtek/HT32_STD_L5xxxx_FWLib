@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    Mono_LCD/Demo/main.c
- * @version $Rev:: 1330         $
- * @date    $Date:: 2026-09-09 #$
+ * @version $Rev:: 1409         $
+ * @date    $Date:: 2026-10-05 #$
  * @brief   Main program.
  *************************************************************************************************************
  * @attention
@@ -126,6 +126,7 @@ void LCD_Configuration(void)
   AFIO_GPxConfig(HTCFG_LCD_SEG21_GPIO_ID, HTCFG_LCD_SEG21_AFIO_PIN, AFIO_FUN_LCD);
   AFIO_GPxConfig(HTCFG_LCD_SEG22_GPIO_ID, HTCFG_LCD_SEG22_AFIO_PIN, AFIO_FUN_LCD);
   AFIO_GPxConfig(HTCFG_LCD_SEG23_GPIO_ID, HTCFG_LCD_SEG23_AFIO_PIN, AFIO_FUN_LCD);
+  /* HT32L57241: Default backplane Opt #1 ties SEG24 (PB8) to the buzzer. Set Opt to #2. */
   AFIO_GPxConfig(HTCFG_LCD_SEG24_GPIO_ID, HTCFG_LCD_SEG24_AFIO_PIN, AFIO_FUN_LCD);
   #if defined(HTCFG_LCD_SEG32_MODE)
   AFIO_GPxConfig(HTCFG_LCD_SEG29_GPIO_ID, HTCFG_LCD_SEG29_AFIO_PIN, AFIO_FUN_LCD);
@@ -158,14 +159,10 @@ void LCD_Configuration(void)
   LCD_InitStructure.LCD_Waveform = LCD_Type_B_Waveform;
   LCD_DriverInit(&LCD_InitStructure);
 
-  LCD_MuxConfig(SEG8_COM7, LCD_MUX_SEL_SEG);
-  LCD_MuxConfig(SEG7_COM6, LCD_MUX_SEL_SEG);
-  LCD_MuxConfig(SEG6_COM5, LCD_MUX_SEL_SEG);
-  LCD_MuxConfig(SEG5_COM4, LCD_MUX_SEL_SEG);
-  LCD_MuxConfig(SEG28_COM7, LCD_MUX_SEL_COM);
-  LCD_MuxConfig(SEG27_COM6, LCD_MUX_SEL_COM);
-  LCD_MuxConfig(SEG26_COM5, LCD_MUX_SEL_COM);
-  LCD_MuxConfig(SEG25_COM4, LCD_MUX_SEL_COM);
+  LCD_MuxConfig(COM7_MUXPIN_GROUP, LCD_MUX_SEL_COM, LCD_MUX_SEL_SEG);
+  LCD_MuxConfig(COM6_MUXPIN_GROUP, LCD_MUX_SEL_COM, LCD_MUX_SEL_SEG);
+  LCD_MuxConfig(COM5_MUXPIN_GROUP, LCD_MUX_SEL_COM, LCD_MUX_SEL_SEG);
+  LCD_MuxConfig(COM4_MUXPIN_GROUP, LCD_MUX_SEL_COM, LCD_MUX_SEL_SEG);
 
   /* Enable High Drive Mode                                                                                 */
   LCD_HighDriveConfig(LCD_HighDrive_Static);

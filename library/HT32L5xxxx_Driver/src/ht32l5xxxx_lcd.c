@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_lcd.c
- * @version $Rev:: 1396         $
- * @date    $Date:: 2026-10-01 #$
+ * @version $Rev:: 1425         $
+ * @date    $Date:: 2026-10-07 #$
  * @brief   This file provides all the LCD firmware functions.
  *************************************************************************************************************
  * @attention
@@ -66,13 +66,15 @@ void LCD_DriverInit(LCD_InitTypeDef* LCD_InitStruct)
   while (LCD_GetFlagStatus(LCD_FLAG_ENS) == SET){};
   #endif
 
-  HT_LCD->FCR = (u32)(LCD_InitStruct->LCD_Prescaler) |
-                (u32)(LCD_InitStruct->LCD_Divider);
+  HT_LCD->FCR = (HT_LCD->FCR & 0xFC03FFFF) |
+                (u32)LCD_InitStruct->LCD_Prescaler |
+                (u32)LCD_InitStruct->LCD_Divider;
 
-  HT_LCD->CR = (u32)(LCD_InitStruct->LCD_Waveform) |
-               (u32)(LCD_InitStruct->LCD_Bias) |
-               (u32)(LCD_InitStruct->LCD_Duty) |
-               (u32)(LCD_InitStruct->LCD_VoltageSource);
+  HT_LCD->CR = (HT_LCD->CR & 0xFFFFFF01) |
+               (u32)LCD_InitStruct->LCD_Waveform |
+               (u32)LCD_InitStruct->LCD_Bias |
+               (u32)LCD_InitStruct->LCD_Duty |
+               (u32)LCD_InitStruct->LCD_VoltageSource;
 }
 
 /*********************************************************************************************************//**
@@ -136,36 +138,57 @@ void LCD_StaticSwitchConfig(LCD_StaticSwitch_Enum Sel)
 }
 
 /*********************************************************************************************************//**
- * @brief Configure MuxPin to be COM or SEG.
- * @param MuxPin: Specify the LCD Mux Pin.
- * @param Sel: Specify the LCD Mux Mode.
+ * @brief Configure the two MUX pins in one COM group to be COM or SEG.
+ * @param MuxPinGroup: Specify the COM group, e.g. COM7_SEG28_SEG8.
+ *   Sel1 is the first SEG (SEG28), Sel2 is the second SEG (SEG8).
+ * @param Sel1: Mux mode of the first SEG.
+ * @param Sel2: Mux mode of the second SEG.
  *   This parameter can be one of the following values:
  *     @arg LCD_MUX_SEL_COM
  *     @arg LCD_MUX_SEL_SEG
- * @retval TRUE or FALSE
+ *     @arg LCD_MUX_UNUSED
+ * @retval None
  ************************************************************************************************************/
-bool LCD_MuxConfig(u16 MuxPin, LCD_MUX_SEL_Enum Sel)
+void LCD_MuxConfig(u16 MuxPinGroup, LCD_MUX_SEL_Enum Sel1, LCD_MUX_SEL_Enum Sel2)
 {
-  u32 reg;
+  u32 seg_bit;
+  /* Check the parameters                                                                                   */
+  Assert_Param(IS_LCD_MUX_SEL(Sel1));
+  Assert_Param(IS_LCD_MUX_SEL(Sel2));
+  Assert_Param(IS_LCD_MUX_NOT_BOTH_COM(Sel1, Sel2));
+  (void)Sel2;
   /* !!! NOTICE !!!
      Must wait until the LCDENS = 0 before change the LCD settings.
   */
   #if 0
   while (LCD_GetFlagStatus(LCD_FLAG_ENS) == SET){};
   #endif
-  reg = HT_LCD->CR;
-  #if (LIBCFG_LCD_MULTI_MUXCOM)
-  if(Sel == LCD_MUX_SEL_COM)
+
+  #if (HT32_LIB_LITE == 0)
+  if(Sel1 == LCD_MUX_SEL_COM && Sel2 == LCD_MUX_SEL_COM)
   {
-    u16 PairPin = (MuxPin & 0x1F00) >> 8; // get pair pin
-    if ((reg & (1ul << PairPin)) == 0)
-    {
-      return FALSE; // check pair pin is COM mode
-    }
+    /*
+      ERROR: Both MUX pins in the same COM group are configured as COM.
+      Selecting both pins as COM is not allowed,
+      because a COM group supports only one COM pin.
+    */
+    while (1){};
   }
   #endif
-  HT_LCD->CR = (reg & ~(1ul << (MuxPin & 0x001F))) | (Sel << (MuxPin & 0x001F));
-  return TRUE;
+
+  if (Sel1 != LCD_MUX_UNUSED)
+  {
+    seg_bit = (u32)((MuxPinGroup >> 8) & 0x001F);
+    HT_LCD->CR = (HT_LCD->CR & ~(1ul << seg_bit)) | ((u32)Sel1 << seg_bit);
+  }
+
+  #if(LIBCFG_LCD_MULTI_MUXCOM)
+  if (Sel2 != LCD_MUX_UNUSED)
+  {
+    seg_bit = (u32)(MuxPinGroup & 0x001F);
+    HT_LCD->CR = (HT_LCD->CR & ~(1ul << seg_bit)) | ((u32)Sel2 << seg_bit);
+  }
+  #endif
 }
 
 /*********************************************************************************************************//**

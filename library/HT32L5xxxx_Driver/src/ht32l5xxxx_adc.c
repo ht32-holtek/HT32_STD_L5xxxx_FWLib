@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    ht32l5xxxx_adc.c
- * @version $Rev:: 1367         $
- * @date    $Date:: 2026-09-21 #$
+ * @version $Rev:: 1420         $
+ * @date    $Date:: 2026-10-06 #$
  * @brief   This file provides all the ADC firmware functions.
  *************************************************************************************************************
  * @attention
@@ -836,18 +836,21 @@ s32 ADC_TempSensorGetCalTempPoint(HT_ADC_TypeDef* HT_ADCn)
 {
   /* Check the parameters                                                                                   */
   Assert_Param(IS_ADC(HT_ADCn));
-  #if ADC_CAL_TEMP_POINT_SORUCE
-  /* Get calibration temperature point from factory trim code                                               */
-  /* To Do...                                                                                               */
-   #error "Trim code feature is not yet implemented."
+
+  #if ADC_CAL_TEMP_POINT_SOURCE
+    /* Get calibration temperature point from factory trim code                                             */
+    /* To Do...                                                                                             */
+    #error "Trim code feature is not yet implemented."
   #else
-  /* Return fixed default calibration temperature point                                                     */
-  HT_ADCn->TSCALR; /* Used only to avoid "unused parameter" compiler warning.                               */
-  #if defined(ADC_FIXED_CAL_TEMP_mC)
-  return  ADC_FIXED_CAL_TEMP_mC;
-  #else
-  while (1){};
-  #endif
+    (void)HT_ADCn; /* Used only to avoid "unused parameter" compiler warning.                               */
+
+    /* Return fixed default calibration temperature point                                                   */
+    #if defined(ADC_FIXED_CAL_TEMP_mC)
+      return  ADC_FIXED_CAL_TEMP_mC;
+    #else
+      #warning "The 'ht32Xxxxxx_conf.h' file (usually located in the same directory as main.c) is outdated. Please update it to the latest version."
+      while (1){};
+    #endif
   #endif
 }
 #endif

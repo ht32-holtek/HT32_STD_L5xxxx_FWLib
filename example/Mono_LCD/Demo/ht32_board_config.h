@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    Mono_LCD/Demo/ht32_board_config.h
- * @version $Rev:: 1330         $
- * @date    $Date:: 2026-09-09 #$
+ * @version $Rev:: 1409         $
+ * @date    $Date:: 2026-10-05 #$
  * @brief   The header file of board configuration.
  *************************************************************************************************************
  * @attention
@@ -150,6 +150,11 @@
   #define HTCFG_LCD_SEG43_AFIO_PIN            (AFIO_PIN_2)
   #define HTCFG_LCD_SEG44_GPIO_ID             (GPIO_PF)
   #define HTCFG_LCD_SEG44_AFIO_PIN            (AFIO_PIN_3)
+
+  #define COM7_MUXPIN_GROUP                   COM7_SEG28_SEG8
+  #define COM6_MUXPIN_GROUP                   COM6_SEG27_SEG7
+  #define COM5_MUXPIN_GROUP                   COM5_SEG26_SEG6
+  #define COM4_MUXPIN_GROUP                   COM4_SEG25_SEG5
 #endif
 
 #ifdef __cplusplus

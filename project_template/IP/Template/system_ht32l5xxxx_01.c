@@ -2,8 +2,8 @@
  * @file    library/Device/Holtek/HT32L5xxxx/Source/system_ht32l5xxxx_01.c
  * @brief   CMSIS Cortex-M0+ Device Peripheral Access Layer Source File
  *          for the Holtek HT32L5xxxx Device Series
- * @version $Rev:: 1288         $
- * @date    $Date:: 2026-05-06 #$
+ * @version $Rev:: 1419         $
+ * @date    $Date:: 2026-10-06 #$
  *
  * @note
  * Copyright (C) Holtek Semiconductor Inc. All rights reserved.
@@ -636,7 +636,7 @@ void SystemCoreClockUpdate(void)
   #define ERROR_STATUS_TX_EMPTY_TIMEOUT     (1 << 2)
   #define ERROR_STATUS_SEND_STOP_TIMEOUT    (1 << 3)
   #define ERROR_STATUS_RX_NOT_EMPTY_TIMEOUT (1 << 4)
-  #define ERROR_STATUS_TRIM_CODE_FAILE      (1 << 5)
+  #define ERROR_STATUS_TRIM_CODE_FAILED     (1 << 5)
 #endif
 
 #if (LTC_ERRORHANDLING == 1)
@@ -834,7 +834,7 @@ __STATIC_FORCEINLINE void SystemLoadTrimCode(void)
         if (I2C_RECV() != *p++)
         {
           #if (LTC_ERRORHANDLING == 1)
-          Error_Status = ERROR_STATUS_TRIM_CODE_FAILE;
+          Error_Status = ERROR_STATUS_TRIM_CODE_FAILED;
           #else
           ok = 0;
           #endif

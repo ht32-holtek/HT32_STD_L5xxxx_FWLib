@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file    Release_Notes.txt
- * @version V1.7.2
- * @date    2026-10-01
+ * @version V1.8.1
+ * @date    2026-10-07
  * @brief   The Release notes of HT32L Firmware Library.
  *************************************************************************************************************
  * @attention
@@ -37,6 +37,26 @@
 //   HT32L64041
 //   HT32L64141
 //   HT32L57231, HT32L57241
+
+/*----------------------------------------------------------------------------------------------------------*/
+/* HT32_STD_L5xxxx_FWLib_V1.8.1_1427                                                                        */
+/*----------------------------------------------------------------------------------------------------------*/
+  Release Date: 2026-10-07
+  Main Changes
+  + Update LCD driver:
+    - Update "LCD_DriverInit()" to preserve unrelated FCR and CR bit configurations.
+    - Update "LCD_MuxConfig()" from 2 to 3 parameters to set both MUX pins of one COM group in one call,
+      and change the return type from "bool" to "void".
+    - Rename HT32L57231/HT32L57241 shared pin macros to COM group names, such as "COM7_SEG28_SEG8".
+  + Update Mono_LCD examples to use the new "LCD_MuxConfig()" API.
+    - "example/Mono_LCD/Demo"
+    - "example/Mono_LCD/LCD_module"
+  + Update "ADC_TempSensorGetCalTempPoint()".
+    - Replace the dummy "TSCALR" access with "(void)HT_ADCn" to avoid the unused parameter warning.
+    - Add "#warning" when "ADC_FIXED_CAL_TEMP_mC" is not defined, to remind the user to update "ht32l5xxxx_conf.h".
+
+  Others
+  + Update comment, format, typing error, and coding style.
 
 /*----------------------------------------------------------------------------------------------------------*/
 /* HT32_STD_L5xxxx_FWLib_V1.7.2_1403                                                                        */
